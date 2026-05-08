@@ -8,12 +8,21 @@ import {
 
 import { Request, Response } from 'express';
 
+interface ErrorResponse {
+  success: false;
+  statusCode: number;
+  path: string;
+  message: string | object;
+  timestamp: string;
+}
+
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
-  catch(exception: unknown, host: ArgumentsHost) {
+  catch(exception: unknown, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
 
     const response = ctx.getResponse<Response>();
+
     const request = ctx.getRequest<Request>();
 
     const status =
@@ -26,12 +35,14 @@ export class HttpExceptionFilter implements ExceptionFilter {
         ? exception.getResponse()
         : 'Internal server error';
 
-    response.status(status).json({
+    const errorResponse: ErrorResponse = {
       success: false,
       statusCode: status,
       path: request.url,
       message,
       timestamp: new Date().toISOString(),
-    });
+    };
+
+    response.status(status).json(errorResponse);
   }
 }

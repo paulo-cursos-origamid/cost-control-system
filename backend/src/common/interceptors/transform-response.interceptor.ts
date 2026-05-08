@@ -5,13 +5,25 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 
-import { map, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
+interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+}
 
 @Injectable()
-export class TransformResponseInterceptor implements NestInterceptor {
-  intercept(_context: ExecutionContext, next: CallHandler): Observable<any> {
+export class TransformResponseInterceptor<T> implements NestInterceptor<
+  T,
+  ApiResponse<T>
+> {
+  intercept(
+    _context: ExecutionContext,
+    next: CallHandler,
+  ): Observable<ApiResponse<T>> {
     return next.handle().pipe(
-      map((data) => ({
+      map((data: T) => ({
         success: true,
         data,
       })),

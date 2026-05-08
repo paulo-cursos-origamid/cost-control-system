@@ -10,7 +10,7 @@ import { PrismaModule } from './database/prisma.module';
 import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
-     ConfigModule.forRoot({
+    ConfigModule.forRoot({
       isGlobal: true,
     }),
     AuthModule,
