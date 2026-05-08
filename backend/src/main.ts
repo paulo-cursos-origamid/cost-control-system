@@ -3,18 +3,21 @@ import { ValidationPipe } from '@nestjs/common';
 
 import { AppModule } from './app.module';
 
-import { PrismaService } from './database/prisma.service';
+import { configureSwagger } from '@/config/swagger/swagger.config';
 
-import { setupSwagger } from './config/awagger/swagger.config';
+import { HttpExceptionFilter } from '@/common/filters/http-exception.filter';
 
-import { HttpExceptionFilter } from './common/filters/http-exception.filter';
-
-import { TransformResponseInterceptor } from './common/interceptors/transform-response.interceptor';
+import { TransformResponseInterceptor } from '@/common/interceptors/transform-response.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.enableCors();
+  app.setGlobalPrefix('api');
+
+  app.enableCors({
+    origin: '*',
+    credentials: true,
+  });
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -26,17 +29,15 @@ async function bootstrap() {
 
   app.useGlobalFilters(new HttpExceptionFilter());
 
-  app.useGlobalInterceptors(
-    new TransformResponseInterceptor(),
-  );
+  app.useGlobalInterceptors(new TransformResponseInterceptor());
 
-  setupSwagger(app);
+  configureSwagger(app);
 
-  const prismaService = app.get(PrismaService);
+  const port = process.env.PORT || 3000;
 
-  await prismaService.enableShutdownHooks(app);
+  await app.listen(port);
 
-  await app.listen(process.env.PORT || 3000);
+  console.log(`🚀 Server running on port ${port}`);
 }
 
 bootstrap();

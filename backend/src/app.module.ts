@@ -6,10 +6,13 @@ import { UsersModule } from './modules/users/users.module';
 import { AccountsModule } from './modules/accounts/accounts.module';
 import { CategoriesModule } from './modules/categories/categories.module';
 import { TransactionsModule } from './modules/transactions/transactions.module';
-import { PrismaModule } from './prisma/prisma.module';
-
+import { PrismaModule } from './database/prisma.module';
+import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
+     ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     AuthModule,
     UsersModule,
     AccountsModule,
