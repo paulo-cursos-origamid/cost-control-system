@@ -3,8 +3,7 @@ import { ValidationPipe } from '@nestjs/common';
 
 import { AppModule } from './app.module';
 
-import { configureSwagger } from '@/config/swagger/swagger.config';
-
+import { setupSwagger } from './config/swagger/swagger.config';
 import { HttpExceptionFilter } from '@/common/filters/http-exception.filter';
 
 import { TransformResponseInterceptor } from '@/common/interceptors/transform-response.interceptor';
@@ -13,6 +12,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.setGlobalPrefix('api');
+  setupSwagger(app);
 
   app.enableCors({
     origin: '*',
@@ -31,7 +31,6 @@ async function bootstrap() {
 
   app.useGlobalInterceptors(new TransformResponseInterceptor());
 
-  configureSwagger(app);
 
   const port = process.env.PORT || 3000;
 
