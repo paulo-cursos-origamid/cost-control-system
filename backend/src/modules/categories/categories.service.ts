@@ -13,35 +13,69 @@ export class CategoriesService {
     private readonly prisma: PrismaService,
   ) {}
 
-  async create(createCategoryDto: CreateCategoryDto) {
-    return this.prisma.category.create({
-      data: createCategoryDto,
-    });
-  }
+ async create(
+  createCategoryDto: CreateCategoryDto,
+  userId: string,
+) {
+  return this.prisma.category.create({
+    data: {
+      ...createCategoryDto,
 
-  async findAll() {
-    return this.prisma.category.findMany({
+      userId,
+    },
+  });
+}
+
+async findAll(userId: string) {
+  return this.prisma.category.findMany({
+    where: {
+      OR: [
+        {
+          userId,
+        },
+
+        {
+          isDefault: true,
+        },
+      ],
+    },
+
+    include: {
+      children: true,
+    },
+  });
+}
+
+async findOne(
+  id: string,
+  userId: string,
+) {
+  const category =
+    await this.prisma.category.findFirst({
+      where: {
+        id,
+
+        OR: [
+          {
+            userId,
+          },
+
+          {
+            isDefault: true,
+          },
+        ],
+      },
+
       include: {
         children: true,
       },
     });
+
+  if (!category) {
+    throw new NotFoundException(
+      'Category not found',
+    );
   }
 
-  async findOne(id: string) {
-    const category = await this.prisma.category.findUnique({
-      where: { id },
-
-      include: {
-        children: true,
-      },
-    });
-
-    if (!category) {
-      throw new NotFoundException(
-        'Category not found',
-      );
-    }
-
-    return category;
-  }
+  return category;
 }
