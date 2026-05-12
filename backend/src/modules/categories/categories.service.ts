@@ -79,3 +79,4 @@ async findOne(
 
   return category;
 }
+}
