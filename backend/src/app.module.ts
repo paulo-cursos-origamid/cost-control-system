@@ -13,6 +13,7 @@ import { AccountsModule } from './modules/accounts/accounts.module';
 import { CategoriesModule } from './modules/categories/categories.module';
 import { TransactionsModule } from './modules/transactions/transactions.module';
 import { VehiclesModule } from './modules/vehicles/vehicles.module';
+import { FuelSuppliesModule } from './modules/fuel-supplies/fuel-supplies.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { VehiclesModule } from './modules/vehicles/vehicles.module';
     CategoriesModule,
     TransactionsModule,
     VehiclesModule,
+    FuelSuppliesModule,
   ],
 
   controllers: [AppController],
