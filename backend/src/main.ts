@@ -1,25 +1,41 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+
+import { AppModule } from './app.module';
+
+import { setupSwagger } from './config/swagger/swagger.config';
+import { HttpExceptionFilter } from '@/common/filters/http-exception.filter';
+
+import { TransformResponseInterceptor } from '@/common/interceptors/transform-response.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Prefixo global (ex: /api/users)
   app.setGlobalPrefix('api');
+  setupSwagger(app);
 
-  // Validação global (ESSENCIAL)
+  app.enableCors({
+    origin: '*',
+    credentials: true,
+  });
+
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true, // remove campos extras
-      forbidNonWhitelisted: true, // erro se enviar campo inválido
-      transform: true, // transforma tipos automaticamente
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
     }),
   );
 
-  // CORS (frontend vai precisar)
-  app.enableCors();
+  app.useGlobalFilters(new HttpExceptionFilter());
 
-  await app.listen(process.env.PORT ?? 3000);
+  app.useGlobalInterceptors(new TransformResponseInterceptor());
+
+  const port = process.env.PORT || 3000;
+
+  await app.listen(port);
+
+  console.log(`🚀 Server running on port ${port}`);
 }
-bootstrap();
+
+void bootstrap();

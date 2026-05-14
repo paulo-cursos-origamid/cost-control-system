@@ -3,18 +3,19 @@ import {
   ExecutionContext,
 } from '@nestjs/common';
 
-import { JwtUser } from '..';
+import { Request } from 'express';
 
-export const CurrentUser =
-  createParamDecorator(
-    (
-      _data: unknown,
-      ctx: ExecutionContext,
-    ): JwtUser => {
-      const request = ctx
-        .switchToHttp()
-        .getRequest();
+import { JwtUser } from '@/shared/interfaces/jwt-user.interface';
 
-      return request.user as JwtUser;
-    },
-  );
+type RequestWithUser = Request & {
+  user: JwtUser;
+};
+
+export const CurrentUser = createParamDecorator(
+  (_data: unknown, ctx: ExecutionContext): JwtUser => {
+    const request =
+      ctx.switchToHttp().getRequest<RequestWithUser>();
+
+    return request.user;
+  },
+);
