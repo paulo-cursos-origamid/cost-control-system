@@ -154,7 +154,14 @@ model Maintenance {
 
   workshop String?
 
+  performedAt DateTime @default(now())
+
+  nextMaintenanceAt DateTime?
+
+  nextMaintenanceKm Float?
+
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Transaction {
@@ -202,5 +209,11 @@ enum MaintenanceType {
   ELECTRICAL
   TIRE_SHOP
   OIL_CHANGE
+  ALIGNMENT
+  BALANCING
+  BRAKES
+  SUSPENSION
+  ENGINE
+  BATTERY
   OTHER
 }

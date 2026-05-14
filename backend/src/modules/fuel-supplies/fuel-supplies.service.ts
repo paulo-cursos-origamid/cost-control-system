@@ -4,6 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
+import { TransactionType } from '@prisma/client';
+
 import { PrismaService } from '@/database/prisma.service';
 
 import { CreateFuelSupplyDto } from './dto/create-fuel-supply.dto';
@@ -14,10 +16,14 @@ export class FuelSuppliesService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(userId: string, dto: CreateFuelSupplyDto) {
-    console.log('================ FUEL CREATE ================');
-    console.log('USER =>', userId);
+    console.log('\n================ FUEL CREATE ================');
+
+    console.log('USER ID =>', userId);
     console.log('DTO =>', dto);
 
+    /*
+      VALIDATE VEHICLE
+    */
     const vehicle = await this.prisma.vehicle.findFirst({
       where: {
         id: dto.vehicleId,
@@ -29,90 +35,199 @@ export class FuelSuppliesService {
       throw new NotFoundException('Vehicle not found');
     }
 
+    /*
+      VALIDATE ACCOUNT
+    */
+    const account = await this.prisma.account.findFirst({
+      where: {
+        id: dto.accountId,
+        userId,
+      },
+    });
+
+    if (!account) {
+      throw new NotFoundException('Account not found');
+    }
+
+    /*
+      VALIDATE CATEGORY
+    */
+    const category = await this.prisma.category.findFirst({
+      where: {
+        id: dto.categoryId,
+      },
+    });
+
+    if (!category) {
+      throw new NotFoundException('Category not found');
+    }
+
+    /*
+      CALCULATIONS
+    */
     let liters = dto.liters;
     let totalAmount = dto.totalAmount;
 
+    const hasLiters = liters !== undefined;
+
+    const hasTotalAmount = totalAmount !== undefined;
+
     /*
-      REGRAS:
-
-      1 - informou litros + preço?
-          calcula total
-
-      2 - informou total + preço?
-          calcula litros
-
-      3 - informou os 3?
-          usa os valores enviados
-
-      4 - faltando dados?
-          erro
+      AUTO CALCULATE LITERS
     */
+    if (!hasLiters && hasTotalAmount) {
+      liters = totalAmount! / dto.pricePerLiter;
 
-    if (!liters && totalAmount) {
-      liters = totalAmount / dto.pricePerLiter;
+      console.log('LITERS AUTO CALCULATED =>', liters);
     }
 
-    if (!totalAmount && liters) {
-      totalAmount = liters * dto.pricePerLiter;
+    /*
+      AUTO CALCULATE TOTAL
+    */
+    if (!hasTotalAmount && hasLiters) {
+      totalAmount = liters! * dto.pricePerLiter;
+
+      console.log('TOTAL AUTO CALCULATED =>', totalAmount);
     }
 
-    if (!liters || !totalAmount) {
-      throw new BadRequestException('Provide liters or totalAmount');
+    /*
+      FINAL VALIDATION
+    */
+    if (liters === undefined || totalAmount === undefined) {
+      throw new BadRequestException('You must provide liters or totalAmount');
     }
 
+    /*
+      ROUND VALUES
+    */
+    liters = Number(liters.toFixed(2));
+
+    totalAmount = Number(totalAmount.toFixed(2));
+
+    /*
+      AVERAGES
+    */
     let averageKmPerLiter: number | null = null;
+
     let averageCostPerKm: number | null = null;
+
     let previousFullTankId: string | null = null;
 
     /*
-      CALCULAR MÉDIA SOMENTE
-      QUANDO FOR TANQUE CHEIO
+      CALCULATE AVERAGES
     */
-
     if (dto.fullTank) {
+      console.log('FULL TANK => TRUE');
+
       const previousFullTank = await this.prisma.fuelSupply.findFirst({
         where: {
           vehicleId: dto.vehicleId,
           fullTank: true,
         },
         orderBy: {
-          createdAt: 'desc',
+          odometer: 'desc',
         },
       });
+
+      console.log('PREVIOUS FULL TANK =>', previousFullTank?.id);
 
       if (previousFullTank) {
         previousFullTankId = previousFullTank.id;
 
         const distance = dto.odometer - previousFullTank.odometer;
 
-        if (distance > 0) {
-          averageKmPerLiter = distance / liters;
+        console.log('DISTANCE =>', distance);
 
-          averageCostPerKm = totalAmount / distance;
+        if (distance > 0 && liters > 0) {
+          averageKmPerLiter = Number((distance / liters).toFixed(2));
+
+          averageCostPerKm = Number((totalAmount / distance).toFixed(2));
+
+          console.log('AVERAGE KM/L =>', averageKmPerLiter);
+
+          console.log('AVERAGE COST/KM =>', averageCostPerKm);
         }
       }
     }
 
+    /*
+      CREATE TRANSACTION
+    */
+    const transaction = await this.prisma.transaction.create({
+      data: {
+        title: `Fuel - ${vehicle.name}`,
+
+        amount: totalAmount,
+
+        type: TransactionType.EXPENSE,
+
+        date: new Date(),
+
+        userId,
+
+        accountId: dto.accountId,
+
+        categoryId: dto.categoryId,
+      },
+    });
+
+    console.log('TRANSACTION CREATED =>', transaction.id);
+
+    /*
+      UPDATE ACCOUNT BALANCE
+    */
+    await this.prisma.account.update({
+      where: {
+        id: dto.accountId,
+      },
+      data: {
+        balance: {
+          decrement: totalAmount,
+        },
+      },
+    });
+
+    console.log('ACCOUNT BALANCE UPDATED');
+
+    /*
+      CREATE FUEL SUPPLY
+    */
     const fuelSupply = await this.prisma.fuelSupply.create({
       data: {
         vehicleId: dto.vehicleId,
+
+        transactionId: transaction.id,
+
         fuelType: dto.fuelType,
+
         liters,
+
         pricePerLiter: dto.pricePerLiter,
+
         totalAmount,
+
         odometer: dto.odometer,
+
         fullTank: dto.fullTank ?? false,
+
         averageKmPerLiter,
+
         averageCostPerKm,
+
         previousFullTankId,
+
         notes: dto.notes,
+      },
+
+      include: {
+        vehicle: true,
+        transaction: true,
       },
     });
 
     /*
-      ATUALIZA KM ATUAL DO VEÍCULO
+      UPDATE VEHICLE KM
     */
-
     await this.prisma.vehicle.update({
       where: {
         id: dto.vehicleId,
@@ -122,7 +237,11 @@ export class FuelSuppliesService {
       },
     });
 
+    console.log('VEHICLE KM UPDATED');
+
     console.log('FUEL CREATED =>', fuelSupply.id);
+
+    console.log('============================================\n');
 
     return fuelSupply;
   }
@@ -134,9 +253,12 @@ export class FuelSuppliesService {
           userId,
         },
       },
+
       include: {
         vehicle: true,
+        transaction: true,
       },
+
       orderBy: {
         createdAt: 'desc',
       },
@@ -147,12 +269,15 @@ export class FuelSuppliesService {
     const fuelSupply = await this.prisma.fuelSupply.findFirst({
       where: {
         id,
+
         vehicle: {
           userId,
         },
       },
+
       include: {
         vehicle: true,
+        transaction: true,
       },
     });
 
@@ -175,8 +300,41 @@ export class FuelSuppliesService {
   }
 
   async remove(id: string, userId: string) {
-    await this.findOne(id, userId);
+    const fuelSupply = await this.findOne(id, userId);
 
+    /*
+      RESTORE ACCOUNT BALANCE
+    */
+    if (fuelSupply.transactionId) {
+      const transaction = await this.prisma.transaction.findUnique({
+        where: {
+          id: fuelSupply.transactionId,
+        },
+      });
+
+      if (transaction) {
+        await this.prisma.account.update({
+          where: {
+            id: transaction.accountId,
+          },
+          data: {
+            balance: {
+              increment: transaction.amount,
+            },
+          },
+        });
+
+        await this.prisma.transaction.delete({
+          where: {
+            id: transaction.id,
+          },
+        });
+      }
+    }
+
+    /*
+      DELETE FUEL SUPPLY
+    */
     await this.prisma.fuelSupply.delete({
       where: {
         id,
