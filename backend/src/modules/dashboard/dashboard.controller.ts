@@ -17,9 +17,7 @@ export class DashboardController {
   constructor(private readonly dashboardService: DashboardService) {}
 
   /*
-    =========================
     FINANCIAL DASHBOARD
-    =========================
   */
   @Get('financial')
   financial(@CurrentUser() user: JwtUser) {
@@ -27,9 +25,7 @@ export class DashboardController {
   }
 
   /*
-    =========================
     VEHICLES DASHBOARD
-    =========================
   */
   @Get('vehicles')
   vehicles(@CurrentUser() user: JwtUser) {

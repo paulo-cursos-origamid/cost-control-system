@@ -9,13 +9,13 @@ export class DashboardService {
   constructor(private readonly prisma: PrismaService) {}
 
   /*
-    =========================
-    FINANCIAL DASHBOARD
-    =========================
+    =====================================
+    DASHBOARD FINANCEIRO
+    =====================================
   */
   async financial(userId: string) {
     /*
-      INCOMES
+      ENTRADAS
     */
     const incomes = await this.prisma.transaction.aggregate({
       where: {
@@ -29,7 +29,7 @@ export class DashboardService {
     });
 
     /*
-      EXPENSES
+      SAÍDAS
     */
     const expenses = await this.prisma.transaction.aggregate({
       where: {
@@ -43,25 +43,29 @@ export class DashboardService {
     });
 
     /*
-      ACCOUNTS
+      CONTAS
     */
     const accounts = await this.prisma.account.findMany({
       where: {
         userId,
       },
+
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
 
     /*
-      RECENT TRANSACTIONS
+      ÚLTIMAS TRANSAÇÕES
     */
-    const recentTransactions = await this.prisma.transaction.findMany({
+    const latestTransactions = await this.prisma.transaction.findMany({
       where: {
         userId,
       },
 
       include: {
-        account: true,
         category: true,
+        account: true,
       },
 
       orderBy: {
@@ -71,55 +75,31 @@ export class DashboardService {
       take: 10,
     });
 
-    /*
-      EXPENSES BY CATEGORY
-    */
-    const expensesByCategory = await this.prisma.transaction.groupBy({
-      by: ['categoryId'],
-
-      where: {
-        userId,
-        type: TransactionType.EXPENSE,
-      },
-
-      _sum: {
-        amount: true,
-      },
-    });
-
     const income = incomes._sum.amount ?? 0;
 
     const expense = expenses._sum.amount ?? 0;
-
-    const accountsBalance = accounts.reduce(
-      (acc, account) => acc + account.balance,
-      0,
-    );
 
     return {
       summary: {
         income,
         expense,
         balance: income - expense,
-        accountsBalance,
       },
 
       accounts,
 
-      recentTransactions,
-
-      expensesByCategory,
+      latestTransactions,
     };
   }
 
   /*
-    =========================
-    VEHICLES DASHBOARD
-    =========================
+    =====================================
+    DASHBOARD AUTOMOTIVO
+    =====================================
   */
   async vehicles(userId: string) {
     /*
-      VEHICLES
+      VEÍCULOS
     */
     const vehicles = await this.prisma.vehicle.findMany({
       where: {
@@ -127,15 +107,28 @@ export class DashboardService {
       },
 
       include: {
-        fuelSupplies: true,
-        maintenances: true,
+        fuelSupplies: {
+          orderBy: {
+            createdAt: 'desc',
+          },
+
+          take: 5,
+        },
+
+        maintenances: {
+          orderBy: {
+            createdAt: 'desc',
+          },
+
+          take: 5,
+        },
       },
     });
 
     /*
-      TOTAL FUEL COST
+      TOTAL GASTO COM ABASTECIMENTO
     */
-    const fuelCost = await this.prisma.fuelSupply.aggregate({
+    const fuelExpenses = await this.prisma.fuelSupply.aggregate({
       where: {
         vehicle: {
           userId,
@@ -148,9 +141,9 @@ export class DashboardService {
     });
 
     /*
-      TOTAL MAINTENANCE COST
+      TOTAL GASTO COM MANUTENÇÃO
     */
-    const maintenanceCost = await this.prisma.maintenance.aggregate({
+    const maintenanceExpenses = await this.prisma.maintenance.aggregate({
       where: {
         vehicle: {
           userId,
@@ -166,12 +159,13 @@ export class DashboardService {
       vehicles,
 
       costs: {
-        fuel: fuelCost._sum.totalAmount ?? 0,
+        fuel: fuelExpenses._sum.totalAmount ?? 0,
 
-        maintenance: maintenanceCost._sum.cost ?? 0,
+        maintenance: maintenanceExpenses._sum.cost ?? 0,
 
         total:
-          (fuelCost._sum.totalAmount ?? 0) + (maintenanceCost._sum.cost ?? 0),
+          (fuelExpenses._sum.totalAmount ?? 0) +
+          (maintenanceExpenses._sum.cost ?? 0),
       },
     };
   }
