@@ -12,7 +12,7 @@ import { TransactionType } from '@prisma/client';
 
 export class CreateTransactionDto {
   @IsString()
-  title: string;
+  title!: string;
 
   @IsOptional()
   @IsString()
@@ -20,17 +20,17 @@ export class CreateTransactionDto {
 
   @IsNumber()
   @Min(0.01)
-  amount: number;
+  amount!: number;
 
   @IsEnum(TransactionType)
-  type: TransactionType;
+  type!: TransactionType;
 
   @IsDateString()
-  date: string;
+  date!: string;
 
   @IsUUID()
-  accountId: string;
+  accountId!: string;
 
   @IsUUID()
-  categoryId: string;
+  categoryId!: string;
 }

@@ -14,6 +14,12 @@ export class CreateMaintenanceDto {
   @IsUUID()
   vehicleId!: string;
 
+  @IsUUID()
+  accountId!: string;
+
+  @IsUUID()
+  categoryId!: string;
+
   @IsEnum(MaintenanceType)
   type!: MaintenanceType;
 

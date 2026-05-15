@@ -27,7 +27,7 @@ model Account {
 
   name String
 
-  type AccountType
+  type AccountType @default(CHECKING)
 
   balance Float @default(0)
 
@@ -228,6 +228,7 @@ enum MaintenanceType {
   BATTERY
   OTHER
 }
+
 enum AccountType {
   CASH
   CHECKING
