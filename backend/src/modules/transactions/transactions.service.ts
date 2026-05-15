@@ -4,12 +4,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
-import { TransactionType } from '@prisma/client';
+import { Prisma, TransactionType } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
 
 import { CreateTransactionDto } from './dto/create-transaction.dto';
-import { TransactionQueryDto } from './dto/transaction-query.dto';
+import { FindTransactionsDto } from './dto/find-transactions.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 
 @Injectable()
@@ -17,7 +17,9 @@ export class TransactionsService {
   constructor(private readonly prisma: PrismaService) {}
 
   /*
+    =====================================
     CREATE
+    =====================================
   */
   async create(userId: string, dto: CreateTransactionDto) {
     /*
@@ -40,10 +42,12 @@ export class TransactionsService {
     const category = await this.prisma.category.findFirst({
       where: {
         id: dto.categoryId,
+
         OR: [
           {
             userId,
           },
+
           {
             isDefault: true,
           },
@@ -65,107 +69,149 @@ export class TransactionsService {
     }
 
     /*
-      CREATE TRANSACTION
+      DATABASE TRANSACTION
     */
-    const transaction = await this.prisma.transaction.create({
-      data: {
-        title: dto.title,
-        amount: dto.amount,
-        type: dto.type,
-        date: new Date(dto.date),
-        userId,
-        accountId: dto.accountId,
-        categoryId: dto.categoryId,
-      },
+    return this.prisma.$transaction(async (tx) => {
+      /*
+        CREATE TRANSACTION
+      */
+      const transaction = await tx.transaction.create({
+        data: {
+          title: dto.title,
+          description: dto.description,
+          amount: dto.amount,
+          type: dto.type,
+          date: new Date(dto.date),
 
-      include: {
-        account: true,
-        category: true,
-      },
+          userId,
+
+          accountId: dto.accountId,
+
+          categoryId: dto.categoryId,
+        },
+
+        include: {
+          account: true,
+          category: true,
+        },
+      });
+
+      /*
+        UPDATE ACCOUNT BALANCE
+      */
+      const balanceChange =
+        dto.type === TransactionType.INCOME ? dto.amount : -dto.amount;
+
+      await tx.account.update({
+        where: {
+          id: dto.accountId,
+        },
+
+        data: {
+          balance: {
+            increment: balanceChange,
+          },
+        },
+      });
+
+      return transaction;
     });
+  }
+
+  /*
+    =====================================
+    FIND ALL
+    =====================================
+  */
+  async findAll(userId: string, filters: FindTransactionsDto) {
+    const page = Number(filters.page ?? 1);
+
+    const limit = Number(filters.limit ?? 10);
+
+    const skip = (page - 1) * limit;
+
+    const where: Prisma.TransactionWhereInput = {
+      userId,
+    };
 
     /*
-      UPDATE ACCOUNT BALANCE
+      FILTER TYPE
     */
-    if (dto.type === TransactionType.INCOME) {
-      await this.prisma.account.update({
-        where: {
-          id: dto.accountId,
-        },
-
-        data: {
-          balance: {
-            increment: dto.amount,
-          },
-        },
-      });
+    if (filters.type) {
+      where.type = filters.type;
     }
 
-    if (dto.type === TransactionType.EXPENSE) {
-      await this.prisma.account.update({
-        where: {
-          id: dto.accountId,
-        },
-
-        data: {
-          balance: {
-            decrement: dto.amount,
-          },
-        },
-      });
+    /*
+      FILTER ACCOUNT
+    */
+    if (filters.accountId) {
+      where.accountId = filters.accountId;
     }
 
-    return transaction;
+    /*
+      FILTER CATEGORY
+    */
+    if (filters.categoryId) {
+      where.categoryId = filters.categoryId;
+    }
+
+    /*
+      FILTER DATE
+    */
+    if (filters.startDate || filters.endDate) {
+      where.date = {};
+
+      if (filters.startDate) {
+        where.date.gte = new Date(filters.startDate);
+      }
+
+      if (filters.endDate) {
+        where.date.lte = new Date(filters.endDate);
+      }
+    }
+
+    /*
+      QUERY
+    */
+    const [transactions, total] = await Promise.all([
+      this.prisma.transaction.findMany({
+        where,
+
+        include: {
+          account: true,
+          category: true,
+        },
+
+        orderBy: {
+          date: 'desc',
+        },
+
+        skip,
+
+        take: limit,
+      }),
+
+      this.prisma.transaction.count({
+        where,
+      }),
+    ]);
+
+    return {
+      data: transactions,
+
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 
   /*
-    FIND ALL
-  */
-  async findAll(userId: string, query: TransactionQueryDto) {
-    const page = Number(query.page ?? 1);
-    const limit = Number(query.limit ?? 10);
-
-    return this.prisma.transaction.findMany({
-      where: {
-        userId,
-
-        ...(query.type && {
-          type: query.type,
-        }),
-
-        ...(query.accountId && {
-          accountId: query.accountId,
-        }),
-
-        ...(query.categoryId && {
-          categoryId: query.categoryId,
-        }),
-
-        ...(query.startDate &&
-          query.endDate && {
-            date: {
-              gte: new Date(query.startDate),
-              lte: new Date(query.endDate),
-            },
-          }),
-      },
-
-      include: {
-        account: true,
-        category: true,
-      },
-
-      orderBy: {
-        date: 'desc',
-      },
-
-      skip: (page - 1) * limit,
-      take: limit,
-    });
-  }
-
-  /*
+    =====================================
     FIND ONE
+    =====================================
   */
   async findOne(id: string, userId: string) {
     const transaction = await this.prisma.transaction.findFirst({
@@ -188,150 +234,180 @@ export class TransactionsService {
   }
 
   /*
+    =====================================
     UPDATE
+    =====================================
   */
   async update(id: string, userId: string, dto: UpdateTransactionDto) {
     const oldTransaction = await this.findOne(id, userId);
 
     /*
-      ROLLBACK OLD BALANCE
+      VALIDATE NEW ACCOUNT
     */
-    if (oldTransaction.type === TransactionType.INCOME) {
-      await this.prisma.account.update({
+    if (dto.accountId) {
+      const account = await this.prisma.account.findFirst({
+        where: {
+          id: dto.accountId,
+          userId,
+        },
+      });
+
+      if (!account) {
+        throw new NotFoundException('Account not found');
+      }
+    }
+
+    /*
+      VALIDATE NEW CATEGORY
+    */
+    if (dto.categoryId) {
+      const category = await this.prisma.category.findFirst({
+        where: {
+          id: dto.categoryId,
+
+          OR: [
+            {
+              userId,
+            },
+
+            {
+              isDefault: true,
+            },
+          ],
+        },
+      });
+
+      if (!category) {
+        throw new NotFoundException('Category not found');
+      }
+
+      const transactionType = dto.type ?? oldTransaction.type;
+
+      if (category.type !== transactionType) {
+        throw new BadRequestException(
+          'Transaction type differs from category type',
+        );
+      }
+    }
+
+    return this.prisma.$transaction(async (tx) => {
+      /*
+        REMOVE OLD BALANCE IMPACT
+      */
+      const reverseOldImpact =
+        oldTransaction.type === TransactionType.INCOME
+          ? -oldTransaction.amount
+          : oldTransaction.amount;
+
+      await tx.account.update({
         where: {
           id: oldTransaction.accountId,
         },
 
         data: {
           balance: {
-            decrement: oldTransaction.amount,
+            increment: reverseOldImpact,
           },
         },
       });
-    }
 
-    if (oldTransaction.type === TransactionType.EXPENSE) {
-      await this.prisma.account.update({
-        where: {
-          id: oldTransaction.accountId,
-        },
+      /*
+        NEW VALUES
+      */
+      const newType = dto.type ?? oldTransaction.type;
 
-        data: {
-          balance: {
-            increment: oldTransaction.amount,
-          },
-        },
-      });
-    }
+      const newAmount = dto.amount ?? oldTransaction.amount;
 
-    /*
-      APPLY NEW BALANCE
-    */
-    const newType = dto.type ?? oldTransaction.type;
+      const newAccountId = dto.accountId ?? oldTransaction.accountId;
 
-    const newAmount = dto.amount ?? oldTransaction.amount;
+      /*
+        APPLY NEW BALANCE IMPACT
+      */
+      const newImpact =
+        newType === TransactionType.INCOME ? newAmount : -newAmount;
 
-    const newAccountId = dto.accountId ?? oldTransaction.accountId;
-
-    if (newType === TransactionType.INCOME) {
-      await this.prisma.account.update({
+      await tx.account.update({
         where: {
           id: newAccountId,
         },
 
         data: {
           balance: {
-            increment: newAmount,
+            increment: newImpact,
           },
         },
       });
-    }
 
-    if (newType === TransactionType.EXPENSE) {
-      await this.prisma.account.update({
+      /*
+        UPDATE TRANSACTION
+      */
+      return tx.transaction.update({
         where: {
-          id: newAccountId,
+          id,
         },
 
         data: {
-          balance: {
-            decrement: newAmount,
-          },
+          ...dto,
+
+          date: dto.date ? new Date(dto.date) : undefined,
+        },
+
+        include: {
+          account: true,
+          category: true,
         },
       });
-    }
-
-    /*
-      UPDATE TRANSACTION
-    */
-    return this.prisma.transaction.update({
-      where: {
-        id,
-      },
-
-      data: {
-        ...dto,
-
-        date: dto.date ? new Date(dto.date) : undefined,
-      },
-
-      include: {
-        account: true,
-        category: true,
-      },
     });
   }
 
   /*
+    =====================================
     REMOVE
+    =====================================
   */
   async remove(id: string, userId: string) {
     const transaction = await this.findOne(id, userId);
 
-    /*
-      ROLLBACK BALANCE
-    */
-    if (transaction.type === TransactionType.INCOME) {
-      await this.prisma.account.update({
+    return this.prisma.$transaction(async (tx) => {
+      /*
+        ROLLBACK ACCOUNT BALANCE
+      */
+      const reverseImpact =
+        transaction.type === TransactionType.INCOME
+          ? -transaction.amount
+          : transaction.amount;
+
+      await tx.account.update({
         where: {
           id: transaction.accountId,
         },
 
         data: {
           balance: {
-            decrement: transaction.amount,
+            increment: reverseImpact,
           },
         },
       });
-    }
 
-    if (transaction.type === TransactionType.EXPENSE) {
-      await this.prisma.account.update({
+      /*
+        DELETE TRANSACTION
+      */
+      await tx.transaction.delete({
         where: {
-          id: transaction.accountId,
-        },
-
-        data: {
-          balance: {
-            increment: transaction.amount,
-          },
+          id,
         },
       });
-    }
 
-    await this.prisma.transaction.delete({
-      where: {
-        id,
-      },
+      return {
+        message: 'Transaction deleted successfully',
+      };
     });
-
-    return {
-      message: 'Transaction deleted successfully',
-    };
   }
 
   /*
+    =====================================
     SUMMARY
+    =====================================
   */
   async summary(userId: string) {
     const incomes = await this.prisma.transaction.aggregate({
