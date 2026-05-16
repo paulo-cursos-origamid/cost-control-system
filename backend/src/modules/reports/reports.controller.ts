@@ -11,7 +11,7 @@ import { FinancialReportDto } from './dto/financial-report.dto';
 import { VehicleReportDto } from './dto/vehicle-report.dto';
 
 import { ReportsService } from './reports.service';
-
+import { FinancialAnalyticsDto } from './dto/financial-analytics.dto';
 @ApiTags('Reports')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
@@ -43,5 +43,53 @@ export class ReportsController {
     @Query() query: VehicleReportDto,
   ) {
     return this.reportsService.vehiclesSummary(user.sub, query);
+  }
+
+  /*
+  =========================
+  FINANCIAL ANALYTICS
+  =========================
+*/
+  @Get('financial/analytics')
+  financialAnalytics(
+    @CurrentUser() user: JwtUser,
+    @Query() query: FinancialAnalyticsDto,
+  ) {
+    return this.reportsService.financialAnalytics(user.sub, query);
+  }
+  /*
+  =========================
+  FINANCIAL CATEGORIES
+  =========================
+*/
+  @Get('financial/categories')
+  financialCategories(
+    @CurrentUser() user: JwtUser,
+    @Query() query: FinancialReportDto,
+  ) {
+    return this.reportsService.financialCategories(user.sub, query);
+  }
+
+  /*
+  =========================
+  VEHICLES ANALYTICS
+  =========================
+*/
+  @Get('vehicles/analytics')
+  vehiclesAnalytics(
+    @CurrentUser() user: JwtUser,
+    @Query() query: VehicleReportDto,
+  ) {
+    return this.reportsService.vehiclesAnalytics(user.sub, query);
+  }
+
+  /*
+  =========================
+  KPIS
+  =========================
+*/
+  @Get('kpis')
+  kpis(@CurrentUser() user: JwtUser) {
+    return this.reportsService.kpis(user.sub);
   }
 }
