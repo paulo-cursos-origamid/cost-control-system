@@ -1,7 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { PrismaService } from '@/database/prisma.service';
 
@@ -10,18 +7,14 @@ import { UpdateAccountDto } from './dto/update-account.dto';
 
 @Injectable()
 export class AccountsService {
-  constructor(
-    private readonly prisma: PrismaService,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
-  async create(
-    userId: string,
-    dto: CreateAccountDto,
-  ) {
+  async create(userId: string, dto: CreateAccountDto) {
     return this.prisma.account.create({
       data: {
         ...dto,
         balance: dto.balance ?? 0,
+        type: dto.type,
         userId,
       },
     });
@@ -39,28 +32,21 @@ export class AccountsService {
   }
 
   async findOne(id: string, userId: string) {
-    const account =
-      await this.prisma.account.findFirst({
-        where: {
-          id,
-          userId,
-        },
-      });
+    const account = await this.prisma.account.findFirst({
+      where: {
+        id,
+        userId,
+      },
+    });
 
     if (!account) {
-      throw new NotFoundException(
-        'Account not found',
-      );
+      throw new NotFoundException('Account not found');
     }
 
     return account;
   }
 
-  async update(
-    id: string,
-    userId: string,
-    dto: UpdateAccountDto,
-  ) {
+  async update(id: string, userId: string, dto: UpdateAccountDto) {
     await this.findOne(id, userId);
 
     return this.prisma.account.update({

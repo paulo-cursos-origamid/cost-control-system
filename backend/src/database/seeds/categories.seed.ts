@@ -1,23 +1,19 @@
-import { PrismaClient, CategoryType } from '@prisma/client';
+import { CategoryType, PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-async function main() {
-  const user = await prisma.user.findFirst();
-
-  if (!user) {
-    console.log('❌ Nenhum usuário encontrado.');
-    return;
-  }
+export async function seedCategories(userId: string) {
+  console.log('📂 Seeding categories...');
 
   const categories = [
-    // RECEITAS
+    // INCOME
     {
       name: 'Salário',
       slug: 'salario',
       description: 'Recebimento salarial',
       type: CategoryType.INCOME,
     },
+
     {
       name: 'Freelance',
       slug: 'freelance',
@@ -25,13 +21,14 @@ async function main() {
       type: CategoryType.INCOME,
     },
 
-    // DESPESAS
+    // EXPENSE
     {
       name: 'Alimentação',
       slug: 'alimentacao',
       description: 'Mercado e restaurantes',
       type: CategoryType.EXPENSE,
     },
+
     {
       name: 'Moradia',
       slug: 'moradia',
@@ -39,14 +36,15 @@ async function main() {
       type: CategoryType.EXPENSE,
     },
 
-    // VEÍCULOS
+    // VEHICLE
     {
       name: 'Abastecimento',
       slug: 'abastecimento',
-      description: 'Combustível do veículo',
+      description: 'Combustível',
       type: CategoryType.EXPENSE,
       isVehicleCategory: true,
     },
+
     {
       name: 'Manutenção Mecânica',
       slug: 'manutencao-mecanica',
@@ -54,6 +52,7 @@ async function main() {
       type: CategoryType.EXPENSE,
       isVehicleCategory: true,
     },
+
     {
       name: 'Borracharia',
       slug: 'borracharia',
@@ -67,7 +66,7 @@ async function main() {
     const exists = await prisma.category.findFirst({
       where: {
         slug: category.slug,
-        userId: user.id,
+        userId,
       },
     });
 
@@ -75,22 +74,17 @@ async function main() {
       await prisma.category.create({
         data: {
           ...category,
-          userId: user.id,
+          userId,
         },
       });
 
-      console.log(`✅ Categoria criada: ${category.name}`);
+      console.log(`✔ Category created: ${category.name}`);
     }
   }
 
-  console.log('🚀 Seed finalizado.');
-}
-
-main()
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
+  return prisma.category.findMany({
+    where: {
+      userId,
+    },
   });
+}

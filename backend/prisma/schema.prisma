@@ -27,7 +27,7 @@ model Account {
 
   name String
 
-  type AccountType
+  type AccountType @default(CHECKING)
 
   balance Float @default(0)
 
@@ -176,11 +176,12 @@ model Maintenance {
 }
 
 model Transaction {
-  id     String          @id @default(uuid())
-  title  String
-  amount Float
-  type   TransactionType
-  date   DateTime
+  id         String          @id @default(uuid())
+  title      String
+  description String?
+  amount     Float
+  type       TransactionType
+  date       DateTime
 
   userId     String
   accountId  String
@@ -194,6 +195,12 @@ model Transaction {
   maintenance Maintenance?
 
   createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([accountId])
+  @@index([categoryId])
+  @@index([type])
+  @@index([date])
 }
 
 enum TransactionType {
@@ -228,6 +235,7 @@ enum MaintenanceType {
   BATTERY
   OTHER
 }
+
 enum AccountType {
   CASH
   CHECKING

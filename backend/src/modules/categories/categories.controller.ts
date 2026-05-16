@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
@@ -24,9 +17,7 @@ import { JwtUser } from '@/shared/interfaces/jwt-user.interface';
 @UseGuards(JwtAuthGuard)
 @Controller('categories')
 export class CategoriesController {
-  constructor(
-    private readonly categoriesService: CategoriesService,
-  ) {}
+  constructor(private readonly categoriesService: CategoriesService) {}
 
   @Post()
   create(
@@ -34,10 +25,7 @@ export class CategoriesController {
 
     @CurrentUser() user: JwtUser,
   ) {
-    return this.categoriesService.create(
-      createCategoryDto,
-      user.sub,
-    );
+    return this.categoriesService.create(createCategoryDto, user.sub);
   }
 
   @Get()
@@ -51,9 +39,6 @@ export class CategoriesController {
 
     @CurrentUser() user: JwtUser,
   ) {
-    return this.categoriesService.findOne(
-      id,
-      user.sub,
-    );
+    return this.categoriesService.findOne(id, user.sub);
   }
 }
