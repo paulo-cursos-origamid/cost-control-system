@@ -16,6 +16,7 @@ import { VehiclesModule } from './modules/vehicles/vehicles.module';
 import { FuelSuppliesModule } from './modules/fuel-supplies/fuel-supplies.module';
 import { MaintenancesModule } from './modules/maintenances/maintenances.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { ReportsModule } from './modules/reports/reports.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
     FuelSuppliesModule,
     MaintenancesModule,
     DashboardModule,
+    ReportsModule,
   ],
 
   controllers: [AppController],
