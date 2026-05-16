@@ -5,9 +5,11 @@ const prisma = new PrismaClient();
 export async function seedUsers() {
   console.log('👤 Seeding users...');
 
-  const exists = await prisma.user.findFirst({
+  const email = 'admin@email.com';
+
+  const exists = await prisma.user.findUnique({
     where: {
-      email: 'admin@test.com',
+      email,
     },
   });
 
@@ -20,12 +22,12 @@ export async function seedUsers() {
   const user = await prisma.user.create({
     data: {
       name: 'Admin',
-      email: 'admin@email.com',
-      password: '123456',
+      email,
+      password: '$2b$10$jFPBnGLQyDp7iMVh0g3RX.dYwZAOCTk00QL2At7tHuC5BsCKRG8nK',
     },
   });
 
-  console.log('✔ User created');
+  console.log('✅ User created');
 
   return user;
 }

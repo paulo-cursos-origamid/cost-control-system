@@ -19,7 +19,7 @@ services:
       - cost-network
 
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d cost_db"]
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -67,7 +67,7 @@ volumes:
 networks:
   cost-network:
     driver: bridge
-
+    
 # services:
 #   postgres:
 #     image: postgres:15-alpine
