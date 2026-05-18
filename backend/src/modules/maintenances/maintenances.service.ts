@@ -14,6 +14,9 @@ export class MaintenancesService {
   async create(userId: string, dto: CreateMaintenanceDto) {
     this.logger.log(`Creating maintenance for user ${userId}`);
 
+    /*
+      VALIDA VEÍCULO
+    */
     const vehicle = await this.prisma.vehicle.findFirst({
       where: {
         id: dto.vehicleId,
@@ -25,23 +28,99 @@ export class MaintenancesService {
       throw new NotFoundException('Vehicle not found');
     }
 
-    const maintenance = await this.prisma.maintenance.create({
-      data: {
-        vehicleId: dto.vehicleId,
-        type: dto.type,
-        description: dto.description,
-        cost: dto.cost,
-        odometer: dto.odometer,
-        workshop: dto.workshop,
-        performedAt: dto.performedAt ? new Date(dto.performedAt) : new Date(),
-        nextMaintenanceAt: dto.nextMaintenanceAt
-          ? new Date(dto.nextMaintenanceAt)
-          : undefined,
-        nextMaintenanceKm: dto.nextMaintenanceKm,
+    /*
+      VALIDA CONTA
+    */
+    const account = await this.prisma.account.findFirst({
+      where: {
+        id: dto.accountId,
+        userId,
       },
     });
 
-    this.logger.log(`Maintenance created: ${maintenance.id}`);
+    if (!account) {
+      throw new NotFoundException('Account not found');
+    }
+
+    /*
+      VALIDA CATEGORIA
+    */
+    const category = await this.prisma.category.findFirst({
+      where: {
+        id: dto.categoryId,
+        userId,
+      },
+    });
+
+    if (!category) {
+      throw new NotFoundException('Category not found');
+    }
+
+    /*
+      CRIA TRANSACTION
+    */
+    const transaction = await this.prisma.transaction.create({
+      data: {
+        title: `Maintenance - ${dto.description}`,
+        amount: dto.cost,
+        type: 'EXPENSE',
+        date: dto.performedAt ? new Date(dto.performedAt) : new Date(),
+
+        userId,
+        accountId: dto.accountId,
+        categoryId: dto.categoryId,
+      },
+    });
+
+    this.logger.log(`Transaction created => ${transaction.id}`);
+
+    /*
+      CRIA MANUTENÇÃO
+    */
+    const maintenance = await this.prisma.maintenance.create({
+      data: {
+        vehicleId: dto.vehicleId,
+        transactionId: transaction.id,
+
+        type: dto.type,
+        description: dto.description,
+        cost: dto.cost,
+
+        odometer: dto.odometer,
+
+        workshop: dto.workshop,
+
+        performedAt: dto.performedAt ? new Date(dto.performedAt) : new Date(),
+
+        nextMaintenanceAt: dto.nextMaintenanceAt
+          ? new Date(dto.nextMaintenanceAt)
+          : undefined,
+
+        nextMaintenanceKm: dto.nextMaintenanceKm,
+      },
+
+      include: {
+        vehicle: true,
+        transaction: true,
+      },
+    });
+
+    /*
+      ATUALIZA KM DO VEÍCULO
+    */
+    if (dto.odometer && dto.odometer > vehicle.currentKm) {
+      await this.prisma.vehicle.update({
+        where: {
+          id: vehicle.id,
+        },
+
+        data: {
+          currentKm: dto.odometer,
+        },
+      });
+    }
+
+    this.logger.log(`Maintenance created => ${maintenance.id}`);
 
     return maintenance;
   }
@@ -53,9 +132,12 @@ export class MaintenancesService {
           userId,
         },
       },
+
       include: {
         vehicle: true,
+        transaction: true,
       },
+
       orderBy: {
         createdAt: 'desc',
       },
@@ -66,12 +148,15 @@ export class MaintenancesService {
     const maintenance = await this.prisma.maintenance.findFirst({
       where: {
         id,
+
         vehicle: {
           userId,
         },
       },
+
       include: {
         vehicle: true,
+        transaction: true,
       },
     });
 
@@ -89,9 +174,12 @@ export class MaintenancesService {
       where: {
         id,
       },
+
       data: {
         ...dto,
+
         performedAt: dto.performedAt ? new Date(dto.performedAt) : undefined,
+
         nextMaintenanceAt: dto.nextMaintenanceAt
           ? new Date(dto.nextMaintenanceAt)
           : undefined,
@@ -100,7 +188,18 @@ export class MaintenancesService {
   }
 
   async remove(id: string, userId: string) {
-    await this.findOne(id, userId);
+    const maintenance = await this.findOne(id, userId);
+
+    /*
+      REMOVE TRANSACTION
+    */
+    if (maintenance.transactionId) {
+      await this.prisma.transaction.delete({
+        where: {
+          id: maintenance.transactionId,
+        },
+      });
+    }
 
     await this.prisma.maintenance.delete({
       where: {
