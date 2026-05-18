@@ -17,6 +17,7 @@ model User {
   categories   Category[]
   transactions Transaction[]
   vehicles     Vehicle[]
+  transfers    Transfer[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -42,8 +43,12 @@ model Account {
 
   transactions Transaction[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  sentTransfers Transfer[] @relation("TransferFromAccount")
+
+  receivedTransfers Transfer[] @relation("TransferToAccount")
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 }
 
@@ -177,12 +182,12 @@ model Maintenance {
 }
 
 model Transaction {
-  id         String          @id @default(uuid())
-  title      String
+  id          String          @id @default(uuid())
+  title       String
   description String?
-  amount     Float
-  type       TransactionType
-  date       DateTime
+  amount      Float
+  type        TransactionType
+  date        DateTime
 
   userId     String
   accountId  String
@@ -195,8 +200,8 @@ model Transaction {
   fuelSupply  FuelSupply?
   maintenance Maintenance?
 
-  createdAt DateTime @default(now())
-  updatedAt   DateTime          @updatedAt @default(now())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
   deletedAt DateTime?
 
   @@index([userId])
@@ -204,6 +209,31 @@ model Transaction {
   @@index([categoryId])
   @@index([type])
   @@index([date])
+}
+
+model Transfer {
+  id String @id @default(uuid())
+
+  amount Float
+
+  description String?
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  fromAccountId String
+  toAccountId   String
+
+  fromAccount Account @relation("TransferFromAccount", fields: [fromAccountId], references: [id])
+
+  toAccount Account @relation("TransferToAccount", fields: [toAccountId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([fromAccountId])
+  @@index([toAccountId])
 }
 
 enum TransactionType {
