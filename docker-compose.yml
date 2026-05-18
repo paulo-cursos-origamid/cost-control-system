@@ -1,0 +1,114 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: cost_postgres
+    restart: always
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: cost_db
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    networks:
+      - cost-network
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+
+    container_name: cost_backend
+
+    restart: always
+
+    working_dir: /app
+
+    ports:
+      - "3000:3000"
+      - "5555:5555"
+
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/cost_db
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    networks:
+      - cost-network
+
+    command: >
+      sh -c "
+      npx prisma generate &&
+      npx prisma migrate deploy &&
+      npx prisma db seed &&
+      npm run start:dev
+      "
+
+volumes:
+  postgres_data:
+
+networks:
+  cost-network:
+    driver: bridge
+    
+# services:
+#   postgres:
+#     image: postgres:15-alpine
+#     container_name: cost_postgres
+#     restart: always
+#     environment:
+#       POSTGRES_USER: postgres
+#       POSTGRES_PASSWORD: postgres
+#       POSTGRES_DB: cost_db
+#     ports:
+#       - "5432:5432"
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data
+#     networks:
+#       - cost-network
+
+#   backend:
+#     build:
+#       context: ./backend
+#       dockerfile: Dockerfile
+#     container_name: cost_backend
+#     restart: always
+#     working_dir: /app
+#     ports:
+#       - "3000:3000"
+#       - "5555:5555"
+#     volumes:
+#       - ./backend:/app
+#       - /app/node_modules
+#     environment:
+#       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/cost_db
+#     depends_on:
+#       - postgres
+#     networks:
+#       - cost-network
+#     command: sh -c "npx prisma generate && npx prisma migrate deploy && npm run start:dev"
+#     # command: sh -c "npx prisma generate && npx prisma migrate dev && npm run start:dev"
+
+# volumes:
+#   postgres_data:
+
+# networks:
+#   cost-network:
+#     driver: bridge

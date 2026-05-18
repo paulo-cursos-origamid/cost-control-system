@@ -1,0 +1,29 @@
+# Node
+node_modules
+npm-debug.log
+
+# Build
+dist
+.next
+
+# Env
+.env
+.env.*
+
+# Logs
+logs
+*.log
+
+# OS
+.DS_Store
+
+# Docker
+docker-data
+postgres-data
+
+# Prisma
+prisma/migrations
+
+# IDE
+.vscode
+.idea
