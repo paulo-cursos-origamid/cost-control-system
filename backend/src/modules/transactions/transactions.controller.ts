@@ -93,4 +93,14 @@ export class TransactionsController {
   remove(@Param('id') id: string, @CurrentUser() user: JwtUser) {
     return this.transactionsService.remove(id, user.sub);
   }
+
+  /*
+    =========================
+    DELETE
+    =========================
+  */
+  @Patch(':id/restore')
+  restore(@Param('id') id: string, @CurrentUser() user: JwtUser) {
+    return this.transactionsService.restore(id, user.sub);
+  }
 }

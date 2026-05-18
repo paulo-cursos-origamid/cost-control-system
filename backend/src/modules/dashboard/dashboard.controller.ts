@@ -31,4 +31,19 @@ export class DashboardController {
   vehicles(@CurrentUser() user: JwtUser) {
     return this.dashboardService.vehicles(user.sub);
   }
+  /*
+  CARDS DASHBOARD
+  */
+  @Get('cards')
+  cards(@CurrentUser() user: JwtUser) {
+    return this.dashboardService.cards(user.sub);
+  }
+
+  /*
+  CASHFLOWS DASHBOARD
+  */
+  @Get('cashflow')
+  cashflow(@CurrentUser() user: JwtUser) {
+    return this.dashboardService.cashflow(user.sub);
+  }
 }

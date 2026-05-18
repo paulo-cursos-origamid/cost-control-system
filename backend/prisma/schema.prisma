@@ -44,6 +44,7 @@ model Account {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  deletedAt DateTime?
 }
 
 model Category {
@@ -195,6 +196,8 @@ model Transaction {
   maintenance Maintenance?
 
   createdAt DateTime @default(now())
+  updatedAt   DateTime          @updatedAt @default(now())
+  deletedAt DateTime?
 
   @@index([userId])
   @@index([accountId])

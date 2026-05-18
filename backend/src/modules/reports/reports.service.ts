@@ -22,6 +22,7 @@ export class ReportsService {
     */
     const where: Prisma.TransactionWhereInput = {
       userId,
+      deletedAt: null,
     };
 
     /*
@@ -119,24 +120,17 @@ export class ReportsService {
 
       take: 5,
     });
-
-    /*
-      CATEGORY DETAILS
-    */
-    const topCategories = await Promise.all(
-      groupedCategories.map(async (category) => {
-        const categoryData = await this.prisma.category.findUnique({
+    const formattedTopCategories = await Promise.all(
+      groupedCategories.map(async (item) => {
+        const category = await this.prisma.category.findUnique({
           where: {
-            id: category.categoryId,
+            id: item.categoryId,
           },
         });
 
         return {
-          categoryId: category.categoryId,
-
-          category: categoryData?.name,
-
-          total: category._sum.amount ?? 0,
+          category,
+          total: item._sum.amount ?? 0,
         };
       }),
     );
@@ -237,7 +231,7 @@ export class ReportsService {
         averageExpense: expenses._avg.amount ?? 0,
       },
 
-      topCategories,
+      topCategories: formattedTopCategories,
 
       monthlyEvolution,
 
@@ -323,6 +317,7 @@ export class ReportsService {
   async financialAnalytics(userId: string, query: FinancialAnalyticsDto) {
     const where = {
       userId,
+      deletedAt: null,
 
       ...(query.accountId && {
         accountId: query.accountId,
@@ -407,6 +402,7 @@ export class ReportsService {
   */
     const where: Prisma.TransactionWhereInput = {
       userId,
+      deletedAt: null,
     };
 
     /*
@@ -573,6 +569,7 @@ export class ReportsService {
     const accounts = await this.prisma.account.count({
       where: {
         userId,
+        deletedAt: null,
       },
     });
 
@@ -600,6 +597,7 @@ export class ReportsService {
     const incomes = await this.prisma.transaction.aggregate({
       where: {
         userId,
+        deletedAt: null,
         type: TransactionType.INCOME,
       },
 
@@ -614,6 +612,7 @@ export class ReportsService {
     const expenses = await this.prisma.transaction.aggregate({
       where: {
         userId,
+        deletedAt: null,
         type: TransactionType.EXPENSE,
       },
 
@@ -658,6 +657,7 @@ export class ReportsService {
     const biggestExpense = await this.prisma.transaction.findFirst({
       where: {
         userId,
+        deletedAt: null,
         type: TransactionType.EXPENSE,
       },
 
@@ -672,6 +672,7 @@ export class ReportsService {
     const biggestIncome = await this.prisma.transaction.findFirst({
       where: {
         userId,
+        deletedAt: null,
         type: TransactionType.INCOME,
       },
 

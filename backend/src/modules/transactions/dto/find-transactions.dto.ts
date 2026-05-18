@@ -1,4 +1,6 @@
 import {
+  IsNumberString,
+  IsString,
   IsDateString,
   IsEnum,
   IsOptional,
@@ -8,11 +10,11 @@ import {
 import { Type } from 'class-transformer';
 
 import { TransactionType } from '@prisma/client';
+import { PaginationDto } from '@/common/dto/pagination.dto';
 
-export class FindTransactionsDto {
+export class FindTransactionsDto extends PaginationDto {
   @IsOptional()
   @Type(() => Number)
-  
   page?: number;
 
   @IsOptional()
@@ -38,4 +40,24 @@ export class FindTransactionsDto {
   @IsOptional()
   @IsDateString()
   endDate?: string;
+
+  @IsOptional()
+  @IsString()
+  search?: string;
+
+  @IsOptional()
+  @IsNumberString()
+  minAmount?: string;
+
+  @IsOptional()
+  @IsNumberString()
+  maxAmount?: string;
+
+  @IsOptional()
+  @IsString()
+  orderBy?: string;
+
+  @IsOptional()
+  @IsEnum(['asc', 'desc'])
+  order?: 'asc' | 'desc';
 }

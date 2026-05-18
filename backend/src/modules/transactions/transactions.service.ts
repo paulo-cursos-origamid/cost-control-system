@@ -132,32 +132,53 @@ export class TransactionsService {
 
     const where: Prisma.TransactionWhereInput = {
       userId,
+      deletedAt: null,
     };
 
     /*
-      FILTER TYPE
-    */
+    FILTER TYPE
+  */
     if (filters.type) {
       where.type = filters.type;
     }
 
     /*
-      FILTER ACCOUNT
-    */
+    FILTER ACCOUNT
+  */
     if (filters.accountId) {
       where.accountId = filters.accountId;
     }
 
     /*
-      FILTER CATEGORY
-    */
+    FILTER CATEGORY
+  */
     if (filters.categoryId) {
       where.categoryId = filters.categoryId;
     }
+    /*
+    SEARCH
+  */
+    if (filters.search) {
+      where.OR = [
+        {
+          title: {
+            contains: filters.search,
+            mode: 'insensitive',
+          },
+        },
+
+        {
+          description: {
+            contains: filters.search,
+            mode: 'insensitive',
+          },
+        },
+      ];
+    }
 
     /*
-      FILTER DATE
-    */
+    FILTER DATE
+  */
     if (filters.startDate || filters.endDate) {
       where.date = {};
 
@@ -171,30 +192,46 @@ export class TransactionsService {
     }
 
     /*
-      QUERY
-    */
-    const [transactions, total] = await Promise.all([
-      this.prisma.transaction.findMany({
-        where,
+    FILTER AMOUNT
+  */
+    if (filters.minAmount || filters.maxAmount) {
+      where.amount = {};
 
-        include: {
-          account: true,
-          category: true,
-        },
+      if (filters.minAmount) {
+        where.amount.gte = Number(filters.minAmount);
+      }
 
-        orderBy: {
-          date: 'desc',
-        },
+      if (filters.maxAmount) {
+        where.amount.lte = Number(filters.maxAmount);
+      }
+    }
 
-        skip,
+    /*
+    TOTAL
+  */
+    const total = await this.prisma.transaction.count({
+      where,
+    });
 
-        take: limit,
-      }),
+    /*
+    TRANSACTIONS
+  */
+    const transactions = await this.prisma.transaction.findMany({
+      where,
 
-      this.prisma.transaction.count({
-        where,
-      }),
-    ]);
+      skip,
+
+      take: limit,
+
+      orderBy: {
+        [filters.orderBy ?? 'createdAt']: filters.order ?? 'desc',
+      },
+
+      include: {
+        category: true,
+        account: true,
+      },
+    });
 
     return {
       data: transactions,
@@ -207,7 +244,6 @@ export class TransactionsService {
       },
     };
   }
-
   /*
     =====================================
     FIND ONE
@@ -218,6 +254,7 @@ export class TransactionsService {
       where: {
         id,
         userId,
+        deletedAt: null,
       },
 
       include: {
@@ -392,9 +429,13 @@ export class TransactionsService {
       /*
         DELETE TRANSACTION
       */
+      /*
+  DELETE TRANSACTION
+*/
       await tx.transaction.delete({
         where: {
           id,
+          deletedAt: null,
         },
       });
 
@@ -406,6 +447,23 @@ export class TransactionsService {
 
   /*
     =====================================
+    RESTORE
+    =====================================
+  */
+  async restore(id: string, userId: string) {
+    return this.prisma.transaction.updateMany({
+      where: {
+        id,
+        userId,
+      },
+
+      data: {
+        deletedAt: null,
+      },
+    });
+  }
+  /*
+    =====================================
     SUMMARY
     =====================================
   */
@@ -413,6 +471,7 @@ export class TransactionsService {
     const incomes = await this.prisma.transaction.aggregate({
       where: {
         userId,
+        deletedAt: null,
         type: TransactionType.INCOME,
       },
 
@@ -424,6 +483,7 @@ export class TransactionsService {
     const expenses = await this.prisma.transaction.aggregate({
       where: {
         userId,
+        deletedAt: null,
         type: TransactionType.EXPENSE,
       },
 
