@@ -13,50 +13,73 @@ export class TransfersService {
   */
   async create(userId: string, data: CreateTransferDto) {
     /*
-      Buscar conta origem
-    */
-    const fromAccount = await this.prisma.account.findFirst({
-      where: {
-        id: data.fromAccountId,
-        userId,
-      },
-    });
-
-    /*
-      Buscar conta destino
-    */
-    const toAccount = await this.prisma.account.findFirst({
-      where: {
-        id: data.toAccountId,
-        userId,
-      },
-    });
-
-    /*
-      Validar contas
-    */
-    if (!fromAccount || !toAccount) {
-      throw new BadRequestException('Conta inválida');
+    VALIDAR VALOR
+  */
+    if (data.amount <= 0) {
+      throw new BadRequestException(
+        'O valor da transferência deve ser maior que zero',
+      );
     }
 
     /*
-      Validar saldo
-    */
-    if (fromAccount.balance < data.amount) {
-      throw new BadRequestException('Saldo insuficiente');
+    VALIDAR CONTAS DIFERENTES
+  */
+    if (data.fromAccountId === data.toAccountId) {
+      throw new BadRequestException(
+        'A conta de origem e destino devem ser diferentes',
+      );
     }
 
     /*
-      Executar transferência
-    */
-    return await this.prisma.$transaction(async (tx) => {
+    TRANSACTION
+  */
+    return this.prisma.$transaction(async (tx) => {
       /*
-          Debitar origem
-        */
+      BUSCAR CONTA ORIGEM
+    */
+      const fromAccount = await tx.account.findFirst({
+        where: {
+          id: data.fromAccountId,
+          userId,
+          deletedAt: null,
+          isActive: true,
+        },
+      });
+
+      /*
+      BUSCAR CONTA DESTINO
+    */
+      const toAccount = await tx.account.findFirst({
+        where: {
+          id: data.toAccountId,
+          userId,
+          deletedAt: null,
+          isActive: true,
+        },
+      });
+
+      /*
+      VALIDAR CONTAS
+    */
+      if (!fromAccount || !toAccount) {
+        throw new BadRequestException('Conta inválida');
+      }
+
+      /*
+      VALIDAR SALDO
+    */
+      if (fromAccount.balance < data.amount) {
+        throw new BadRequestException('Saldo insuficiente');
+      }
+
+      /*
+      DEBITAR ORIGEM
+    */
       await tx.account.update({
         where: {
           id: fromAccount.id,
         },
+
         data: {
           balance: {
             decrement: data.amount,
@@ -65,12 +88,13 @@ export class TransfersService {
       });
 
       /*
-          Creditar destino
-        */
+      CREDITAR DESTINO
+    */
       await tx.account.update({
         where: {
           id: toAccount.id,
         },
+
         data: {
           balance: {
             increment: data.amount,
@@ -79,11 +103,12 @@ export class TransfersService {
       });
 
       /*
-          Registrar transferência
-        */
-      return await tx.transfer.create({
+      REGISTRAR TRANSFERÊNCIA
+    */
+      const transfer = await tx.transfer.create({
         data: {
           amount: data.amount,
+
           description: data.description,
 
           userId,
@@ -92,7 +117,14 @@ export class TransfersService {
 
           toAccountId: toAccount.id,
         },
+
+        include: {
+          fromAccount: true,
+          toAccount: true,
+        },
       });
+
+      return transfer;
     });
   }
 
