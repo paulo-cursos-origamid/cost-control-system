@@ -1,3 +1,4 @@
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
@@ -9,6 +10,8 @@ import { CreateTransferDto } from './dto/create-transfer.dto';
 import { TransfersService } from './transfers.service';
 
 @Controller('transfers')
+@ApiTags('Transfers')
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 export class TransfersController {
   constructor(private readonly transfersService: TransfersService) {}

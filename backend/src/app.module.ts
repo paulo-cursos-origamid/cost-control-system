@@ -18,7 +18,7 @@ import { MaintenancesModule } from './modules/maintenances/maintenances.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { ReportsModule } from './modules/reports/reports.module';
 import { TransfersModule } from './modules/transfers/transfers.module';
-
+import { LedgerModule } from './modules/ledger/ledger.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -38,6 +38,7 @@ import { TransfersModule } from './modules/transfers/transfers.module';
     DashboardModule,
     ReportsModule,
     TransfersModule,
+    LedgerModule,
   ],
 
   controllers: [AppController],

@@ -4,9 +4,11 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
-import { Prisma, TransactionType } from '@prisma/client';
+import { LedgerReferenceType, Prisma, TransactionType } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
+
+import { LedgerService } from '@/modules/ledger/ledger.service';
 
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { FindTransactionsDto } from './dto/find-transactions.dto';
@@ -14,7 +16,10 @@ import { UpdateTransactionDto } from './dto/update-transaction.dto';
 
 @Injectable()
 export class TransactionsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly ledgerService: LedgerService,
+  ) {}
 
   /*
     =====================================
@@ -27,8 +32,8 @@ export class TransactionsService {
     */
     const account = await this.prisma.account.findFirst({
       where: {
-        id: dto.accountId,
         userId,
+        id: dto.accountId,
       },
     });
 
@@ -97,10 +102,31 @@ export class TransactionsService {
       });
 
       /*
-        UPDATE ACCOUNT BALANCE
+        REGISTER LEDGER ENTRY
       */
-      const balanceChange =
-        dto.type === TransactionType.INCOME ? dto.amount : -dto.amount;
+      if (dto.type === TransactionType.INCOME) {
+        await this.ledgerService.registerCredit(
+          dto.accountId,
+          dto.amount,
+          LedgerReferenceType.TRANSACTION,
+          transaction.id,
+          dto.description,
+        );
+      } else {
+        await this.ledgerService.registerDebit(
+          userId,
+          dto.accountId,
+          dto.amount,
+          LedgerReferenceType.TRANSACTION,
+          transaction.id,
+          dto.description,
+        );
+      }
+
+      /*
+        RECALCULATE ACCOUNT BALANCE
+      */
+      const balance = await this.ledgerService.calculateBalance(dto.accountId);
 
       await tx.account.update({
         where: {
@@ -108,9 +134,7 @@ export class TransactionsService {
         },
 
         data: {
-          balance: {
-            increment: balanceChange,
-          },
+          balance,
         },
       });
 
@@ -136,28 +160,29 @@ export class TransactionsService {
     };
 
     /*
-    FILTER TYPE
-  */
+      FILTER TYPE
+    */
     if (filters.type) {
       where.type = filters.type;
     }
 
     /*
-    FILTER ACCOUNT
-  */
+      FILTER ACCOUNT
+    */
     if (filters.accountId) {
       where.accountId = filters.accountId;
     }
 
     /*
-    FILTER CATEGORY
-  */
+      FILTER CATEGORY
+    */
     if (filters.categoryId) {
       where.categoryId = filters.categoryId;
     }
+
     /*
-    SEARCH
-  */
+      SEARCH
+    */
     if (filters.search) {
       where.OR = [
         {
@@ -177,8 +202,8 @@ export class TransactionsService {
     }
 
     /*
-    FILTER DATE
-  */
+      FILTER DATE
+    */
     if (filters.startDate || filters.endDate) {
       where.date = {};
 
@@ -192,8 +217,8 @@ export class TransactionsService {
     }
 
     /*
-    FILTER AMOUNT
-  */
+      FILTER AMOUNT
+    */
     if (filters.minAmount || filters.maxAmount) {
       where.amount = {};
 
@@ -207,15 +232,15 @@ export class TransactionsService {
     }
 
     /*
-    TOTAL
-  */
+      TOTAL
+    */
     const total = await this.prisma.transaction.count({
       where,
     });
 
     /*
-    TRANSACTIONS
-  */
+      TRANSACTIONS
+    */
     const transactions = await this.prisma.transaction.findMany({
       where,
 
@@ -244,6 +269,7 @@ export class TransactionsService {
       },
     };
   }
+
   /*
     =====================================
     FIND ONE
@@ -329,26 +355,6 @@ export class TransactionsService {
 
     return this.prisma.$transaction(async (tx) => {
       /*
-        REMOVE OLD BALANCE IMPACT
-      */
-      const reverseOldImpact =
-        oldTransaction.type === TransactionType.INCOME
-          ? -oldTransaction.amount
-          : oldTransaction.amount;
-
-      await tx.account.update({
-        where: {
-          id: oldTransaction.accountId,
-        },
-
-        data: {
-          balance: {
-            increment: reverseOldImpact,
-          },
-        },
-      });
-
-      /*
         NEW VALUES
       */
       const newType = dto.type ?? oldTransaction.type;
@@ -358,27 +364,9 @@ export class TransactionsService {
       const newAccountId = dto.accountId ?? oldTransaction.accountId;
 
       /*
-        APPLY NEW BALANCE IMPACT
-      */
-      const newImpact =
-        newType === TransactionType.INCOME ? newAmount : -newAmount;
-
-      await tx.account.update({
-        where: {
-          id: newAccountId,
-        },
-
-        data: {
-          balance: {
-            increment: newImpact,
-          },
-        },
-      });
-
-      /*
         UPDATE TRANSACTION
       */
-      return tx.transaction.update({
+      const updatedTransaction = await tx.transaction.update({
         where: {
           id,
         },
@@ -394,6 +382,74 @@ export class TransactionsService {
           category: true,
         },
       });
+
+      /*
+        REMOVE OLD LEDGER ENTRIES
+      */
+      await tx.ledgerEntry.deleteMany({
+        where: {
+          referenceType: LedgerReferenceType.TRANSACTION,
+
+          referenceId: id,
+        },
+      });
+
+      /*
+        CREATE NEW LEDGER ENTRY
+      */
+      if (newType === TransactionType.INCOME) {
+        await this.ledgerService.registerCredit(
+          newAccountId,
+          Number(newAmount),
+          LedgerReferenceType.TRANSACTION,
+          id,
+        );
+      } else {
+        await this.ledgerService.registerDebit(
+          userId,
+          newAccountId,
+          Number(newAmount),
+          LedgerReferenceType.TRANSACTION,
+          id,
+        );
+      }
+
+      /*
+        RECALCULATE OLD ACCOUNT BALANCE
+      */
+      const oldBalance = await this.ledgerService.calculateBalance(
+        oldTransaction.accountId,
+      );
+
+      await tx.account.update({
+        where: {
+          id: oldTransaction.accountId,
+        },
+
+        data: {
+          balance: oldBalance,
+        },
+      });
+
+      /*
+        RECALCULATE NEW ACCOUNT BALANCE
+      */
+      if (newAccountId !== oldTransaction.accountId) {
+        const newBalance =
+          await this.ledgerService.calculateBalance(newAccountId);
+
+        await tx.account.update({
+          where: {
+            id: newAccountId,
+          },
+
+          data: {
+            balance: newBalance,
+          },
+        });
+      }
+
+      return updatedTransaction;
     });
   }
 
@@ -407,12 +463,22 @@ export class TransactionsService {
 
     return this.prisma.$transaction(async (tx) => {
       /*
-        ROLLBACK ACCOUNT BALANCE
+        REMOVE LEDGER ENTRIES
       */
-      const reverseImpact =
-        transaction.type === TransactionType.INCOME
-          ? -transaction.amount
-          : transaction.amount;
+      await tx.ledgerEntry.deleteMany({
+        where: {
+          referenceType: LedgerReferenceType.TRANSACTION,
+
+          referenceId: id,
+        },
+      });
+
+      /*
+        RECALCULATE ACCOUNT BALANCE
+      */
+      const balance = await this.ledgerService.calculateBalance(
+        transaction.accountId,
+      );
 
       await tx.account.update({
         where: {
@@ -420,22 +486,16 @@ export class TransactionsService {
         },
 
         data: {
-          balance: {
-            increment: reverseImpact,
-          },
+          balance,
         },
       });
 
       /*
         DELETE TRANSACTION
       */
-      /*
-  DELETE TRANSACTION
-*/
       await tx.transaction.delete({
         where: {
           id,
-          deletedAt: null,
         },
       });
 
@@ -462,6 +522,7 @@ export class TransactionsService {
       },
     });
   }
+
   /*
     =====================================
     SUMMARY

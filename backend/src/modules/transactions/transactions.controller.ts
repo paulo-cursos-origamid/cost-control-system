@@ -8,6 +8,7 @@ import {
   Post,
   Query,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -46,7 +47,11 @@ export class TransactionsController {
     =========================
   */
   @Get()
-  findAll(@CurrentUser() user: JwtUser, @Query() filters: FindTransactionsDto) {
+  findAll(
+    @CurrentUser() user: JwtUser,
+    @Req() req,
+    @Query() filters: FindTransactionsDto,
+  ) {
     return this.transactionsService.findAll(user.sub, filters);
   }
 
