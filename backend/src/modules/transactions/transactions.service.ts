@@ -78,8 +78,8 @@ export class TransactionsService {
     */
     return this.prisma.$transaction(async (tx) => {
       /*
-        CREATE TRANSACTION
-      */
+  CREATE TRANSACTION
+*/
       const transaction = await tx.transaction.create({
         data: {
           title: dto.title,
@@ -102,10 +102,52 @@ export class TransactionsService {
       });
 
       /*
+  REGISTER LEDGER ENTRY
+*/
+      if (dto.type === TransactionType.INCOME) {
+        await this.ledgerService.registerCredit(
+          userId,
+          dto.accountId,
+          dto.amount,
+          LedgerReferenceType.TRANSACTION,
+          transaction.id,
+          dto.description,
+        );
+      } else {
+        await this.ledgerService.registerDebit(
+          userId,
+          dto.accountId,
+          dto.amount,
+          LedgerReferenceType.TRANSACTION,
+          transaction.id,
+          dto.description,
+        );
+      }
+
+      /*
+  RECALCULATE ACCOUNT BALANCE
+*/
+      const newBalance = await this.ledgerService.calculateBalance(
+        dto.accountId,
+      );
+
+      await tx.account.update({
+        where: {
+          id: dto.accountId,
+        },
+
+        data: {
+          balance: newBalance,
+        },
+      });
+
+      return transaction;
+      /*
         REGISTER LEDGER ENTRY
       */
       if (dto.type === TransactionType.INCOME) {
         await this.ledgerService.registerCredit(
+          userId,
           dto.accountId,
           dto.amount,
           LedgerReferenceType.TRANSACTION,
@@ -399,6 +441,7 @@ export class TransactionsService {
       */
       if (newType === TransactionType.INCOME) {
         await this.ledgerService.registerCredit(
+          userId,
           newAccountId,
           Number(newAmount),
           LedgerReferenceType.TRANSACTION,

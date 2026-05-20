@@ -49,14 +49,15 @@ export class LedgerService {
     =====================================
   */
   async registerCredit(
+    userId: string,
     accountId: string,
     amount: number,
     referenceType: LedgerReferenceType,
     referenceId: string,
     description?: string,
   ): Promise<LedgerEntry> {
-    return this.createEntry({
-      userId: '',
+    return await this.createEntry({
+      userId,
       accountId,
       amount,
       referenceType,
@@ -72,16 +73,15 @@ export class LedgerService {
     =====================================
   */
   async registerDebit(
-    useId: string,
+    userId: string,
     accountId: string,
     amount: number,
     referenceType: LedgerReferenceType,
     referenceId: string,
     description?: string,
   ): Promise<LedgerEntry> {
-    return this.createEntry({
-      // userId: useId,
-      userId: '',
+    return await this.createEntry({
+      userId,
       accountId,
       amount,
       referenceType,

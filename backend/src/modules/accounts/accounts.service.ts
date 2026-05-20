@@ -21,14 +21,37 @@ export class AccountsService {
   }
 
   async findAll(userId: string) {
-    return this.prisma.account.findMany({
+    const accounts = await this.prisma.account.findMany({
       where: {
         userId,
+        deletedAt: null,
       },
+
+      include: {
+        ledgerEntries: true,
+      },
+
       orderBy: {
         createdAt: 'desc',
       },
     });
+
+    const formattedAccounts = accounts.map((account) => {
+      const balance = account.ledgerEntries.reduce((acc, entry) => {
+        if (entry.type === 'CREDIT') {
+          return acc + Number(entry.amount);
+        }
+
+        return acc - Number(entry.amount);
+      }, 0);
+
+      return {
+        ...account,
+        balance,
+      };
+    });
+
+    return formattedAccounts;
   }
 
   async findOne(id: string, userId: string) {
@@ -36,14 +59,27 @@ export class AccountsService {
       where: {
         id,
         userId,
+        deletedAt: null,
+      },
+      include: {
+        ledgerEntries: true,
       },
     });
 
     if (!account) {
       throw new NotFoundException('Account not found');
     }
+    const balance = account.ledgerEntries.reduce((acc, entry) => {
+      if (entry.type === 'CREDIT') {
+        return acc + Number(entry.amount);
+      }
 
-    return account;
+      return acc - Number(entry.amount);
+    }, 0);
+    return {
+      ...account,
+      balance,
+    };
   }
 
   async update(id: string, userId: string, dto: UpdateAccountDto) {
