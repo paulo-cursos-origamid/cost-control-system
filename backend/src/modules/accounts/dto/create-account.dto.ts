@@ -19,5 +19,5 @@ export class CreateAccountDto {
   @IsOptional()
   @IsNumber()
   @Min(0)
-  balance?: number;
+  initialBalance?: number;
 }

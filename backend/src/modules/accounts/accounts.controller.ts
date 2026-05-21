@@ -57,4 +57,8 @@ export class AccountsController {
   remove(@Param('id') id: string, @CurrentUser() user: JwtUser) {
     return this.accountsService.remove(id, user.sub);
   }
+  @Patch(':id/restore')
+  restore(@Param('id') id: string, @CurrentUser() user: JwtUser) {
+    return this.accountsService.restore(id, user.sub);
+  }
 }
