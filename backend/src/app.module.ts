@@ -20,11 +20,15 @@ import { ReportsModule } from './modules/reports/reports.module';
 import { TransfersModule } from './modules/transfers/transfers.module';
 import { LedgerModule } from './modules/ledger/ledger.module';
 import { RecurringTransactionsModule } from './modules/recurring-transactions/recurring-transactions.module';
+import { ScheduleModule } from '@nestjs/schedule';
+
+import { FinancialSchedulerModule } from './modules/financial-scheduler/financial-scheduler.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    ScheduleModule.forRoot(),
 
     PrismaModule,
 
@@ -41,6 +45,7 @@ import { RecurringTransactionsModule } from './modules/recurring-transactions/re
     TransfersModule,
     LedgerModule,
     RecurringTransactionsModule,
+    FinancialSchedulerModule,
   ],
 
   controllers: [AppController],
