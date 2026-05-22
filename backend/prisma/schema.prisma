@@ -13,12 +13,13 @@ model User {
   email    String @unique
   password String
 
-  accounts      Account[]
-  categories    Category[]
-  transactions  Transaction[]
-  vehicles      Vehicle[]
-  transfers     Transfer[]
-  ledgerEntries LedgerEntry[]
+  accounts              Account[]
+  categories            Category[]
+  transactions          Transaction[]
+  vehicles              Vehicle[]
+  transfers             Transfer[]
+  ledgerEntries         LedgerEntry[]
+  recurringTransactions RecurringTransaction[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -46,8 +47,9 @@ model Account {
 
   sentTransfers Transfer[] @relation("TransferFromAccount")
 
-  receivedTransfers Transfer[]    @relation("TransferToAccount")
-  ledgerEntries     LedgerEntry[]
+  receivedTransfers     Transfer[]             @relation("TransferToAccount")
+  ledgerEntries         LedgerEntry[]
+  recurringTransactions RecurringTransaction[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -82,10 +84,11 @@ model Category {
   userId String?
   user   User?   @relation(fields: [userId], references: [id])
 
-  transactions Transaction[]
+  transactions          Transaction[]
+  recurringTransactions RecurringTransaction[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
   @@unique([slug, userId])
@@ -110,8 +113,8 @@ model Vehicle {
   fuelSupplies FuelSupply[]
   maintenances Maintenance[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 }
 
@@ -148,8 +151,8 @@ model FuelSupply {
 
   notes String?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
   @@index([vehicleId])
@@ -182,8 +185,8 @@ model Maintenance {
 
   nextMaintenanceKm Float?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 }
 
@@ -234,8 +237,8 @@ model Transfer {
 
   toAccount Account @relation("TransferToAccount", fields: [toAccountId], references: [id])
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
   @@index([userId])
@@ -269,6 +272,42 @@ model LedgerEntry {
   @@index([referenceType])
   @@index([referenceId])
   @@index([createdAt])
+}
+
+model RecurringTransaction {
+  id String @id @default(uuid())
+
+  title       String
+  description String?
+
+  amount Decimal @db.Decimal(12, 2)
+
+  type TransactionType
+
+  frequency RecurrenceFrequency
+
+  startDate DateTime
+  endDate   DateTime?
+
+  nextExecution DateTime
+
+  active Boolean @default(true)
+
+  userId     String
+  accountId  String
+  categoryId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user     User     @relation(fields: [userId], references: [id])
+  account  Account  @relation(fields: [accountId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id])
+
+  @@index([userId])
+  @@index([accountId])
+  @@index([categoryId])
+  @@index([nextExecution])
 }
 
 enum TransactionType {
@@ -312,7 +351,6 @@ enum AccountType {
   INVESTMENT
 }
 
-
 enum LedgerEntryType {
   CREDIT
   DEBIT
@@ -324,4 +362,11 @@ enum LedgerReferenceType {
   MAINTENANCE
   FUEL_SUPPLY
   VEHICLE
+}
+
+enum RecurrenceFrequency {
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
 }

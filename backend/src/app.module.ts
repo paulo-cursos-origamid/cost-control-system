@@ -19,6 +19,7 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { ReportsModule } from './modules/reports/reports.module';
 import { TransfersModule } from './modules/transfers/transfers.module';
 import { LedgerModule } from './modules/ledger/ledger.module';
+import { RecurringTransactionsModule } from './modules/recurring-transactions/recurring-transactions.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -39,6 +40,7 @@ import { LedgerModule } from './modules/ledger/ledger.module';
     ReportsModule,
     TransfersModule,
     LedgerModule,
+    RecurringTransactionsModule,
   ],
 
   controllers: [AppController],
