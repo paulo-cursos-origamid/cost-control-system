@@ -9,10 +9,7 @@ import {
   IsUUID,
 } from 'class-validator';
 
-import {
-  RecurrenceFrequency,
-  TransactionType,
-} from '@prisma/client';
+import { RecurrenceFrequency, TransactionType } from '@prisma/client';
 
 export class CreateRecurringTransactionDto {
   @IsString()

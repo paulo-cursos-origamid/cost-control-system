@@ -1,17 +1,26 @@
 import { Module } from '@nestjs/common';
 
 import { PrismaModule } from '@/database/prisma.module';
-import { TransactionsModule } from '../transactions/transactions.module';
+
+import { LedgerModule } from '../ledger/ledger.module';
+
 import { RecurringTransactionsModule } from '../recurring-transactions/recurring-transactions.module';
-import { FinancialSchedulerService } from './financial-scheduler.service';
+
+import { TransactionsModule } from '../transactions/transactions.module';
+
 import { RecurringTransactionsProcessor } from './processors/recurring-transactions.processor';
-import { FinancialSchedulerController } from './financial-scheduler.controller';
 
 @Module({
-  imports: [PrismaModule, TransactionsModule, RecurringTransactionsModule],
+  imports: [
+    PrismaModule,
 
-  controllers: [FinancialSchedulerController],
+    TransactionsModule,
 
-  providers: [FinancialSchedulerService, RecurringTransactionsProcessor],
+    LedgerModule,
+
+    RecurringTransactionsModule,
+  ],
+
+  providers: [RecurringTransactionsProcessor],
 })
 export class FinancialSchedulerModule {}

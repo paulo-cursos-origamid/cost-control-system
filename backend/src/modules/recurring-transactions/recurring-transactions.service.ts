@@ -1,7 +1,6 @@
-import {
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+
+import { Prisma, RecurrenceFrequency } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
 
@@ -12,27 +11,22 @@ import { UpdateRecurringTransactionDto } from './dto/update-recurring-transactio
 export class RecurringTransactionsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  /*
-    CREATE
-  */
-  async create(
-    userId: string,
-    dto: CreateRecurringTransactionDto,
-  ) {
+  create(userId: string, dto: CreateRecurringTransactionDto) {
     return this.prisma.recurringTransaction.create({
       data: {
         title: dto.title,
+
         description: dto.description,
-        amount: dto.amount,
+
+        amount: new Prisma.Decimal(dto.amount),
 
         type: dto.type,
+
         frequency: dto.frequency,
 
         startDate: new Date(dto.startDate),
 
-        endDate: dto.endDate
-          ? new Date(dto.endDate)
-          : null,
+        endDate: dto.endDate ? new Date(dto.endDate) : null,
 
         nextExecution: new Date(dto.nextExecution),
 
@@ -41,15 +35,18 @@ export class RecurringTransactionsService {
         userId,
 
         accountId: dto.accountId,
+
         categoryId: dto.categoryId,
+      },
+
+      include: {
+        account: true,
+        category: true,
       },
     });
   }
 
-  /*
-    FIND ALL
-  */
-  async findAll(userId: string) {
+  findAll(userId: string) {
     return this.prisma.recurringTransaction.findMany({
       where: {
         userId,
@@ -66,11 +63,8 @@ export class RecurringTransactionsService {
     });
   }
 
-  /*
-    FIND ONE
-  */
   async findOne(id: string, userId: string) {
-    const recurring =
+    const recurringTransaction =
       await this.prisma.recurringTransaction.findFirst({
         where: {
           id,
@@ -83,23 +77,14 @@ export class RecurringTransactionsService {
         },
       });
 
-    if (!recurring) {
-      throw new NotFoundException(
-        'Recurring transaction not found',
-      );
+    if (!recurringTransaction) {
+      throw new NotFoundException('Recurring transaction not found');
     }
 
-    return recurring;
+    return recurringTransaction;
   }
 
-  /*
-    UPDATE
-  */
-  async update(
-    id: string,
-    userId: string,
-    dto: UpdateRecurringTransactionDto,
-  ) {
+  async update(id: string, userId: string, dto: UpdateRecurringTransactionDto) {
     await this.findOne(id, userId);
 
     return this.prisma.recurringTransaction.update({
@@ -108,26 +93,35 @@ export class RecurringTransactionsService {
       },
 
       data: {
-        ...dto,
+        title: dto.title,
 
-        startDate: dto.startDate
-          ? new Date(dto.startDate)
-          : undefined,
+        description: dto.description,
 
-        endDate: dto.endDate
-          ? new Date(dto.endDate)
-          : undefined,
+        amount:
+          dto.amount !== undefined ? new Prisma.Decimal(dto.amount) : undefined,
+
+        type: dto.type,
+
+        frequency: dto.frequency,
+
+        startDate: dto.startDate ? new Date(dto.startDate) : undefined,
+
+        endDate: dto.endDate ? new Date(dto.endDate) : undefined,
 
         nextExecution: dto.nextExecution
           ? new Date(dto.nextExecution)
           : undefined,
+
+        active: dto.active,
+      },
+
+      include: {
+        account: true,
+        category: true,
       },
     });
   }
 
-  /*
-    DELETE
-  */
   async remove(id: string, userId: string) {
     await this.findOne(id, userId);
 
@@ -138,8 +132,31 @@ export class RecurringTransactionsService {
     });
 
     return {
-      message:
-        'Recurring transaction deleted successfully',
+      message: 'Recurring transaction deleted successfully',
     };
+  }
+
+  calculateNextExecution(currentDate: Date, frequency: RecurrenceFrequency) {
+    const nextDate = new Date(currentDate);
+
+    switch (frequency) {
+      case RecurrenceFrequency.DAILY:
+        nextDate.setDate(nextDate.getDate() + 1);
+        break;
+
+      case RecurrenceFrequency.WEEKLY:
+        nextDate.setDate(nextDate.getDate() + 7);
+        break;
+
+      case RecurrenceFrequency.MONTHLY:
+        nextDate.setMonth(nextDate.getMonth() + 1);
+        break;
+
+      case RecurrenceFrequency.YEARLY:
+        nextDate.setFullYear(nextDate.getFullYear() + 1);
+        break;
+    }
+
+    return nextDate;
   }
 }
