@@ -23,6 +23,7 @@ import { RecurringTransactionsModule } from './modules/recurring-transactions/re
 import { ScheduleModule } from '@nestjs/schedule';
 
 import { FinancialSchedulerModule } from './modules/financial-scheduler/financial-scheduler.module';
+import { InstallmentsModule } from './modules/installments/installments.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -46,6 +47,7 @@ import { FinancialSchedulerModule } from './modules/financial-scheduler/financia
     LedgerModule,
     RecurringTransactionsModule,
     FinancialSchedulerModule,
+    InstallmentsModule,
   ],
 
   controllers: [AppController],

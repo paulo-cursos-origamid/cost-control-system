@@ -20,6 +20,7 @@ model User {
   transfers             Transfer[]
   ledgerEntries         LedgerEntry[]
   recurringTransactions RecurringTransaction[]
+  installments          Installment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -50,6 +51,7 @@ model Account {
   receivedTransfers     Transfer[]             @relation("TransferToAccount")
   ledgerEntries         LedgerEntry[]
   recurringTransactions RecurringTransaction[]
+  installments          Installment[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -86,6 +88,7 @@ model Category {
 
   transactions          Transaction[]
   recurringTransactions RecurringTransaction[]
+  installments          Installment[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -209,9 +212,10 @@ model Transaction {
   fuelSupply  FuelSupply?
   maintenance Maintenance?
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @default(now()) @updatedAt
-  deletedAt DateTime?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @default(now()) @updatedAt
+  deletedAt    DateTime?
+  installments Installment?
 
   @@index([userId])
   @@index([accountId])
@@ -308,6 +312,49 @@ model RecurringTransaction {
   @@index([accountId])
   @@index([categoryId])
   @@index([nextExecution])
+}
+
+model Installment {
+  id String @id @default(uuid())
+
+  title String
+
+  description String?
+
+  totalAmount Float
+
+  installmentAmount Float
+
+  totalInstallments Int
+
+  currentInstallment Int
+
+  purchaseDate DateTime
+
+  dueDate DateTime
+
+  paid Boolean @default(false)
+
+  accountId String
+  account   Account @relation(fields: [accountId], references: [id])
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  transactionId String? @unique
+  transaction   Transaction? @relation(fields: [transactionId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([accountId])
+  @@index([categoryId])
+  @@index([dueDate])
+  @@index([paid])
 }
 
 enum TransactionType {
