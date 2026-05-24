@@ -24,6 +24,8 @@ import { ScheduleModule } from '@nestjs/schedule';
 
 import { FinancialSchedulerModule } from './modules/financial-scheduler/financial-scheduler.module';
 import { InstallmentsModule } from './modules/installments/installments.module';
+import { CreditCardsModule } from './modules/credit-cards/credit-cards.module';
+import { CreditCardInvoicesModule } from './modules/credit-card-invoices/credit-card-invoices.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -48,6 +50,8 @@ import { InstallmentsModule } from './modules/installments/installments.module';
     RecurringTransactionsModule,
     FinancialSchedulerModule,
     InstallmentsModule,
+    CreditCardsModule,
+    CreditCardInvoicesModule,
   ],
 
   controllers: [AppController],

@@ -31,6 +31,10 @@ export class CreateTransactionDto {
   @IsUUID()
   accountId!: string;
 
+  @IsOptional()
+  @IsUUID()
+  creditCardId?: string;
+
   @IsUUID()
   categoryId!: string;
 }

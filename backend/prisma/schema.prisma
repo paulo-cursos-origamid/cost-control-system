@@ -1,162 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 model User {
-  id       String @id @default(uuid())
-  name     String
-  email    String @unique
-  password String
-
+  id                    String                 @id @default(uuid())
+  name                  String
+  email                 String                 @unique
+  password              String
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
   accounts              Account[]
   categories            Category[]
-  transactions          Transaction[]
-  vehicles              Vehicle[]
-  transfers             Transfer[]
+  installments          Installment[]
   ledgerEntries         LedgerEntry[]
   recurringTransactions RecurringTransaction[]
-  installments          Installment[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  transactions          Transaction[]
+  transfers             Transfer[]
+  vehicles              Vehicle[]
+  creditCards           CreditCard[]
 }
 
 model Account {
-  id String @id @default(uuid())
-
-  name String
-
-  type AccountType @default(CHECKING)
-
-  balance Float @default(0)
-
-  initialBalance Float @default(0)
-
-  color String?
-
-  isActive Boolean @default(true)
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
-
-  transactions Transaction[]
-
-  sentTransfers Transfer[] @relation("TransferFromAccount")
-
-  receivedTransfers     Transfer[]             @relation("TransferToAccount")
+  id                    String                 @id @default(uuid())
+  name                  String
+  balance               Float                  @default(0)
+  userId                String
+  createdAt             DateTime               @default(now())
+  color                 String?
+  initialBalance        Float                  @default(0)
+  isActive              Boolean                @default(true)
+  type                  AccountType            @default(CHECKING)
+  updatedAt             DateTime               @updatedAt
+  deletedAt             DateTime?
+  user                  User                   @relation(fields: [userId], references: [id])
+  installments          Installment[]
   ledgerEntries         LedgerEntry[]
   recurringTransactions RecurringTransaction[]
-  installments          Installment[]
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  transactions          Transaction[]
+  sentTransfers         Transfer[]             @relation("TransferFromAccount")
+  receivedTransfers     Transfer[]             @relation("TransferToAccount")
 }
 
 model Category {
-  id String @id @default(uuid())
-
-  name String
-
-  slug String
-
-  description String?
-
-  icon String?
-
-  color String?
-
-  type CategoryType
-
-  isDefault Boolean @default(false)
-
-  isVehicleCategory Boolean @default(false)
-
-  parentId String?
-
-  parent Category? @relation("CategoryChildren", fields: [parentId], references: [id])
-
-  children Category[] @relation("CategoryChildren")
-
-  userId String?
-  user   User?   @relation(fields: [userId], references: [id])
-
-  transactions          Transaction[]
-  recurringTransactions RecurringTransaction[]
+  id                    String                 @id @default(uuid())
+  name                  String
+  type                  CategoryType
+  userId                String?
+  color                 String?
+  createdAt             DateTime               @default(now())
+  description           String?
+  icon                  String?
+  isDefault             Boolean                @default(false)
+  isVehicleCategory     Boolean                @default(false)
+  parentId              String?
+  slug                  String
+  updatedAt             DateTime               @updatedAt
+  deletedAt             DateTime?
+  parent                Category?              @relation("CategoryChildren", fields: [parentId], references: [id])
+  children              Category[]             @relation("CategoryChildren")
+  user                  User?                  @relation(fields: [userId], references: [id])
   installments          Installment[]
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  recurringTransactions RecurringTransaction[]
+  transactions          Transaction[]
 
   @@unique([slug, userId])
 }
 
 model Vehicle {
-  id String @id @default(uuid())
-
-  name  String
-  brand String
-  model String
-
-  year Int
-
-  plate String?
-
-  currentKm Float @default(0)
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
-
+  id           String        @id @default(uuid())
+  name         String
+  brand        String
+  model        String
+  year         Int
+  plate        String?
+  currentKm    Float         @default(0)
+  userId       String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  deletedAt    DateTime?
   fuelSupplies FuelSupply[]
   maintenances Maintenance[]
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  user         User          @relation(fields: [userId], references: [id])
 }
 
 model FuelSupply {
-  id String @id @default(uuid())
-
-  vehicleId String
-  vehicle   Vehicle @relation(fields: [vehicleId], references: [id])
-
-  transactionId String?      @unique
-  transaction   Transaction? @relation(fields: [transactionId], references: [id])
-
-  fuelType FuelType
-
-  liters Float
-
-  pricePerLiter Float
-
-  totalAmount Float
-
-  odometer Float
-
-  fullTank Boolean @default(false)
-
-  averageKmPerLiter Float?
-
-  averageCostPerKm Float?
-
+  id                 String       @id @default(uuid())
+  vehicleId          String
+  transactionId      String?      @unique
+  fuelType           FuelType
+  liters             Float
+  pricePerLiter      Float
+  totalAmount        Float
+  odometer           Float
+  fullTank           Boolean      @default(false)
+  averageKmPerLiter  Float?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+  averageCostPerKm   Float?
+  notes              String?
   previousFullTankId String?
-
-  previousFullTank FuelSupply? @relation("FuelSupplyHistory", fields: [previousFullTankId], references: [id])
-
-  nextFullTanks FuelSupply[] @relation("FuelSupplyHistory")
-
-  notes String?
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  deletedAt          DateTime?
+  previousFullTank   FuelSupply?  @relation("FuelSupplyHistory", fields: [previousFullTankId], references: [id])
+  nextFullTanks      FuelSupply[] @relation("FuelSupplyHistory")
+  transaction        Transaction? @relation(fields: [transactionId], references: [id])
+  vehicle            Vehicle      @relation(fields: [vehicleId], references: [id])
 
   @@index([vehicleId])
   @@index([fullTank])
@@ -164,58 +116,47 @@ model FuelSupply {
 }
 
 model Maintenance {
-  id String @id @default(uuid())
-
-  vehicleId String
-  vehicle   Vehicle @relation(fields: [vehicleId], references: [id])
-
-  transactionId String?      @unique
-  transaction   Transaction? @relation(fields: [transactionId], references: [id])
-
-  type MaintenanceType
-
-  description String
-
-  cost Float
-
-  odometer Float?
-
-  workshop String?
-
-  performedAt DateTime @default(now())
-
+  id                String          @id @default(uuid())
+  vehicleId         String
+  transactionId     String?         @unique
+  type              MaintenanceType
+  description       String
+  cost              Float
+  odometer          Float?
+  workshop          String?
+  createdAt         DateTime        @default(now())
   nextMaintenanceAt DateTime?
-
   nextMaintenanceKm Float?
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  performedAt       DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  deletedAt         DateTime?
+  transaction       Transaction?    @relation(fields: [transactionId], references: [id])
+  vehicle           Vehicle         @relation(fields: [vehicleId], references: [id])
 }
 
 model Transaction {
-  id          String          @id @default(uuid())
-  title       String
-  description String?
-  amount      Float
-  type        TransactionType
-  date        DateTime
-
-  userId     String
-  accountId  String
-  categoryId String
-
-  user     User     @relation(fields: [userId], references: [id])
-  account  Account  @relation(fields: [accountId], references: [id])
-  category Category @relation(fields: [categoryId], references: [id])
-
-  fuelSupply  FuelSupply?
-  maintenance Maintenance?
-
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @default(now()) @updatedAt
+  id           String             @id @default(uuid())
+  title        String
+  amount       Float
+  type         TransactionType
+  date         DateTime
+  userId       String
+  createdAt    DateTime           @default(now())
+  accountId    String
+  categoryId   String
+  description  String?
   deletedAt    DateTime?
+  updatedAt    DateTime           @default(now()) @updatedAt
+  creditCardId String?
+  invoiceId    String?
+  fuelSupply   FuelSupply?
   installments Installment?
+  maintenance  Maintenance?
+  account      Account            @relation(fields: [accountId], references: [id])
+  category     Category           @relation(fields: [categoryId], references: [id])
+  creditCard   CreditCard?        @relation(fields: [creditCardId], references: [id])
+  invoice      CreditCardInvoice? @relation("InvoiceTransactions", fields: [invoiceId], references: [id])
+  user         User               @relation(fields: [userId], references: [id])
 
   @@index([userId])
   @@index([accountId])
@@ -225,25 +166,18 @@ model Transaction {
 }
 
 model Transfer {
-  id String @id @default(uuid())
-
-  amount Float
-
-  description String?
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
-
+  id            String    @id @default(uuid())
+  amount        Float
+  description   String?
+  userId        String
   fromAccountId String
   toAccountId   String
-
-  fromAccount Account @relation("TransferFromAccount", fields: [fromAccountId], references: [id])
-
-  toAccount Account @relation("TransferToAccount", fields: [toAccountId], references: [id])
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
+  fromAccount   Account   @relation("TransferFromAccount", fields: [fromAccountId], references: [id])
+  toAccount     Account   @relation("TransferToAccount", fields: [toAccountId], references: [id])
+  user          User      @relation(fields: [userId], references: [id])
 
   @@index([userId])
   @@index([fromAccountId])
@@ -251,25 +185,17 @@ model Transfer {
 }
 
 model LedgerEntry {
-  id String @id @default(uuid())
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
-
-  accountId String
-  account   Account @relation(fields: [accountId], references: [id])
-
-  type LedgerEntryType
-
-  amount Float
-
-  description String?
-
-  referenceId String?
-
+  id            String               @id @default(uuid())
+  userId        String
+  accountId     String
+  type          LedgerEntryType
+  amount        Float
+  description   String?
+  referenceId   String?
   referenceType LedgerReferenceType?
-
-  createdAt DateTime @default(now())
+  createdAt     DateTime             @default(now())
+  account       Account              @relation(fields: [accountId], references: [id])
+  user          User                 @relation(fields: [userId], references: [id])
 
   @@index([userId])
   @@index([accountId])
@@ -279,34 +205,24 @@ model LedgerEntry {
 }
 
 model RecurringTransaction {
-  id String @id @default(uuid())
-
-  title       String
-  description String?
-
-  amount Decimal @db.Decimal(12, 2)
-
-  type TransactionType
-
-  frequency RecurrenceFrequency
-
-  startDate DateTime
-  endDate   DateTime?
-
+  id            String              @id @default(uuid())
+  title         String
+  description   String?
+  amount        Decimal             @db.Decimal(12, 2)
+  type          TransactionType
+  frequency     RecurrenceFrequency
+  startDate     DateTime
+  endDate       DateTime?
   nextExecution DateTime
-
-  active Boolean @default(true)
-
-  userId     String
-  accountId  String
-  categoryId String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user     User     @relation(fields: [userId], references: [id])
-  account  Account  @relation(fields: [accountId], references: [id])
-  category Category @relation(fields: [categoryId], references: [id])
+  active        Boolean             @default(true)
+  userId        String
+  accountId     String
+  categoryId    String
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+  account       Account             @relation(fields: [accountId], references: [id])
+  category      Category            @relation(fields: [categoryId], references: [id])
+  user          User                @relation(fields: [userId], references: [id])
 
   @@index([userId])
   @@index([accountId])
@@ -315,46 +231,69 @@ model RecurringTransaction {
 }
 
 model Installment {
-  id String @id @default(uuid())
-
-  title String
-
-  description String?
-
-  totalAmount Float
-
-  installmentAmount Float
-
-  totalInstallments Int
-
+  id                 String       @id @default(uuid())
+  title              String
+  description        String?
+  totalAmount        Float
+  installmentAmount  Float
+  totalInstallments  Int
   currentInstallment Int
-
-  purchaseDate DateTime
-
-  dueDate DateTime
-
-  paid Boolean @default(false)
-
-  accountId String
-  account   Account @relation(fields: [accountId], references: [id])
-
-  categoryId String
-  category   Category @relation(fields: [categoryId], references: [id])
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
-
-  transactionId String? @unique
-  transaction   Transaction? @relation(fields: [transactionId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  purchaseDate       DateTime
+  dueDate            DateTime
+  paid               Boolean      @default(false)
+  accountId          String
+  categoryId         String
+  userId             String
+  transactionId      String?      @unique
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+  account            Account      @relation(fields: [accountId], references: [id])
+  category           Category     @relation(fields: [categoryId], references: [id])
+  transaction        Transaction? @relation(fields: [transactionId], references: [id])
+  user               User         @relation(fields: [userId], references: [id])
 
   @@index([userId])
   @@index([accountId])
   @@index([categoryId])
   @@index([dueDate])
   @@index([paid])
+}
+
+model CreditCard {
+  id           String              @id @default(uuid())
+  name         String
+  bank         String
+  brand        String
+  limit        Float
+  closingDay   Int
+  dueDay       Int
+  active       Boolean             @default(true)
+  userId       String
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+  deletedAt    DateTime?
+  transactions Transaction[]
+  invoices     CreditCardInvoice[]
+  user         User                @relation(fields: [userId], references: [id])
+
+  @@map("credit_cards")
+}
+
+model CreditCardInvoice {
+  id             String        @id @default(uuid())
+  referenceMonth String
+  totalAmount    Float         @default(0)
+  dueDate        DateTime
+  status         InvoiceStatus @default(OPEN)
+  paidAt         DateTime?
+  creditCardId   String
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  deletedAt      DateTime?
+  transactions   Transaction[] @relation("InvoiceTransactions")
+  creditCard     CreditCard    @relation(fields: [creditCardId], references: [id])
+
+  @@map("credit_card_invoices")
 }
 
 enum TransactionType {
@@ -372,8 +311,8 @@ enum FuelType {
   ETHANOL
   DIESEL
   FLEX
-  GNV
   ELECTRIC
+  GNV
 }
 
 enum MaintenanceType {
@@ -381,13 +320,13 @@ enum MaintenanceType {
   ELECTRICAL
   TIRE_SHOP
   OIL_CHANGE
+  OTHER
   ALIGNMENT
   BALANCING
   BRAKES
   SUSPENSION
   ENGINE
   BATTERY
-  OTHER
 }
 
 enum AccountType {
@@ -406,8 +345,8 @@ enum LedgerEntryType {
 enum LedgerReferenceType {
   TRANSACTION
   TRANSFER
-  MAINTENANCE
   FUEL_SUPPLY
+  MAINTENANCE
   VEHICLE
 }
 
@@ -416,4 +355,11 @@ enum RecurrenceFrequency {
   WEEKLY
   MONTHLY
   YEARLY
+}
+
+enum InvoiceStatus {
+  OPEN
+  CLOSED
+  PAID
+  OVERDUE
 }

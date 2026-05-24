@@ -13,12 +13,14 @@ import { LedgerService } from '@/modules/ledger/ledger.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { FindTransactionsDto } from './dto/find-transactions.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
+import { CreditCardInvoiceEngineService } from '../credit-card-invoices/services/credit-card-invoice-engine.service';
 
 @Injectable()
 export class TransactionsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly ledgerService: LedgerService,
+    private readonly invoiceEngine: CreditCardInvoiceEngineService,
   ) {}
 
   /*
@@ -78,8 +80,8 @@ export class TransactionsService {
     */
     return this.prisma.$transaction(async (tx) => {
       /*
-  CREATE TRANSACTION
-*/
+        CREATE TRANSACTION
+      */
       const transaction = await tx.transaction.create({
         data: {
           title: dto.title,
@@ -93,6 +95,7 @@ export class TransactionsService {
           accountId: dto.accountId,
 
           categoryId: dto.categoryId,
+          creditCardId: dto.creditCardId,
         },
 
         include: {
@@ -101,9 +104,25 @@ export class TransactionsService {
         },
       });
 
+      if (dto.creditCardId) {
+        try {
+          await this.invoiceEngine.attachTransactionToInvoice(tx, {
+            userId,
+            transactionId: transaction.id,
+            creditCardId: dto.creditCardId,
+            amount: dto.amount,
+            date: new Date(dto.date),
+          });
+        } catch (error) {
+          console.log(error);
+
+          throw error;
+        }
+      }
+
       /*
-  REGISTER LEDGER ENTRY
-*/
+        REGISTER LEDGER ENTRY
+      */
       if (dto.type === TransactionType.INCOME) {
         await this.ledgerService.registerCredit(
           userId,
@@ -125,8 +144,8 @@ export class TransactionsService {
       }
 
       /*
-  RECALCULATE ACCOUNT BALANCE
-*/
+       RECALCULATE ACCOUNT BALANCE
+      */
       const newBalance = await this.ledgerService.calculateBalance(
         dto.accountId,
       );
@@ -141,7 +160,6 @@ export class TransactionsService {
         },
       });
 
-      return transaction;
       /*
         REGISTER LEDGER ENTRY
       */
