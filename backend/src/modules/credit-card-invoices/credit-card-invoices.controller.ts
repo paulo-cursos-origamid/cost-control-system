@@ -59,13 +59,4 @@ export class CreditCardInvoicesController {
   ) {
     return this.invoicesService.payInvoice(user.sub, invoiceId, dto);
   }
-
-  // @Patch(':id/pay')
-  // payInvoice(
-  //   @CurrentUser() user: JwtUser,
-
-  //   @Param('id') id: string,
-  // ) {
-  //   return this.invoicesService.payInvoice(user.sub, id);
-  // }
 }
