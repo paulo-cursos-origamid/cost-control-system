@@ -1,98 +1,170 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 💰 Cost Control System
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A personal finance management system built with **NestJS + Prisma**, focused on real-life expense tracking across categories such as home, vehicle, health, and credit card management.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+# 🚀 Project Overview
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+This system is designed to give users full visibility over their financial life:
 
-## Project setup
+- Track expenses and income
+- Manage accounts and balances
+- Control credit card invoices
+- Organize spending by context (home, vehicle, health)
+- Generate financial insights and reports
 
-```bash
-$ npm install
-```
+---
 
-## Compile and run the project
+# 🧠 Core Architecture
 
-```bash
-# development
-$ npm run start
+## 🔹 Financial Core
 
-# watch mode
-$ npm run start:dev
+- Transactions (income & expenses)
+- Accounts with real-time balance calculation
+- Ledger system for financial integrity
 
-# production mode
-$ npm run start:prod
-```
+## 🔹 Credit Card Engine
 
-## Run tests
+- Automatic invoice generation
+- Reference month logic (closing day rule)
+- Invoice statuses:
+  - OPEN
+  - CLOSED
+  - PAID
+- Payment processing with ledger integration
+- Credit card limit validation
 
-```bash
-# unit tests
-$ npm run test
+## 🔹 Domain Modules
 
-# e2e tests
-$ npm run test:e2e
+### 🚗 Vehicles
 
-# test coverage
-$ npm run test:cov
-```
+- Fuel supplies tracking
+- Maintenance records
 
-## Deployment
+### 🏠 Categories
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+- Expense categorization system
+- Support for custom and default categories
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### 📊 Reports & Dashboard
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+- Financial summaries
+- Category-based analytics
+- Vehicle cost analysis
+- Cashflow overview
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### 🔁 Recurring Transactions
 
-## Resources
+- Scheduled financial entries
+- Background processing system
 
-Check out a few resources that may come in handy when working with NestJS:
+---
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+# 🏗️ Tech Stack
 
-## Support
+- **Backend:** NestJS
+- **ORM:** Prisma
+- **Database:** PostgreSQL
+- **Auth:** JWT (Passport)
+- **Scheduler:** @nestjs/schedule
+- **Architecture:** Modular monolith
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+---
 
-## Stay in touch
+# 📂 Project Structure
+src/
+├── modules/
+│ ├── transactions
+│ ├── accounts
+│ ├── categories
+│ ├── credit-cards
+│ ├── credit-card-invoices
+│ ├── vehicles
+│ ├── ledger
+│ ├── dashboard
+│ ├── reports
+│ ├── recurring-transactions
+│ └── financial-scheduler
+│
+├── common/
+├── config/
+├── database/
+└── shared/
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
 
-## License
+---
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+# 💳 Credit Card Invoice Engine
+
+The invoice system works based on:
+
+- `closingDay`: defines billing cutoff
+- `dueDay`: defines payment deadline
+- `referenceMonth`: determines invoice grouping
+
+### Flow:
+1. Transaction is created
+2. System determines invoice month
+3. Invoice is created or reused
+4. Transaction is attached
+5. Invoice total is updated
+
+---
+
+# 📊 Ledger System
+
+All financial movements are recorded in a ledger:
+
+- Ensures auditability
+- Maintains account balance integrity
+- Supports income and expense tracking
+
+---
+
+# 🔐 Authentication
+
+- JWT-based authentication
+- User-scoped data access
+- Secure module isolation
+
+---
+
+# ⚙️ Features Implemented
+
+- [x] Transaction management
+- [x] Account balance system
+- [x] Ledger system
+- [x] Credit card invoice engine
+- [x] Invoice closing automation
+- [x] Vehicle expense tracking
+- [x] Financial reports
+- [x] Recurring transactions
+- [x] Dashboard analytics
+
+---
+
+# 📈 Business Goal
+
+This project aims to become a **personal finance intelligence system**, allowing users to:
+
+- Understand where money is spent
+- Track real-life expenses (home, car, health)
+- Control credit card usage
+- Gain financial insights over time
+
+---
+
+# 🚧 Next Steps
+
+- Frontend (Next.js dashboard)
+- UI for transactions and cards
+- Category intelligence improvements
+- Financial insights engine
+- Mobile-ready API consumption
+
+---
+
+# 🧑‍💻 Author
+
+Built as a personal financial control system with a focus on real-world usage and extensibility.
