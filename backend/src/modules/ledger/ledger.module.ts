@@ -11,6 +11,7 @@ import { LedgerController } from './ledger.controller';
   providers: [LedgerService],
 
   exports: [LedgerService],
+
   controllers: [LedgerController],
 })
 export class LedgerModule {}

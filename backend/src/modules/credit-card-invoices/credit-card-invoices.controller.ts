@@ -37,6 +37,10 @@ export class CreditCardInvoicesController {
   ) {
     return this.invoicesService.create(user.sub, dto);
   }
+  @Get(':id')
+  findOne(@CurrentUser() user: JwtUser, @Param('id') id: string) {
+    return this.invoicesService.findOne(user.sub, id);
+  }
 
   @Get()
   findAll(@CurrentUser() user: JwtUser) {
@@ -58,5 +62,10 @@ export class CreditCardInvoicesController {
     @Body() dto: PayInvoiceDto,
   ) {
     return this.invoicesService.payInvoice(user.sub, invoiceId, dto);
+  }
+
+  @Post('/close-expired')
+  closeExpiredInvoices() {
+    return this.invoicesService.closeExpiredInvoices();
   }
 }
