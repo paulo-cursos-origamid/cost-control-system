@@ -1,9 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 
+import cookieParser from 'cookie-parser';
+
 import { AppModule } from './app.module';
 
 import { setupSwagger } from './config/swagger/swagger.config';
+
 import { HttpExceptionFilter } from '@/common/filters/http-exception.filter';
 
 import { TransformResponseInterceptor } from '@/common/interceptors/transform-response.interceptor';
@@ -11,11 +14,12 @@ import { TransformResponseInterceptor } from '@/common/interceptors/transform-re
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.use(cookieParser());
+
   app.setGlobalPrefix('api');
-  setupSwagger(app);
 
   app.enableCors({
-    origin: '*',
+    origin: 'http://localhost:3001',
     credentials: true,
   });
 
@@ -31,11 +35,13 @@ async function bootstrap() {
 
   app.useGlobalInterceptors(new TransformResponseInterceptor());
 
-  const port = process.env.PORT || 3000;
+  setupSwagger(app);
+
+  const port = Number(process.env.PORT) || 3000;
 
   await app.listen(port);
 
-  console.log(`🚀 Server running on port ${port}`);
+  console.log(`🚀 Server running on ${port}`);
 }
 
 void bootstrap();

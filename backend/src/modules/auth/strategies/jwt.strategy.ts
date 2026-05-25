@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
-
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import type { Request } from 'express';
 
-import { JwtUser } from '@/shared/types/auth/jwt-user.type';
+import type { JwtUser } from '@/shared/types/auth/jwt-user.type';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -16,15 +16,18 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (req) => req?.cookies?.access_token, // cookie auth (coerente com teu login)
+      ]),
       ignoreExpiration: false,
-
       secretOrKey: jwtSecret,
     });
   }
 
   validate(payload: JwtUser): JwtUser {
-    return payload;
+    return {
+      sub: payload.sub,
+      email: payload.email,
+    };
   }
 }
