@@ -3,6 +3,7 @@ import { api } from "@/lib/api/fetcher";
 type LoginData = {
   email: string;
   password: string;
+  role: "admin" | "user";
 };
 
 export const authService = {

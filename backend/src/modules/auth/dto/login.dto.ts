@@ -15,4 +15,10 @@ export class LoginDto {
   @IsString()
   @MinLength(6)
   password!: string;
+
+  @ApiProperty({
+    example: 'admin',
+  })
+  @IsString()
+  role!: 'admin' | 'user';
 }

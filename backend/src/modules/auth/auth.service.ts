@@ -7,7 +7,7 @@ import * as bcrypt from 'bcrypt';
 import { PrismaService } from '@/database/prisma.service';
 
 import { LoginDto } from './dto/login.dto';
-
+import { rolePermissions } from './constants/role-permissions';
 @Injectable()
 export class AuthService {
   constructor(
@@ -38,10 +38,11 @@ export class AuthService {
     const payload = {
       sub: user.id,
       email: user.email,
+      role: user.role,
+      permissions: rolePermissions[user.role],
     };
 
     const access_token = await this.jwtService.signAsync(payload);
-
     return {
       access_token,
     };

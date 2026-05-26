@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  UseGuards,
   Post,
   Body,
   Param,
@@ -10,6 +11,11 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+
+import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
+import { RolesGuard } from '@/common/guards/roles.guard';
+import { Roles } from '@/common/decorators/roles.decorator';
+import { Role } from '@/shared/types/enums/role.enum';
 
 @Controller('users')
 export class UsersController {
@@ -21,8 +27,14 @@ export class UsersController {
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Permissions(Permission.USERS_READ)
+  @Roles(Role.ADMIN)
   findAll() {
-    return this.usersService.findAll();
+    return {
+      message: 'Only admins can access',
+      data: this.usersService.findAll(),
+    };
   }
 
   @Get(':id')
