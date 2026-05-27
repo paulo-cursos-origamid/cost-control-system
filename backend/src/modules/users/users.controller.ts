@@ -19,6 +19,8 @@ import { Role } from '@/shared/types/enums/role.enum';
 
 import { Permissions } from '@/common/decorators/permissions.decorator';
 import { Permission } from '@/shared/types/enums/permissions.enum';
+import { Audit } from '@/common/decorators/audit.decorator';
+import { AuditAction } from '@/shared/types/enums/audit-action.enum';
 
 @Controller('users')
 export class UsersController {
@@ -29,6 +31,7 @@ export class UsersController {
     return this.usersService.create(data);
   }
 
+  @Audit(AuditAction.USERS_LIST, 'USER')
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Permissions(Permission.USERS_READ)

@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ClsService } from 'nestjs-cls';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
@@ -21,7 +22,10 @@ function cookieExtractor(req: Request): string | null {
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(private readonly configService: ConfigService) {
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly cls: ClsService,
+  ) {
     const jwtSecret = configService.get<string>('JWT_SECRET');
 
     if (!jwtSecret) {
@@ -36,11 +40,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   validate(payload: JwtUser): JwtUser {
-    return {
+    const user = {
       sub: payload.sub,
       email: payload.email,
       role: payload.role,
       permissions: payload.permissions,
     };
+    this.cls.set('user', user);
+
+    return user;
   }
 }

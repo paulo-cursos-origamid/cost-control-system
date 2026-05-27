@@ -12,6 +12,8 @@ import { CurrentUser } from '@/common/decorators/current-user.decorator';
 
 import type { JwtUser } from '@/shared/types/auth/jwt-user.type';
 
+import { AuditAction } from '@/shared/types/enums/audit-action.enum';
+import { Audit } from '@/common/decorators/audit.decorator';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -22,6 +24,7 @@ export class AuthController {
     return user;
   }
 
+  @Audit(AuditAction.USER_LOGIN, 'Auth')
   @Post('login')
   async login(
     @Body() loginDto: LoginDto,

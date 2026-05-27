@@ -1,6 +1,4 @@
-import { Module } from '@nestjs/common';
-
-import { ConfigModule } from '@nestjs/config';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -27,10 +25,29 @@ import { InstallmentsModule } from './modules/installments/installments.module';
 import { CreditCardsModule } from './modules/credit-cards/credit-cards.module';
 import { CreditCardInvoicesModule } from './modules/credit-card-invoices/credit-card-invoices.module';
 import { AuditModule } from './modules/audit/audit.module';
+import { RequestContextMiddleware } from '@/common/middleware/request-context.middleware';
+import { ClsModule } from 'nestjs-cls';
+import { LoggerModule } from 'nestjs-pino';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { RequestContextService } from '@/shared/services/request-context.service';
+
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
+    ClsModule.forRoot({
+      global: true,
+      middleware: {
+        mount: true,
+      },
+    }),
+    LoggerModule.forRoot({
+      pinoHttp: {
+        transport:
+          process.env.NODE_ENV !== 'production'
+            ? {
+                target: 'pino-pretty',
+              }
+            : undefined,
+      },
     }),
     ScheduleModule.forRoot(),
 
@@ -54,10 +71,15 @@ import { AuditModule } from './modules/audit/audit.module';
     CreditCardsModule,
     CreditCardInvoicesModule,
     AuditModule,
+    RequestContextMiddleware,
   ],
 
   controllers: [AppController],
 
-  providers: [AppService],
+  providers: [AppService, HttpExceptionFilter, RequestContextService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(RequestContextMiddleware).forRoutes('*');
+  }
+}

@@ -11,9 +11,17 @@ import { HttpExceptionFilter } from '@/common/filters/http-exception.filter';
 
 import { TransformResponseInterceptor } from '@/common/interceptors/transform-response.interceptor';
 import { RolesGuard } from './common/guards/roles.guard';
+import { AuditInterceptor } from '@/common/interceptors/audit.interceptor';
+import { AuditService } from './modules/audit/audit.service';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    bufferLogs: true,
+  });
+  const reflector = app.get(Reflector);
+  const auditService = app.get(AuditService);
+
+  app.useGlobalInterceptors(new AuditInterceptor(reflector, auditService));
 
   app.use(cookieParser());
 
@@ -32,7 +40,7 @@ async function bootstrap() {
     }),
   );
 
-  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalFilters(app.get(HttpExceptionFilter));
 
   app.useGlobalInterceptors(new TransformResponseInterceptor());
   app.useGlobalGuards(new RolesGuard(app.get(Reflector)));
