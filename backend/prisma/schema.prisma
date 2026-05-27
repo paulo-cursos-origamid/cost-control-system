@@ -24,6 +24,7 @@ model User {
   transfers             Transfer[]
   vehicles              Vehicle[]
   creditCards           CreditCard[]
+  auditLogs             AuditLog[]
 }
 
 model Account {
@@ -295,6 +296,31 @@ model CreditCardInvoice {
   creditCard     CreditCard    @relation(fields: [creditCardId], references: [id])
 
   @@map("credit_card_invoices")
+}
+
+model AuditLog {
+  id String @id @default(uuid())
+
+  userId    String?
+  userEmail String?
+
+  action   String
+  entity   String?
+  entityId String?
+
+  method    String
+  route     String
+  ipAddress String?
+
+  metadata Json?
+
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
 }
 
 enum Role {

@@ -2,9 +2,22 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+
 import type { Request } from 'express';
 
 import type { JwtUser } from '@/shared/types/auth/jwt-user.type';
+
+type RequestWithCookies = Request & {
+  cookies: {
+    access_token?: string;
+  };
+};
+
+function cookieExtractor(req: Request): string | null {
+  const request = req as RequestWithCookies;
+
+  return request.cookies.access_token ?? null;
+}
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -16,9 +29,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     super({
-      jwtFromRequest: ExtractJwt.fromExtractors([
-        (req) => req?.cookies?.access_token, // cookie auth (coerente com teu login)
-      ]),
+      jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
       ignoreExpiration: false,
       secretOrKey: jwtSecret,
     });
@@ -28,6 +39,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     return {
       sub: payload.sub,
       email: payload.email,
+      role: payload.role,
+      permissions: payload.permissions,
     };
   }
 }

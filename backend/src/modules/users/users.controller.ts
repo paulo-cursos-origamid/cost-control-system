@@ -17,6 +17,9 @@ import { RolesGuard } from '@/common/guards/roles.guard';
 import { Roles } from '@/common/decorators/roles.decorator';
 import { Role } from '@/shared/types/enums/role.enum';
 
+import { Permissions } from '@/common/decorators/permissions.decorator';
+import { Permission } from '@/shared/types/enums/permissions.enum';
+
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

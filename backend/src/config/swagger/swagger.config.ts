@@ -7,7 +7,7 @@ export function setupSwagger(app: INestApplication): void {
     .setTitle('Cost Control API')
     .setDescription('API de controle financeiro')
     .setVersion('1.0')
-    .addBearerAuth()
+    .addCookieAuth('access_token')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

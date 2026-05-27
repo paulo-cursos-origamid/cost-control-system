@@ -7,11 +7,14 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { PrismaModule } from '@/database/prisma.module';
+import { AuditModule } from '../audit/audit.module';
 
 @Module({
   imports: [
+    PrismaModule,
+    AuditModule,
     PassportModule,
-
     JwtModule.register({
       secret: process.env.JWT_SECRET,
 

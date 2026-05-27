@@ -26,6 +26,7 @@ import { FinancialSchedulerModule } from './modules/financial-scheduler/financia
 import { InstallmentsModule } from './modules/installments/installments.module';
 import { CreditCardsModule } from './modules/credit-cards/credit-cards.module';
 import { CreditCardInvoicesModule } from './modules/credit-card-invoices/credit-card-invoices.module';
+import { AuditModule } from './modules/audit/audit.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -52,6 +53,7 @@ import { CreditCardInvoicesModule } from './modules/credit-card-invoices/credit-
     InstallmentsModule,
     CreditCardsModule,
     CreditCardInvoicesModule,
+    AuditModule,
   ],
 
   controllers: [AppController],
