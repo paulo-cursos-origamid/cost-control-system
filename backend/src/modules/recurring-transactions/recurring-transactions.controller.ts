@@ -9,10 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import {
-  ApiBearerAuth,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { CurrentUser } from '@/common/decorators/current-user.decorator';
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
@@ -41,10 +38,7 @@ export class RecurringTransactionsController {
     @CurrentUser() user: JwtUser,
     @Body() dto: CreateRecurringTransactionDto,
   ) {
-    return this.recurringTransactionsService.create(
-      user.sub,
-      dto,
-    );
+    return this.recurringTransactionsService.create(user.sub, dto);
   }
 
   /*
@@ -52,23 +46,15 @@ export class RecurringTransactionsController {
   */
   @Get()
   findAll(@CurrentUser() user: JwtUser) {
-    return this.recurringTransactionsService.findAll(
-      user.sub,
-    );
+    return this.recurringTransactionsService.findAll(user.sub);
   }
 
   /*
     FIND ONE
   */
   @Get(':id')
-  findOne(
-    @Param('id') id: string,
-    @CurrentUser() user: JwtUser,
-  ) {
-    return this.recurringTransactionsService.findOne(
-      id,
-      user.sub,
-    );
+  findOne(@Param('id') id: string, @CurrentUser() user: JwtUser) {
+    return this.recurringTransactionsService.findOne(id, user.sub);
   }
 
   /*
@@ -80,24 +66,14 @@ export class RecurringTransactionsController {
     @CurrentUser() user: JwtUser,
     @Body() dto: UpdateRecurringTransactionDto,
   ) {
-    return this.recurringTransactionsService.update(
-      id,
-      user.sub,
-      dto,
-    );
+    return this.recurringTransactionsService.update(id, user.sub, dto);
   }
 
   /*
     DELETE
   */
   @Delete(':id')
-  remove(
-    @Param('id') id: string,
-    @CurrentUser() user: JwtUser,
-  ) {
-    return this.recurringTransactionsService.remove(
-      id,
-      user.sub,
-    );
+  remove(@Param('id') id: string, @CurrentUser() user: JwtUser) {
+    return this.recurringTransactionsService.remove(id, user.sub);
   }
 }

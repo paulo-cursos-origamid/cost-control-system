@@ -4,8 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
-import { decimalToNumber } from '@/common/utils/decimal.util';
-import { LedgerReferenceType, Prisma, TransactionType } from '@prisma/client';
+import { Prisma, TransactionType, LedgerReferenceType } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
 import { LedgerService } from '@/modules/ledger/ledger.service';
@@ -25,18 +24,16 @@ export class TransactionsService {
   ) {}
 
   /*
-    =====================================
-    CREATE
-    =====================================
+  =====================================
+  CREATE TRANSACTION
+  =====================================
   */
   async create(userId: string, dto: CreateTransactionDto) {
     const account = await this.prisma.account.findFirst({
       where: { id: dto.accountId, userId },
     });
 
-    if (!account) {
-      throw new NotFoundException('Account not found');
-    }
+    if (!account) throw new NotFoundException('Account not found');
 
     const category = await this.prisma.category.findFirst({
       where: {
@@ -45,9 +42,7 @@ export class TransactionsService {
       },
     });
 
-    if (!category) {
-      throw new NotFoundException('Category not found');
-    }
+    if (!category) throw new NotFoundException('Category not found');
 
     if (category.type !== dto.type) {
       throw new BadRequestException('Transaction type differs from category');
@@ -55,7 +50,7 @@ export class TransactionsService {
 
     return this.prisma.$transaction(async (tx) => {
       /*
-        CREATE TRANSACTION
+      1. CREATE TRANSACTION (DOMAIN RECORD)
       */
       const transaction = await tx.transaction.create({
         data: {
@@ -64,7 +59,6 @@ export class TransactionsService {
           amount: dto.amount,
           type: dto.type,
           date: new Date(dto.date),
-
           userId,
           accountId: dto.accountId,
           categoryId: dto.categoryId,
@@ -73,7 +67,7 @@ export class TransactionsService {
       });
 
       /*
-        CREDIT CARD FLOW
+      2. CREDIT CARD FLOW
       */
       if (dto.creditCardId) {
         await this.invoiceEngine.attachTransactionToInvoice(tx, {
@@ -86,13 +80,13 @@ export class TransactionsService {
       }
 
       /*
-        LEDGER ENTRY
+      3. LEDGER SYNC (SOURCE OF TRUTH)
       */
       if (dto.type === TransactionType.INCOME) {
         await this.ledgerService.registerCredit(
           userId,
           dto.accountId,
-          dto.amount,
+          Number(dto.amount),
           LedgerReferenceType.TRANSACTION,
           transaction.id,
           dto.description,
@@ -101,7 +95,7 @@ export class TransactionsService {
         await this.ledgerService.registerDebit(
           userId,
           dto.accountId,
-          dto.amount,
+          Number(dto.amount),
           LedgerReferenceType.TRANSACTION,
           transaction.id,
           dto.description,
@@ -109,7 +103,7 @@ export class TransactionsService {
       }
 
       /*
-        UPDATE ACCOUNT BALANCE
+      4. ACCOUNT BALANCE (DERIVED FROM LEDGER)
       */
       const balance = await this.ledgerService.calculateBalance(dto.accountId);
 
@@ -123,9 +117,9 @@ export class TransactionsService {
   }
 
   /*
-    =====================================
-    FIND ALL
-    =====================================
+  =====================================
+  FIND ALL
+  =====================================
   */
   async findAll(userId: string, filters: FindTransactionsDto) {
     const page = Number(filters.page ?? 1);
@@ -150,26 +144,14 @@ export class TransactionsService {
 
     if (filters.startDate || filters.endDate) {
       where.date = {};
-
-      if (filters.startDate) {
-        where.date.gte = new Date(filters.startDate);
-      }
-
-      if (filters.endDate) {
-        where.date.lte = new Date(filters.endDate);
-      }
+      if (filters.startDate) where.date.gte = new Date(filters.startDate);
+      if (filters.endDate) where.date.lte = new Date(filters.endDate);
     }
 
     if (filters.minAmount || filters.maxAmount) {
       where.amount = {};
-
-      if (filters.minAmount) {
-        where.amount.gte = Number(filters.minAmount);
-      }
-
-      if (filters.maxAmount) {
-        where.amount.lte = Number(filters.maxAmount);
-      }
+      if (filters.minAmount) where.amount.gte = Number(filters.minAmount);
+      if (filters.maxAmount) where.amount.lte = Number(filters.maxAmount);
     }
 
     const total = await this.prisma.transaction.count({ where });
@@ -199,9 +181,9 @@ export class TransactionsService {
   }
 
   /*
-    =====================================
-    FIND ONE
-    =====================================
+  =====================================
+  FIND ONE
+  =====================================
   */
   async findOne(id: string, userId: string) {
     const transaction = await this.prisma.transaction.findFirst({
@@ -217,18 +199,12 @@ export class TransactionsService {
   }
 
   /*
-    =====================================
-    UPDATE
-    =====================================
+  =====================================
+  UPDATE TRANSACTION + LEDGER SYNC
+  =====================================
   */
   async update(id: string, userId: string, dto: UpdateTransactionDto) {
-    const oldTransaction = await this.findOne(id, userId);
-
     return this.prisma.$transaction(async (tx) => {
-      const newAccountId = dto.accountId ?? oldTransaction.accountId;
-      const newType = dto.type ?? oldTransaction.type;
-      const newAmount = dto.amount ?? oldTransaction.amount;
-
       const updated = await tx.transaction.update({
         where: { id },
         data: {
@@ -237,6 +213,9 @@ export class TransactionsService {
         },
       });
 
+      /*
+      RESET LEDGER ENTRIES (SAFE REBUILD)
+      */
       await tx.ledgerEntry.deleteMany({
         where: {
           referenceType: LedgerReferenceType.TRANSACTION,
@@ -244,28 +223,31 @@ export class TransactionsService {
         },
       });
 
-      if (newType === TransactionType.INCOME) {
+      const amount = Number(updated.amount);
+      const accountId = updated.accountId;
+
+      if (updated.type === TransactionType.INCOME) {
         await this.ledgerService.registerCredit(
           userId,
-          newAccountId,
-          Number(newAmount),
+          accountId,
+          amount,
           LedgerReferenceType.TRANSACTION,
           id,
         );
       } else {
         await this.ledgerService.registerDebit(
           userId,
-          newAccountId,
-          Number(newAmount),
+          accountId,
+          amount,
           LedgerReferenceType.TRANSACTION,
           id,
         );
       }
 
-      const balance = await this.ledgerService.calculateBalance(newAccountId);
+      const balance = await this.ledgerService.calculateBalance(accountId);
 
       await tx.account.update({
-        where: { id: newAccountId },
+        where: { id: accountId },
         data: { balance },
       });
 
@@ -274,9 +256,9 @@ export class TransactionsService {
   }
 
   /*
-    =====================================
-    REMOVE
-    =====================================
+  =====================================
+  DELETE TRANSACTION (SOFT RULE VIA LEDGER RESET)
+  =====================================
   */
   async remove(id: string, userId: string) {
     const transaction = await this.findOne(id, userId);
@@ -307,9 +289,9 @@ export class TransactionsService {
   }
 
   /*
-    =====================================
-    RESTORE
-    =====================================
+  =====================================
+  RESTORE
+  =====================================
   */
   async restore(id: string, userId: string) {
     return this.prisma.transaction.updateMany({
@@ -319,9 +301,9 @@ export class TransactionsService {
   }
 
   /*
-    =====================================
-    SUMMARY
-    =====================================
+  =====================================
+  SUMMARY (BASED ON TRANSACTIONS ONLY)
+  =====================================
   */
   async summary(userId: string) {
     const incomes = await this.prisma.transaction.aggregate({
@@ -342,13 +324,13 @@ export class TransactionsService {
       _sum: { amount: true },
     });
 
-    const income = incomes._sum.amount ?? 0;
-    const expense = expenses._sum.amount ?? 0;
+    const income = Number(incomes._sum.amount ?? 0);
+    const expense = Number(expenses._sum.amount ?? 0);
 
     return {
       income,
       expense,
-      balance: decimalToNumber(income) - decimalToNumber(expense),
+      balance: income - expense,
     };
   }
 }

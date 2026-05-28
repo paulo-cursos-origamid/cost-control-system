@@ -1,7 +1,9 @@
 import {
+  Inject,
   Injectable,
   BadRequestException,
   NotFoundException,
+  forwardRef,
 } from '@nestjs/common';
 
 import {
@@ -19,6 +21,7 @@ import { PayInvoiceDto } from '../dto/pay-invoice.dto';
 export class CreditCardInvoiceEngineService {
   constructor(
     private readonly prisma: PrismaService,
+    @Inject(forwardRef(() => LedgerService))
     private readonly ledgerService: LedgerService,
   ) {}
 

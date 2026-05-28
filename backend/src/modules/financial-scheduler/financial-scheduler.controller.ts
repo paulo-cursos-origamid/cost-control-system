@@ -31,8 +31,8 @@ export class FinancialSchedulerController {
     MANUAL EXECUTION
   */
   @Post('run-recurring')
-  handleRecurringTransactions() {
-    this.recurringProcessor.handleRecurringTransactions();
+  async handleRecurringTransactions() {
+    await this.recurringProcessor.handleRecurringTransactions();
 
     return {
       success: true,
