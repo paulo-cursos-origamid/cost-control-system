@@ -1,23 +1,17 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 
-import { ClsService } from 'nestjs-cls';
+import { Request, Response, NextFunction } from 'express';
 
 import { randomUUID } from 'crypto';
 
-import type { NextFunction, Request, Response } from 'express';
+import { RequestContextService } from '@/shared/services/request-context.service';
 
 @Injectable()
 export class RequestContextMiddleware implements NestMiddleware {
-  constructor(private readonly cls: ClsService) {}
+  constructor(private readonly context: RequestContextService) {}
 
   use(req: Request, _: Response, next: NextFunction) {
-    const requestId = req.headers['x-request-id']?.toString() ?? randomUUID();
-
-    const correlationId =
-      req.headers['x-correlation-id']?.toString() ?? randomUUID();
-
-    this.cls.set('requestId', requestId);
-    this.cls.set('correlationId', correlationId);
+    this.context.setRequestId(randomUUID());
 
     next();
   }

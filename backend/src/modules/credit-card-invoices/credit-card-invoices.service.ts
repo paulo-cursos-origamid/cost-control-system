@@ -1,9 +1,7 @@
-import { PayInvoiceDto } from './dto/pay-invoice.dto';
-
 import {
   BadRequestException,
-  NotFoundException,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 
 import { InvoiceStatus } from '@prisma/client';
@@ -11,7 +9,15 @@ import { InvoiceStatus } from '@prisma/client';
 import { PrismaService } from '@/database/prisma.service';
 
 import { CreateInvoiceDto } from './dto/create-invoice.dto';
+import { PayInvoiceDto } from './dto/pay-invoice.dto';
+
 import { CreditCardInvoiceEngineService } from './services/credit-card-invoice-engine.service';
+
+import {
+  decimalToNumber,
+  subtractMoney,
+  sumMoney,
+} from '@/common/utils/money.util';
 
 @Injectable()
 export class CreditCardInvoicesService {
@@ -33,7 +39,7 @@ export class CreditCardInvoicesService {
       throw new BadRequestException('Credit card not found');
     }
 
-    return await this.prisma.creditCardInvoice.create({
+    return this.prisma.creditCardInvoice.create({
       data: {
         referenceMonth: dto.referenceMonth,
 
@@ -79,12 +85,14 @@ export class CreditCardInvoicesService {
     return invoices.map((invoice) => {
       const transactionsCount = invoice.transactions.length;
 
-      const totalSpent = invoice.transactions.reduce(
-        (acc, transaction) => acc + transaction.amount,
-        0,
+      const totalSpent = sumMoney(
+        invoice.transactions.map((transaction) => transaction.amount),
       );
 
-      const availableLimit = invoice.creditCard.limit - totalSpent;
+      const availableLimit = subtractMoney(
+        invoice.creditCard.limit,
+        totalSpent,
+      );
 
       return {
         id: invoice.id,
@@ -95,7 +103,7 @@ export class CreditCardInvoicesService {
 
         status: invoice.status,
 
-        totalAmount: invoice.totalAmount,
+        totalAmount: decimalToNumber(invoice.totalAmount),
 
         paidAt: invoice.paidAt,
 
@@ -116,7 +124,7 @@ export class CreditCardInvoicesService {
 
           brand: invoice.creditCard.brand,
 
-          limit: invoice.creditCard.limit,
+          limit: decimalToNumber(invoice.creditCard.limit),
         },
 
         transactions: invoice.transactions,
@@ -157,16 +165,15 @@ export class CreditCardInvoicesService {
     }
 
     /*
-    TOTALS
-  */
-    const totalSpent = invoice.transactions.reduce(
-      (acc, transaction) => acc + transaction.amount,
-      0,
+      TOTALS
+    */
+    const totalSpent = sumMoney(
+      invoice.transactions.map((transaction) => transaction.amount),
     );
 
     /*
-    GROUP BY CATEGORY
-  */
+      GROUP BY CATEGORY
+    */
     const categorySummary = invoice.transactions.reduce<
       Record<
         string,
@@ -189,15 +196,15 @@ export class CreditCardInvoicesService {
         };
       }
 
-      acc[categoryId].total += transaction.amount;
+      acc[categoryId].total += decimalToNumber(transaction.amount);
 
       return acc;
     }, {});
 
     /*
-    AVAILABLE LIMIT
-  */
-    const availableLimit = invoice.creditCard.limit - totalSpent;
+      AVAILABLE LIMIT
+    */
+    const availableLimit = subtractMoney(invoice.creditCard.limit, totalSpent);
 
     return {
       id: invoice.id,
@@ -208,7 +215,7 @@ export class CreditCardInvoicesService {
 
       status: invoice.status,
 
-      totalAmount: invoice.totalAmount,
+      totalAmount: decimalToNumber(invoice.totalAmount),
 
       paidAt: invoice.paidAt,
 
@@ -231,12 +238,13 @@ export class CreditCardInvoicesService {
 
         brand: invoice.creditCard.brand,
 
-        limit: invoice.creditCard.limit,
+        limit: decimalToNumber(invoice.creditCard.limit),
       },
 
       transactions: invoice.transactions,
     };
   }
+
   async closeInvoice(userId: string, invoiceId: string) {
     const invoice = await this.prisma.creditCardInvoice.findFirst({
       where: {
@@ -252,7 +260,7 @@ export class CreditCardInvoicesService {
       throw new BadRequestException('Invoice not found');
     }
 
-    return await this.prisma.creditCardInvoice.update({
+    return this.prisma.creditCardInvoice.update({
       where: {
         id: invoiceId,
       },
@@ -262,6 +270,7 @@ export class CreditCardInvoicesService {
       },
     });
   }
+
   async payInvoice(invoiceId: string, userId: string, dto: PayInvoiceDto) {
     const invoice = await this.prisma.creditCardInvoice.findFirst({
       where: {
@@ -283,13 +292,13 @@ export class CreditCardInvoicesService {
       throw new NotFoundException('Invoice not found');
     }
 
-    if (invoice.status === 'PAID') {
+    if (invoice.status === InvoiceStatus.PAID) {
       throw new BadRequestException('Invoice already paid');
     }
 
     /*
-    CRIA TRANSACTION DE PAGAMENTO
-  */
+      CREATE PAYMENT TRANSACTION
+    */
     await this.prisma.transaction.create({
       data: {
         title: `Pagamento fatura ${invoice.creditCard.name}`,
@@ -307,8 +316,9 @@ export class CreditCardInvoicesService {
         accountId: dto.accountId,
 
         /*
-          TEMPORÁRIO
-          DEPOIS TEREMOS CONFIGURAÇÃO GLOBAL
+          TEMPORARY
+          LATER:
+          GLOBAL CONFIG
         */
         categoryId: 'COLOQUE_AQUI_UMA_CATEGORIA_REAL',
 
@@ -317,19 +327,17 @@ export class CreditCardInvoicesService {
     });
 
     /*
-    MARCA FATURA COMO PAGA
-  */
+      MARK AS PAID
+    */
     return this.prisma.creditCardInvoice.update({
       where: {
         id: invoice.id,
       },
 
       data: {
-        status: 'PAID',
+        status: InvoiceStatus.PAID,
 
         paidAt: new Date(dto.paymentDate),
-
-        // paymentTransactionId: transaction.id,
       },
     });
   }

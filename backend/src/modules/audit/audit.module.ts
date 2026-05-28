@@ -1,7 +1,8 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 
 import { AuditService } from './audit.service';
 
+@Global()
 @Module({
   providers: [AuditService],
   exports: [AuditService],

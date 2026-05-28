@@ -1,3 +1,4 @@
+import { decimalToNumber } from '@/common/utils/decimal.util';
 import { Injectable } from '@nestjs/common';
 
 import { TransactionType } from '@prisma/client';
@@ -123,7 +124,7 @@ export class DashboardService {
       summary: {
         income,
         expense,
-        balance: income - expense,
+        balance: decimalToNumber(income) - decimalToNumber(expense),
       },
 
       accounts,
@@ -305,7 +306,7 @@ export class DashboardService {
 
     const expense = expenses._sum.amount ?? 0;
 
-    const balance = income - expense;
+    const balance = decimalToNumber(income) - decimalToNumber(expense);
 
     return {
       balance,
@@ -359,9 +360,9 @@ export class DashboardService {
       }
 
       if (tx.type === TransactionType.INCOME) {
-        grouped[month].income += tx.amount;
+        grouped[month].income += decimalToNumber(tx.amount);
       } else {
-        grouped[month].expense += tx.amount;
+        grouped[month].expense += decimalToNumber(tx.amount);
       }
     }
 
@@ -411,9 +412,9 @@ export class DashboardService {
       }
 
       if (transaction.type === TransactionType.INCOME) {
-        grouped[month].income += transaction.amount;
+        grouped[month].income += decimalToNumber(transaction.amount);
       } else {
-        grouped[month].expense += transaction.amount;
+        grouped[month].expense += decimalToNumber(transaction.amount);
       }
     }
 

@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { ClsService } from 'nestjs-cls';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
@@ -7,6 +6,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import type { Request } from 'express';
 
 import type { JwtUser } from '@/shared/types/auth/jwt-user.type';
+import { RequestContextService } from '@/shared/services/request-context.service';
 
 type RequestWithCookies = Request & {
   cookies: {
@@ -24,7 +24,8 @@ function cookieExtractor(req: Request): string | null {
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     private readonly configService: ConfigService,
-    private readonly cls: ClsService,
+
+    private readonly context: RequestContextService,
   ) {
     const jwtSecret = configService.get<string>('JWT_SECRET');
 
@@ -46,7 +47,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       role: payload.role,
       permissions: payload.permissions,
     };
-    this.cls.set('user', user);
+
+    this.context.setUser(user);
 
     return user;
   }

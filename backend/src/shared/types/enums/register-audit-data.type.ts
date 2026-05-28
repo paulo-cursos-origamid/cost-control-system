@@ -13,5 +13,5 @@ export type RegisterAuditData = {
   route: string;
   ipAddress?: string;
 
-  metadata?: Record<string, unknown>;
+  metadata?: unknown;
 };

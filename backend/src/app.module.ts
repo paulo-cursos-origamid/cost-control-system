@@ -30,6 +30,7 @@ import { ClsModule } from 'nestjs-cls';
 import { LoggerModule } from 'nestjs-pino';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { RequestContextService } from '@/shared/services/request-context.service';
+import { SharedModule } from './shared/shared.module';
 
 @Module({
   imports: [
@@ -71,7 +72,7 @@ import { RequestContextService } from '@/shared/services/request-context.service
     CreditCardsModule,
     CreditCardInvoicesModule,
     AuditModule,
-    RequestContextMiddleware,
+    SharedModule,
   ],
 
   controllers: [AppController],

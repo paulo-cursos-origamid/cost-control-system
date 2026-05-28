@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
@@ -13,6 +14,7 @@ import { AuditModule } from '../audit/audit.module';
 @Module({
   imports: [
     PrismaModule,
+    ConfigModule,
     AuditModule,
     PassportModule,
     JwtModule.register({

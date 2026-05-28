@@ -4,6 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
+import { decimalToNumber } from '@/common/utils/decimal.util';
+
 import { TransactionType } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
@@ -319,7 +321,7 @@ export class FuelSuppliesService {
           },
           data: {
             balance: {
-              increment: transaction.amount,
+              increment: decimalToNumber(transaction.amount),
             },
           },
         });

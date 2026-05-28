@@ -15,6 +15,8 @@ export enum AuditAction {
 
   CHANGE_ROLE = 'CHANGE_ROLE',
 
+  USER_LOGIN = 'USER_LOGIN',
+
   USERS_LIST = 'USERS_LIST',
 
   USER_CREATE = 'USER_CREATE',

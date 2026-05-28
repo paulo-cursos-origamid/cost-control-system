@@ -1,3 +1,4 @@
+import { decimalToNumber } from '@/common/utils/decimal.util';
 import { Injectable } from '@nestjs/common';
 
 import { Prisma, TransactionType } from '@prisma/client';
@@ -167,11 +168,11 @@ export class ReportsService {
       }
 
       if (transaction.type === TransactionType.INCOME) {
-        monthlyMap[monthKey].income += transaction.amount;
+        monthlyMap[monthKey].income += decimalToNumber(transaction.amount);
       }
 
       if (transaction.type === TransactionType.EXPENSE) {
-        monthlyMap[monthKey].expense += transaction.amount;
+        monthlyMap[monthKey].expense += decimalToNumber(transaction.amount);
       }
     }
 
@@ -222,7 +223,7 @@ export class ReportsService {
 
         expense: totalExpense,
 
-        balance: totalIncome - totalExpense,
+        balance: decimalToNumber(totalIncome) - decimalToNumber(totalExpense),
 
         transactionsCount: incomes._count + expenses._count,
 
@@ -365,11 +366,11 @@ export class ReportsService {
       }
 
       if (transaction.type === TransactionType.INCOME) {
-        acc[month].income += transaction.amount;
+        acc[month].income += decimalToNumber(transaction.amount);
       }
 
       if (transaction.type === TransactionType.EXPENSE) {
-        acc[month].expense += transaction.amount;
+        acc[month].expense += decimalToNumber(transaction.amount);
       }
 
       return acc;
@@ -693,7 +694,8 @@ export class ReportsService {
     const maintenanceCost = maintenances._sum.cost ?? 0;
 
     return {
-      totalBalance: totalIncome - totalExpense,
+      totalBalance:
+        decimalToNumber(totalIncome) - decimalToNumber(totalExpense),
 
       totalIncome,
 

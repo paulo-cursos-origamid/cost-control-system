@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
+import { decimalToNumber } from '@/common/utils/decimal.util';
 import { LedgerReferenceType, Prisma, TransactionType } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
@@ -347,7 +348,7 @@ export class TransactionsService {
     return {
       income,
       expense,
-      balance: income - expense,
+      balance: decimalToNumber(income) - decimalToNumber(expense),
     };
   }
 }
