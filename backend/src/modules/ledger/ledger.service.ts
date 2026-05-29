@@ -192,4 +192,21 @@ export class LedgerService {
       },
     };
   }
+
+  /*
+    =====================================
+    DELETE ENTRIES BY REFERENCE
+    =====================================
+  */
+  async deleteEntriesByReference(
+    referenceType: LedgerReferenceType,
+    referenceId: string,
+  ) {
+    return this.prisma.ledgerEntry.deleteMany({
+      where: {
+        referenceType,
+        referenceId,
+      },
+    });
+  }
 }

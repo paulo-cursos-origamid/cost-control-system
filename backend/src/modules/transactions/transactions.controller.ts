@@ -22,7 +22,7 @@ import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { FindTransactionsDto } from './dto/find-transactions.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 
-import { TransactionsService } from './transactions.service';
+import { TransactionsService } from './services/transactions.service';
 
 @ApiTags('Transactions')
 @ApiBearerAuth()

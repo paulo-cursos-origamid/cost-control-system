@@ -6,7 +6,7 @@ import { PrismaService } from '@/database/prisma.service';
 
 import { LedgerService } from '@/modules/ledger/ledger.service';
 
-import { TransactionsService } from '@/modules/transactions/transactions.service';
+import { TransactionsService } from '@/modules/transactions/services/transactions.service';
 
 import { RecurringTransactionsService } from '@/modules/recurring-transactions/recurring-transactions.service';
 
