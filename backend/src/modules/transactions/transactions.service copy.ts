@@ -7,7 +7,7 @@ import {
 import { LedgerReferenceType, Prisma, TransactionType } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
-import { LedgerService } from '@/modules/ledger/ledger.service';
+import { LedgerService } from '@/modules/ledger/services/ledger.service';
 
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { FindTransactionsDto } from './dto/find-transactions.dto';

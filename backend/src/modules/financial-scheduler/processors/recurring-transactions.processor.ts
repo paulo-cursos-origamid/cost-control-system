@@ -4,7 +4,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 
 import { PrismaService } from '@/database/prisma.service';
 
-import { LedgerService } from '@/modules/ledger/ledger.service';
+import { LedgerService } from '@/modules/ledger/services/ledger.service';
 
 import { TransactionsService } from '@/modules/transactions/services/transactions.service';
 

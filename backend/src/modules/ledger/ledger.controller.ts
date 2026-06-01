@@ -7,7 +7,7 @@ import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
 
 import { JwtUser } from '@/shared/interfaces/jwt-user.interface';
 
-import { LedgerService } from './ledger.service';
+import { LedgerService } from './services/ledger.service';
 import { FindLedgerDto } from './dto/find-ledger.dto';
 
 @ApiTags('Ledger')

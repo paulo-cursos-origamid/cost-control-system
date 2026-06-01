@@ -12,6 +12,7 @@ model User {
   name                  String
   email                 String                 @unique
   password              String
+  role                  UserRole               @default(USER) 
   createdAt             DateTime               @default(now())
   updatedAt             DateTime               @updatedAt
   accounts              Account[]
@@ -362,4 +363,11 @@ enum InvoiceStatus {
   CLOSED
   PAID
   OVERDUE
+}
+
+enum UserRole {
+  ADMIN
+  USER
+  MANAGER
+  SUPPORT
 }

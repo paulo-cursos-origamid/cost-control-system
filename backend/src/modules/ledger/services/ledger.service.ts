@@ -1,22 +1,27 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 
-import { FindLedgerDto } from './dto/find-ledger.dto';
 import {
   LedgerEntry,
   LedgerEntryType,
   LedgerReferenceType,
+  Prisma,
 } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
 
+import { FindLedgerDto } from '../dto/find-ledger.dto';
+
 interface CreateEntryParams {
   userId: string;
   accountId: string;
+
   type: LedgerEntryType;
+
   referenceType: LedgerReferenceType;
   referenceId: string;
+
   amount: number;
+
   description?: string;
 }
 
@@ -33,11 +38,16 @@ export class LedgerService {
     return this.prisma.ledgerEntry.create({
       data: {
         userId: data.userId,
+
         accountId: data.accountId,
+
         type: data.type,
+
         referenceType: data.referenceType,
         referenceId: data.referenceId,
+
         amount: data.amount,
+
         description: data.description,
       },
     });
@@ -56,13 +66,18 @@ export class LedgerService {
     referenceId: string,
     description?: string,
   ): Promise<LedgerEntry> {
-    return await this.createEntry({
+    return this.createEntry({
       userId,
+
       accountId,
+
       amount,
+
       referenceType,
       referenceId,
+
       description,
+
       type: LedgerEntryType.CREDIT,
     });
   }
@@ -80,15 +95,55 @@ export class LedgerService {
     referenceId: string,
     description?: string,
   ): Promise<LedgerEntry> {
-    return await this.createEntry({
+    return this.createEntry({
+      userId,
+
+      accountId,
+
+      amount,
+
+      referenceType,
+      referenceId,
+
+      description,
+
+      type: LedgerEntryType.DEBIT,
+    });
+  }
+
+  /*
+    =====================================
+    REPLAY ENTRY
+    =====================================
+  */
+  async replayEntry(
+    type: LedgerEntryType,
+    userId: string,
+    accountId: string,
+    amount: number,
+    referenceType: LedgerReferenceType,
+    referenceId: string,
+    description?: string,
+  ) {
+    if (type === LedgerEntryType.CREDIT) {
+      return this.registerCredit(
+        userId,
+        accountId,
+        amount,
+        referenceType,
+        referenceId,
+        description,
+      );
+    }
+
+    return this.registerDebit(
       userId,
       accountId,
       amount,
       referenceType,
       referenceId,
       description,
-      type: LedgerEntryType.DEBIT,
-    });
+    );
   }
 
   /*
@@ -97,28 +152,36 @@ export class LedgerService {
     =====================================
   */
   async calculateBalance(accountId: string): Promise<number> {
-    const entries = await this.prisma.ledgerEntry.findMany({
+    const credits = await this.prisma.ledgerEntry.aggregate({
       where: {
         accountId,
+        type: LedgerEntryType.CREDIT,
+      },
+
+      _sum: {
+        amount: true,
       },
     });
 
-    const credits = entries
-      .filter((entry) => entry.type === LedgerEntryType.CREDIT)
-      .reduce((acc, entry) => acc + Number(entry.amount), 0);
+    const debits = await this.prisma.ledgerEntry.aggregate({
+      where: {
+        accountId,
+        type: LedgerEntryType.DEBIT,
+      },
 
-    const debits = entries
-      .filter((entry) => entry.type === LedgerEntryType.DEBIT)
-      .reduce((acc, entry) => acc + Number(entry.amount), 0);
+      _sum: {
+        amount: true,
+      },
+    });
 
-    return credits - debits;
+    return Number(credits._sum.amount ?? 0) - Number(debits._sum.amount ?? 0);
   }
 
   /*
-  =====================================
-  FIND ALL
-  =====================================
-*/
+    =====================================
+    FIND ALL
+    =====================================
+  */
   async findAll(userId: string, filters: FindLedgerDto) {
     const page = Number(filters.page ?? 1);
 
@@ -131,22 +194,22 @@ export class LedgerService {
     };
 
     /*
-    FILTER ACCOUNT
-  */
+      FILTER ACCOUNT
+    */
     if (filters.accountId) {
       where.accountId = filters.accountId;
     }
 
     /*
-    FILTER TYPE
-  */
+      FILTER TYPE
+    */
     if (filters.type) {
       where.type = filters.type;
     }
 
     /*
-    FILTER DATE
-  */
+      FILTER DATE
+    */
     if (filters.startDate || filters.endDate) {
       where.createdAt = {};
 
@@ -160,15 +223,15 @@ export class LedgerService {
     }
 
     /*
-    TOTAL
-  */
+      TOTAL
+    */
     const total = await this.prisma.ledgerEntry.count({
       where,
     });
 
     /*
-    ENTRIES
-  */
+      ENTRIES
+    */
     const entries = await this.prisma.ledgerEntry.findMany({
       where,
 
@@ -186,8 +249,11 @@ export class LedgerService {
 
       meta: {
         total,
+
         page,
+
         limit,
+
         totalPages: Math.ceil(total / limit),
       },
     };

@@ -6,6 +6,8 @@ import { CreditCardInvoicesModule } from '../credit-card-invoices/credit-card-in
 import { TransactionProcessorService } from './services/transaction-processor.service';
 import { TransactionFactory } from './factories/transaction.factory';
 import { TransactionUpdateService } from './services/transaction-update.service';
+import { TransactionValidatorService } from './services/transaction-validator.service';
+import { TransactionQueryService } from './services/transaction-query.service';
 
 @Module({
   imports: [LedgerModule, CreditCardInvoicesModule, TransactionFactory],
@@ -14,6 +16,8 @@ import { TransactionUpdateService } from './services/transaction-update.service'
     TransactionsService,
     TransactionProcessorService,
     TransactionUpdateService,
+    TransactionValidatorService,
+    TransactionQueryService,
     TransactionFactory,
   ],
   exports: [TransactionsService],

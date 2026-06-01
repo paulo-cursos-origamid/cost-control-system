@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { LedgerReferenceType, TransactionType } from '@prisma/client';
 
-import { LedgerService } from '@/modules/ledger/ledger.service';
+import { LedgerService } from '@/modules/ledger/services/ledger.service';
 
 @Injectable()
 export class TransactionFactory {

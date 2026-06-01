@@ -12,7 +12,7 @@ import {
 } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
-import { LedgerService } from '@/modules/ledger/ledger.service';
+import { LedgerService } from '@/modules/ledger/services/ledger.service';
 import { PayInvoiceDto } from '../dto/pay-invoice.dto';
 
 @Injectable()

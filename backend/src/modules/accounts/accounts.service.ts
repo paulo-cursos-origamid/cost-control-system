@@ -4,7 +4,7 @@ import { PrismaService } from '@/database/prisma.service';
 
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
-import { LedgerService } from '../ledger/ledger.service';
+import { LedgerService } from '../ledger/services/ledger.service';
 @Injectable()
 export class AccountsService {
   constructor(
