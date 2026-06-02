@@ -12,7 +12,7 @@ model User {
   name                  String
   email                 String                 @unique
   password              String
-  role                  UserRole               @default(USER) 
+  role                  UserRole               @default(USER)
   createdAt             DateTime               @default(now())
   updatedAt             DateTime               @updatedAt
   accounts              Account[]
@@ -198,6 +198,13 @@ model LedgerEntry {
   account       Account              @relation(fields: [accountId], references: [id])
   user          User                 @relation(fields: [userId], references: [id])
 
+  reversedAt   DateTime?
+  reversalOfId String?
+
+  reversalOf LedgerEntry? @relation("LedgerReversal", fields: [reversalOfId], references: [id])
+
+  reversals LedgerEntry[] @relation("LedgerReversal")
+
   @@index([userId])
   @@index([accountId])
   @@index([referenceType])
@@ -346,9 +353,17 @@ enum LedgerEntryType {
 enum LedgerReferenceType {
   TRANSACTION
   TRANSFER
+
+  CREDIT_CARD_INVOICE
+  INSTALLMENT
+  RECURRING_TRANSACTION
+
   FUEL_SUPPLY
   MAINTENANCE
   VEHICLE
+
+  ADJUSTMENT
+  REVERSAL
 }
 
 enum RecurrenceFrequency {

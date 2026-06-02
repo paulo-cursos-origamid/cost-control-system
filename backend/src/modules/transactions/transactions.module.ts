@@ -9,14 +9,16 @@ import { TransactionUpdateService } from './services/transaction-update.service'
 import { TransactionValidatorService } from './services/transaction-validator.service';
 import { TransactionQueryService } from './services/transaction-query.service';
 import { TransactionRestoreService } from './services/transaction-restore.service';
+import { TransactionDeleteService } from './services/transaction-delete.service';
 
 @Module({
-  imports: [LedgerModule, CreditCardInvoicesModule, TransactionFactory],
+  imports: [LedgerModule, CreditCardInvoicesModule],
   controllers: [TransactionsController],
   providers: [
     TransactionsService,
     TransactionProcessorService,
     TransactionUpdateService,
+    TransactionDeleteService,
     TransactionValidatorService,
     TransactionQueryService,
     TransactionRestoreService,

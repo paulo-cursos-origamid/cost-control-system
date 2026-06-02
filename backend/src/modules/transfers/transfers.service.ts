@@ -1,12 +1,21 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 
+import { CreateTransferDto } from './dto/create-transfer.dto';
 import { PrismaService } from '@/database/prisma.service';
 
-import { CreateTransferDto } from './dto/create-transfer.dto';
+import { FinancialTransferService } from '@/modules/financial-engine/services/financial-transfer.service';
+
+import { FinancialBalanceService } from '@/modules/financial-engine/services/financial-balance.service';
 
 @Injectable()
 export class TransfersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+
+    private readonly transferEngine: FinancialTransferService,
+
+    private readonly balanceService: FinancialBalanceService,
+  ) {}
 
   /*
     Criar transferência
@@ -73,38 +82,8 @@ export class TransfersService {
       }
 
       /*
-      DEBITAR ORIGEM
-    */
-      await tx.account.update({
-        where: {
-          id: fromAccount.id,
-        },
-
-        data: {
-          balance: {
-            decrement: data.amount,
-          },
-        },
-      });
-
-      /*
-      CREDITAR DESTINO
-    */
-      await tx.account.update({
-        where: {
-          id: toAccount.id,
-        },
-
-        data: {
-          balance: {
-            increment: data.amount,
-          },
-        },
-      });
-
-      /*
-      REGISTRAR TRANSFERÊNCIA
-    */
+  REGISTRAR TRANSFERÊNCIA
+*/
       const transfer = await tx.transfer.create({
         data: {
           amount: data.amount,
@@ -123,6 +102,28 @@ export class TransfersService {
           toAccount: true,
         },
       });
+
+      /*
+  CREATE FINANCIAL ENTRIES
+*/
+      await this.transferEngine.transfer({
+        userId,
+
+        fromAccountId: fromAccount.id,
+
+        toAccountId: toAccount.id,
+
+        amount: data.amount,
+
+        referenceId: transfer.id,
+
+        description: data.description,
+      });
+
+      /*
+        RECALCULATE BALANCES
+      */
+      await this.balanceService.recalculateMany([fromAccount.id, toAccount.id]);
 
       return transfer;
     });
