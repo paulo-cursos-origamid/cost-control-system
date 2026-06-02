@@ -1,17 +1,17 @@
-import { LedgerTransactionBalanceService } from './services/ledger-transaction-balance.service';
 import { Module } from '@nestjs/common';
 
 import { PrismaModule } from '@/database/prisma.module';
 
 import { LedgerService } from './services/ledger.service';
 import { LedgerController } from './ledger.controller';
+import { AccountBalanceService } from './services/account-balance.service';
 
 @Module({
   imports: [PrismaModule],
 
-  providers: [LedgerService, LedgerTransactionBalanceService],
+  providers: [LedgerService, AccountBalanceService],
 
-  exports: [LedgerService, LedgerTransactionBalanceService],
+  exports: [LedgerService, AccountBalanceService],
 
   controllers: [LedgerController],
 })

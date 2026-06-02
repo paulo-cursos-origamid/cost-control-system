@@ -5,14 +5,14 @@ import { LedgerReferenceType } from '@prisma/client';
 import { PrismaService } from '@/database/prisma.service';
 
 import { TransactionFactory } from '../factories/transaction.factory';
-import { LedgerTransactionBalanceService } from '@/modules/ledger/services/ledger-transaction-balance.service';
+import { AccountBalanceService } from '@/modules/ledger/services/account-balance.service';
 
 @Injectable()
 export class TransactionDeleteService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly factory: TransactionFactory,
-    private readonly balanceService: LedgerTransactionBalanceService,
+    private readonly balanceService: AccountBalanceService,
   ) {}
 
   async execute(id: string, userId: string) {
@@ -67,7 +67,7 @@ export class TransactionDeleteService {
       /*
           REFRESH BALANCE
         */
-      await this.balanceService.refresh(transaction.accountId);
+      await this.balanceService.recalculate(transaction.accountId);
 
       return {
         message: 'Transaction deleted successfully',

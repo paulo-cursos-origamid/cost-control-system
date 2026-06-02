@@ -3,14 +3,14 @@ import { PrismaService } from '@/database/prisma.service';
 
 import { UpdateTransactionDto } from '../dto/update-transaction.dto';
 import { TransactionFactory } from '../factories/transaction.factory';
-import { LedgerTransactionBalanceService } from '@/modules/ledger/services/ledger-transaction-balance.service';
+import { AccountBalanceService } from '@/modules/ledger/services/account-balance.service';
 
 @Injectable()
 export class TransactionUpdateService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly factory: TransactionFactory,
-    private readonly balanceService: LedgerTransactionBalanceService,
+    private readonly balanceService: AccountBalanceService,
   ) {}
 
   async execute(id: string, userId: string, dto: UpdateTransactionDto) {
@@ -62,7 +62,7 @@ export class TransactionUpdateService {
         referenceId: updated.id,
         description: updated.description,
       });
-      await this.balanceService.refresh(accountId);
+      await this.balanceService.recalculate(accountId);
       return updated;
     });
   }

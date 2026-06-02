@@ -8,6 +8,7 @@ import { TransactionFactory } from './factories/transaction.factory';
 import { TransactionUpdateService } from './services/transaction-update.service';
 import { TransactionValidatorService } from './services/transaction-validator.service';
 import { TransactionQueryService } from './services/transaction-query.service';
+import { TransactionRestoreService } from './services/transaction-restore.service';
 
 @Module({
   imports: [LedgerModule, CreditCardInvoicesModule, TransactionFactory],
@@ -18,6 +19,7 @@ import { TransactionQueryService } from './services/transaction-query.service';
     TransactionUpdateService,
     TransactionValidatorService,
     TransactionQueryService,
+    TransactionRestoreService,
     TransactionFactory,
   ],
   exports: [TransactionsService],

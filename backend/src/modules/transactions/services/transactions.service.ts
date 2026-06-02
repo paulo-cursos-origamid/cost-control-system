@@ -6,20 +6,19 @@ import { UpdateTransactionDto } from '../dto/update-transaction.dto';
 
 import { TransactionProcessorService } from './transaction-processor.service';
 import { TransactionUpdateService } from './transaction-update.service';
-import { PrismaService } from '@/database/prisma.service';
+
 import { TransactionDeleteService } from './transaction-delete.service';
 import { TransactionQueryService } from './transaction-query.service';
-import { LedgerTransactionBalanceService } from '@/modules/ledger/services/ledger-transaction-balance.service';
+import { TransactionRestoreService } from './transaction-restore.service';
 
 @Injectable()
 export class TransactionsService {
   constructor(
-    private readonly prisma: PrismaService,
     private readonly processor: TransactionProcessorService,
     private readonly updater: TransactionUpdateService,
     private readonly deleter: TransactionDeleteService,
     private readonly query: TransactionQueryService,
-    private readonly balanceService: LedgerTransactionBalanceService,
+    private readonly restorer: TransactionRestoreService,
   ) {}
 
   /*
@@ -71,13 +70,10 @@ export class TransactionsService {
     RESTORE
     =====================================
   */
-  async restore(id: string, userId: string) {
-    return this.prisma.transaction.updateMany({
-      where: { id, userId },
-      data: { deletedAt: null },
-    });
-  }
 
+  async restore(id: string, userId: string) {
+    return this.restorer.execute(id, userId);
+  }
   /*
     =====================================
     SUMMARY

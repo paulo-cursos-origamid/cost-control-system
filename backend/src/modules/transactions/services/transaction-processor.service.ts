@@ -7,7 +7,7 @@ import { CreateTransactionDto } from '../dto/create-transaction.dto';
 import { CreditCardInvoiceEngineService } from '@/modules/credit-card-invoices/services/credit-card-invoice-engine.service';
 import { TransactionFactory } from '../factories/transaction.factory';
 import { TransactionValidatorService } from './transaction-validator.service';
-import { LedgerTransactionBalanceService } from '@/modules/ledger/services/ledger-transaction-balance.service';
+import { AccountBalanceService } from '@/modules/ledger/services/account-balance.service';
 
 @Injectable()
 export class TransactionProcessorService {
@@ -17,7 +17,7 @@ export class TransactionProcessorService {
 
     private readonly invoiceEngine: CreditCardInvoiceEngineService,
     private readonly validator: TransactionValidatorService,
-    private readonly balanceService: LedgerTransactionBalanceService,
+    private readonly balanceService: AccountBalanceService,
   ) {}
 
   async create(userId: string, dto: CreateTransactionDto) {
@@ -64,7 +64,7 @@ export class TransactionProcessorService {
         description: dto.description ?? undefined,
       });
 
-      await this.balanceService.refresh(dto.accountId);
+      await this.balanceService.recalculate(dto.accountId);
       return transaction;
     });
   }
