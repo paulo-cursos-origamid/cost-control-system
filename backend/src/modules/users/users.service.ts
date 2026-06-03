@@ -1,3 +1,4 @@
+import { UserRole } from '@prisma/client';
 import {
   Injectable,
   ConflictException,
@@ -28,6 +29,7 @@ export class UsersService {
         name: data.name,
         email: data.email,
         password: hashedPassword,
+        role: UserRole.USER,
       },
     });
   }

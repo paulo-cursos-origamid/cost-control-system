@@ -4,18 +4,29 @@ import { LedgerReferenceType } from '@prisma/client';
 
 import { PrismaService } from '@/database/prisma.service';
 
-import { TransactionFactory } from '../factories/transaction.factory';
 import { AccountBalanceService } from '@/modules/ledger/services/account-balance.service';
+
+import { FinancialReversalService } from '@/modules/financial-engine/services/financial-reversal.service';
 
 @Injectable()
 export class TransactionDeleteService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly factory: TransactionFactory,
+
+    private readonly reversalService: FinancialReversalService,
+
     private readonly balanceService: AccountBalanceService,
   ) {}
 
+  /*
+    =====================================
+    DELETE TRANSACTION
+    =====================================
+  */
   async execute(id: string, userId: string) {
+    /*
+      FIND TRANSACTION
+    */
     const transaction = await this.prisma.transaction.findFirst({
       where: {
         id,
@@ -24,48 +35,33 @@ export class TransactionDeleteService {
       },
     });
 
+    /*
+      VALIDATE
+    */
     if (!transaction) {
       throw new NotFoundException('Transaction not found');
     }
 
+    /*
+      TRANSACTION
+    */
     return this.prisma.$transaction(async (tx) => {
       /*
-        REMOVE LEDGER ENTRIES
-      */
-      await tx.ledgerEntry.deleteMany({
-        where: {
-          referenceType: LedgerReferenceType.TRANSACTION,
-
-          referenceId: id,
-        },
-      });
+          REVERSE FINANCIAL ENTRIES
+        */
+      await this.reversalService.reverse(LedgerReferenceType.TRANSACTION, id);
 
       /*
-        RECALCULATE BALANCE
-      */
-      const balance = await this.factory.recalculateBalance(
-        transaction.accountId,
-      );
-
-      await tx.account.update({
-        where: {
-          id: transaction.accountId,
-        },
-
-        data: {
-          balance,
-        },
-      });
-
-      /*
-        DELETE TRANSACTION
-      */
+          DELETE TRANSACTION
+        */
       await tx.transaction.delete({
-        where: { id },
+        where: {
+          id,
+        },
       });
 
       /*
-          REFRESH BALANCE
+          RECALCULATE BALANCE
         */
       await this.balanceService.recalculate(transaction.accountId);
 

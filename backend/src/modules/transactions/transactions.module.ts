@@ -10,9 +10,10 @@ import { TransactionValidatorService } from './services/transaction-validator.se
 import { TransactionQueryService } from './services/transaction-query.service';
 import { TransactionRestoreService } from './services/transaction-restore.service';
 import { TransactionDeleteService } from './services/transaction-delete.service';
+import { FinancialEngineModule } from '../financial-engine/financial-engine.module';
 
 @Module({
-  imports: [LedgerModule, CreditCardInvoicesModule],
+  imports: [LedgerModule, CreditCardInvoicesModule, FinancialEngineModule],
   controllers: [TransactionsController],
   providers: [
     TransactionsService,
@@ -22,6 +23,7 @@ import { TransactionDeleteService } from './services/transaction-delete.service'
     TransactionValidatorService,
     TransactionQueryService,
     TransactionRestoreService,
+    FinancialEngineModule,
     TransactionFactory,
   ],
   exports: [TransactionsService],
