@@ -8,13 +8,15 @@ import {
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-interface ApiResponse<T> {
+export interface ApiResponse<T = any> {
   success: boolean;
   data: T;
+  message?: string;
+  timestamp: string;
 }
 
 @Injectable()
-export class TransformResponseInterceptor<T> implements NestInterceptor<
+export class TransformResponseInterceptor<T = any> implements NestInterceptor<
   T,
   ApiResponse<T>
 > {
@@ -26,6 +28,8 @@ export class TransformResponseInterceptor<T> implements NestInterceptor<
       map((data: T) => ({
         success: true,
         data,
+        message: 'success',
+        timestamp: new Date().toISOString(),
       })),
     );
   }
