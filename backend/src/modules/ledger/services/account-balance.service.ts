@@ -17,13 +17,8 @@ export class AccountBalanceService {
     RECALCULATE ACCOUNT BALANCE
     =====================================
   */
-  async recalculate(
-    accountId: string,
-  ): Promise<number> {
-    const balance =
-      await this.ledgerService.calculateBalance(
-        accountId,
-      );
+  async recalculate(accountId: string): Promise<number> {
+    const balance = await this.ledgerService.calculateBalance(accountId);
 
     await this.prisma.account.update({
       where: {
@@ -43,9 +38,7 @@ export class AccountBalanceService {
     REFRESH (LEGACY COMPATIBILITY)
     =====================================
   */
-  async refresh(
-    accountId: string,
-  ): Promise<number> {
+  async refresh(accountId: string): Promise<number> {
     return this.recalculate(accountId);
   }
 
@@ -54,16 +47,9 @@ export class AccountBalanceService {
     RECALCULATE MANY
     =====================================
   */
-  async recalculateMany(
-    accountIds: string[],
-  ): Promise<void> {
-    const unique =
-      [...new Set(accountIds)];
+  async recalculateMany(accountIds: string[]): Promise<void> {
+    const unique = [...new Set(accountIds)];
 
-    await Promise.all(
-      unique.map((accountId) =>
-        this.recalculate(accountId),
-      ),
-    );
+    await Promise.all(unique.map((accountId) => this.recalculate(accountId)));
   }
 }

@@ -16,8 +16,7 @@ import { JwtUser } from '@/shared/interfaces/jwt-user.interface';
 import { CreateInstallmentDto } from './dto/create-installment.dto';
 
 import { InstallmentsService } from './installments.service';
-
-import { SwaggerResponses } from '@/config/swagger/swagger.responses';
+import { SwaggerResponses } from '../../config/swagger/swagger.responses';
 
 @ApiTags('Installments')
 @ApiBearerAuth('JWT-auth')
