@@ -1,69 +1,41 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  ReactNode,
-} from "react";
+import { ReactNode, useEffect } from "react";
 
-type User = {
-  sub: string;
-  email: string;
-};
+import { getMe } from "@/modules/auth/services/auth.service";
 
-type AuthContextType = {
-  user: User | null;
-  loading: boolean;
-};
+import { useAuthStore } from "@/modules/auth/store/auth.store";
 
-const AuthContext = createContext<AuthContextType>({
-  user: null,
-  loading: true,
-});
-
-type AuthProviderProps = {
+interface AuthProviderProps {
   children: ReactNode;
-};
-
-export function AuthProvider({ children }: AuthProviderProps) {
-  const [user, setUser] = useState<User | null>(null);
-
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch("http://localhost:3000/api/auth/me", {
-      credentials: "include",
-    })
-      .then(async (r) => {
-        if (!r.ok) {
-          setUser(null);
-          return;
-        }
-
-        const data = await r.json();
-
-        setUser(data);
-      })
-      .catch(() => {
-        setUser(null);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
-
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        loading,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
 }
 
-export const useAuth = () => useContext(AuthContext);
+export function AuthProvider({
+  children,
+}: AuthProviderProps) {
+  const setUser = useAuthStore(
+    (state) => state.setUser
+  );
+
+  const setLoading = useAuthStore(
+    (state) => state.setLoading
+  );
+
+  useEffect(() => {
+    async function loadUser() {
+      try {
+        const user = await getMe();
+
+        setUser(user);
+      } catch {
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadUser();
+  }, [setUser, setLoading]);
+
+  return <>{children}</>;
+}
