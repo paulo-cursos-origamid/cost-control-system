@@ -1,15 +1,15 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function apiFetch<T>(
-  url: string,
+  endpoint: string,
   options: RequestInit = {}
 ): Promise<T> {
-  const res = await fetch(`${API_URL}${url}`, {
+  const res = await fetch(`${API_URL}${endpoint}`, {
     ...options,
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      ...options.headers,
+      ...(options.headers || {}),
     },
   });
 
@@ -20,10 +20,11 @@ export async function apiFetch<T>(
     throw new Error("Unauthorized");
   }
 
+  const data = await res.json().catch(() => null);
+
   if (!res.ok) {
-    const error = await res.json().catch(() => ({}));
-    throw new Error(error.message || "API Error");
+    throw new Error(data?.message || "API Error");
   }
 
-  return res.json();
+  return data;
 }

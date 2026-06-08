@@ -2,26 +2,25 @@
 
 import { useRouter } from 'next/navigation';
 
-import { logout } from '@/modules/auth/services/auth.service';
-
+import { authApi } from '@/modules/auth/api/auth.api';
 import { useAuthStore } from '@/modules/auth/store/auth.store';
 
 export function useLogout() {
   const router = useRouter();
 
-  const clearAuth = useAuthStore(
-    (state) => state.logout,
-  );
+  const logoutStore = useAuthStore((state) => state.logout);
 
   async function signOut() {
-    await logout();
+    try {
+      await authApi.logout();
+    } catch {
+      // mesmo se falhar backend, limpa frontend
+    }
 
-    clearAuth();
+    logoutStore();
 
     router.push('/login');
   }
 
-  return {
-    signOut,
-  };
+  return { signOut };
 }

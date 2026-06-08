@@ -1,20 +1,17 @@
-import { create } from "zustand";
-import { authApi } from "../api/auth.api";
-
-type User = {
-  id: string;
-  email: string;
-  role: string;
-};
+import { create } from 'zustand';
+import { User } from '@/types/auth';
 
 type AuthState = {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
 
-  fetchUser: () => Promise<void>;
-  login: (email: string, password: string) => Promise<void>;
-  logout: () => Promise<void>;
+  isAdmin: boolean;
+  isUser: boolean;
+
+  setUser: (user: User | null) => void;
+  setLoading: (loading: boolean) => void;
+  logout: () => void;
 };
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -22,41 +19,25 @@ export const useAuthStore = create<AuthState>((set) => ({
   isAuthenticated: false,
   isLoading: true,
 
-  fetchUser: async () => {
-    try {
-      const user = await authApi.me();
+  isAdmin: false,
+  isUser: false,
 
-      set({
-        user,
-        isAuthenticated: true,
-        isLoading: false,
-      });
-    } catch {
-      set({
-        user: null,
-        isAuthenticated: false,
-        isLoading: false,
-      });
-    }
-  },
-
-  login: async (email, password) => {
-    await authApi.login({ email, password });
-
-    const user = await authApi.me();
-
-    set({
+  setUser: (user) =>
+    set(() => ({
       user,
-      isAuthenticated: true,
-    });
-  },
+      isAuthenticated: !!user,
+      isAdmin: user?.role === 'ADMIN',
+      isUser: user?.role === 'USER',
+    })),
 
-  logout: async () => {
-    await authApi.logout();
+  setLoading: (isLoading) => set({ isLoading }),
 
+  logout: () =>
     set({
       user: null,
       isAuthenticated: false,
-    });
-  },
+      isAdmin: false,
+      isUser: false,
+      isLoading: false,
+    }),
 }));

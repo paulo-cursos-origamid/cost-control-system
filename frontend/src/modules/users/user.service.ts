@@ -1,4 +1,4 @@
-import { api } from "@/lib/api/fetcher";
+import { api } from "@/lib/api/index";
 
 export const userService = {
   getAll: () => api("/api/users"),
