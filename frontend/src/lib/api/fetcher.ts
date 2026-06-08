@@ -1,24 +1,31 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export async function api<T>(
+export async function apiFetch<T>(
   endpoint: string,
-  method: string = "GET",
-  body?: any
+  options: RequestInit = {},
 ): Promise<T> {
   const res = await fetch(`${API_URL}${endpoint}`, {
-    method,
-    credentials: "include", // 🔥 ESSENCIAL
+    ...options,
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
+      ...(options.headers || {}),
     },
-    body: body ? JSON.stringify(body) : undefined,
   });
 
-  const data = await res.json().catch(()=> null);
+  if (res.status === 401) {
+    if (typeof window !== "undefined") {
+      window.location.href = "/login";
+    }
 
-  if (!res.ok) {
-   throw new Error(data?.message || "API request failed");
+    throw new Error("Unauthorized");
   }
 
-  return res.json();
+  const data = await res.json().catch(() => null);
+
+  if (!res.ok) {
+    throw new Error(data?.message || "API Error");
+  }
+
+  return data;
 }

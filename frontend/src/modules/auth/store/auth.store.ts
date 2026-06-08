@@ -8,6 +8,8 @@ type AuthState = {
 
   isAdmin: boolean;
   isUser: boolean;
+  isManager: boolean;
+  isSupport: boolean;
 
   setUser: (user: User | null) => void;
   setLoading: (loading: boolean) => void;
@@ -21,6 +23,8 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   isAdmin: false,
   isUser: false,
+  isManager: false,
+  isSupport: false,
 
   setUser: (user) =>
     set(() => ({
@@ -28,6 +32,8 @@ export const useAuthStore = create<AuthState>((set) => ({
       isAuthenticated: !!user,
       isAdmin: user?.role === 'ADMIN',
       isUser: user?.role === 'USER',
+      isManager: user?.role === 'MANAGER',
+      isSupport: user?.role === 'SUPPORT',  
     })),
 
   setLoading: (isLoading) => set({ isLoading }),

@@ -1,38 +1,28 @@
 "use client";
 
-import { ReactNode, useEffect } from "react";
-
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-import { DashboardShell } from "@/components/layout/dashboard-shell/dashboard-shell";
+import { useAuthStore } from "@/modules/auth/store/auth.store";
 
-import { useAuth } from "@/modules/auth/hooks/use-auth";
-import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
-
-interface DashboardLayoutProps {
-  children: ReactNode;
-}
-
-export default function DashboardLayout({ children }: DashboardLayoutProps) {
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const router = useRouter();
 
-  const { isAuthenticated } = useAuth();
+  const { user, isLoading } = useAuthStore();
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      router.push("/login");
+    if (!isLoading && !user) {
+      router.replace("/login");
     }
-  }, [isAuthenticated, router]);
+  }, [user, isLoading, router]);
 
-
-
-  if (!isAuthenticated) {
-    return null;
+  if (isLoading) {
+    return <div>Carregando...</div>;
   }
 
-  return (
-    <ProtectedRoute>
-      <DashboardShell>{children}</DashboardShell>
-    </ProtectedRoute>
-  );
+  return <>{children}</>;
 }
