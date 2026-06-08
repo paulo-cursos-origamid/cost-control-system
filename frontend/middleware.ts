@@ -8,26 +8,28 @@ export function middleware(req: NextRequest) {
 
   const token = req.cookies.get("access_token")?.value;
 
-  const isPublicFile =
-    pathname.startsWith("/_next") ||
-    pathname.startsWith("/favicon.ico") ||
-    pathname.startsWith("/api");
+  /**
+   * Ignorar assets internos do Next
+   */
+  const isPublicAsset =
+    pathname.startsWith("/_next") || pathname.startsWith("/favicon.ico");
 
-  if (isPublicFile) {
+  if (isPublicAsset) {
     return NextResponse.next();
   }
 
   const isPublicPage = PUBLIC_PATHS.includes(pathname);
+  const isDashboard = pathname.startsWith("/dashboard");
 
   /**
-   * 1. NÃO LOGADO → só pode acessar páginas públicas
+   * 1. NÃO AUTENTICADO → bloqueia dashboard
    */
-  if (!token && !isPublicPage) {
+  if (!token && isDashboard) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
   /**
-   * 2. LOGADO → não pode acessar login
+   * 2. AUTENTICADO → não pode acessar login
    */
   if (token && isPublicPage) {
     return NextResponse.redirect(new URL("/dashboard", req.url));

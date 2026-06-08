@@ -1,10 +1,8 @@
-import { useAuthStore } from "@/modules/auth/store/auth.store";
-
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function apiFetch<T>(
   url: string,
-  options: RequestInit = {},
+  options: RequestInit = {}
 ): Promise<T> {
   const res = await fetch(`${API_URL}${url}`, {
     ...options,
@@ -16,13 +14,9 @@ export async function apiFetch<T>(
   });
 
   if (res.status === 401) {
-    // 🔥 logout global automático
-    useAuthStore.getState().logout?.();
-
     if (typeof window !== "undefined") {
       window.location.href = "/login";
     }
-
     throw new Error("Unauthorized");
   }
 

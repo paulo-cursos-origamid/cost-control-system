@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 
 import "./globals.scss";
-
+import { ThemeProvider } from "@/providers/theme-provider";
 import { AppProvider } from "@/providers/app-provider";
+import { AuthProvider } from "@/providers/auth-provider";
 
 export const metadata: Metadata = {
   title: "CCP",
@@ -17,9 +18,11 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body>
-        <AppProvider>
-          {children}
-        </AppProvider>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+          <AppProvider>
+            <AuthProvider>{children}</AuthProvider>
+          </AppProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

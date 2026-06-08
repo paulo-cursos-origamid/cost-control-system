@@ -1,32 +1,42 @@
-import { httpClient } from '@/services/http/client';
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-import { User } from '@/modules/auth/types/auth.types';
-
-import {
-  LoginPayload,
-  LoginResponse,
-} from '@/modules/auth/types/login.types';
-
-export async function login(
-  payload: LoginPayload,
-): Promise<LoginResponse> {
-  return httpClient<LoginResponse>('/api/auth/login', {
-    method: 'POST',
-
-    body: JSON.stringify(payload),
+export async function getMe() {
+  const res = await fetch(`${API_URL}/auth/me`, {
+    method: "GET",
+    credentials: "include",
   });
-}
 
-export async function getMe(): Promise<User | null> {
-  try {
-    return await httpClient<User>('/api/auth/me');
-  } catch {
-    return null;
+  if (!res.ok) {
+    throw new Error("Unauthorized");
   }
+
+  return res.json();
 }
 
-export async function logout(): Promise<void> {
-  await httpClient('/api/auth/logout', {
-    method: 'POST',
+export async function login(email: string, password: string) {
+  const res = await fetch(`${API_URL}/auth/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify({ email, password }),
   });
+
+  if (!res.ok) {
+    throw new Error("Login failed");
+  }
+
+  return res.json();
+}
+
+export async function logout() {
+  const res = await fetch(`${API_URL}/auth/logout`, {
+    method: "POST",
+    credentials: "include",
+  });
+
+  if (!res.ok) {
+    throw new Error("Logout failed");
+  }
 }

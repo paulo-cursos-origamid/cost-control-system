@@ -1,24 +1,16 @@
-import { useAuthStore } from '@/modules/auth/store/auth.store';
+import { useAuthStore } from "../store/auth.store";
 
 export function useAuth() {
-  const user = useAuthStore(
-    (state) => state.user,
-  );
+  const user = useAuthStore((s) => s.user);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
-  const isAuthenticated =
-    useAuthStore(
-      (state) => state.isAuthenticated,
-    );
-
-  const isLoading = useAuthStore(
-    (state) => state.isLoading,
-  );
+  const isAdmin = user?.role === "ADMIN";
+  const isUser = user?.role === "USER";
 
   return {
     user,
-
     isAuthenticated,
-
-    isLoading,
+    isAdmin,
+    isUser,
   };
 }
