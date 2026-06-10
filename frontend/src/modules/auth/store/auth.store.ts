@@ -1,49 +1,33 @@
 import { create } from 'zustand';
-import { User } from '@/types/auth';
 
-type AuthState = {
-  user: User | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
+import { AuthState } from '@/modules/auth/types/auth.types';
 
-  isAdmin: boolean;
-  isUser: boolean;
-  isManager: boolean;
-  isSupport: boolean;
+export const useAuthStore =
+  create<AuthState>((set) => ({
+    user: null,
 
-  setUser: (user: User | null) => void;
-  setLoading: (loading: boolean) => void;
-  logout: () => void;
-};
+    isAuthenticated: false,
 
-export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  isAuthenticated: false,
-  isLoading: true,
+    isLoading: true,
 
-  isAdmin: false,
-  isUser: false,
-  isManager: false,
-  isSupport: false,
+    setUser: (user) =>
+      set({
+        user,
 
-  setUser: (user) =>
-    set(() => ({
-      user,
-      isAuthenticated: !!user,
-      isAdmin: user?.role === 'ADMIN',
-      isUser: user?.role === 'USER',
-      isManager: user?.role === 'MANAGER',
-      isSupport: user?.role === 'SUPPORT',  
-    })),
+        isAuthenticated: !!user,
+      }),
 
-  setLoading: (isLoading) => set({ isLoading }),
+    setLoading: (
+      isLoading,
+    ) =>
+      set({
+        isLoading,
+      }),
 
-  logout: () =>
-    set({
-      user: null,
-      isAuthenticated: false,
-      isAdmin: false,
-      isUser: false,
-      isLoading: false,
-    }),
-}));
+    logout: () =>
+      set({
+        user: null,
+
+        isAuthenticated: false,
+      }),
+  }));

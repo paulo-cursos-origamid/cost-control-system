@@ -1,8 +1,4 @@
-export interface User {
-  sub: string;
-
-  email: string;
-}
+import { User } from "@/modules/users/types/user.types";
 
 export interface AuthState {
   user: User | null;
@@ -13,7 +9,7 @@ export interface AuthState {
 
   setUser: (user: User | null) => void;
 
-  setLoading: (loading: boolean) => void;
+  setLoading: (isLoading: boolean) => void;
 
   logout: () => void;
 }

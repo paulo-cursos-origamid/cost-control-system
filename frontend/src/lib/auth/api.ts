@@ -1,4 +1,4 @@
-import { apiFetch } from "@/lib/fetch";
+import { apiFetch } from "@/lib/api";
 
 export interface LoginDTO {
   email: string;

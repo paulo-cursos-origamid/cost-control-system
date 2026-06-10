@@ -1,3 +1,4 @@
+import { User } from '@/modules/users/types/user.types'
 export interface LoginPayload {
   email: string;
 
@@ -6,4 +7,6 @@ export interface LoginPayload {
 
 export interface LoginResponse {
   accessToken: string;
+
+  user: User;
 }

@@ -1,43 +1,59 @@
-export const dashboardNavigation = [
-  {
-    label: 'Dashboard',
+import { UserRole } from "@/modules/users/types/user.types";
 
-    href: '/dashboard',
+interface NavigationItem {
+  label: string;
+
+  href: string;
+
+  roles: UserRole[];
+}
+
+export const dashboardNavigation: NavigationItem[] = [
+  {
+    label: "Dashboard",
+
+    href: "/dashboard",
+
+    roles: [UserRole.ADMIN, UserRole.USER, UserRole.MANAGER, UserRole.SUPPORT],
   },
 
   {
-    label: 'Contas',
+    label: "Contas",
 
-    href: '/accounts',
+    href: "/accounts",
+
+    roles: [UserRole.ADMIN, UserRole.USER],
   },
 
   {
-    label: 'Transações',
+    label: "Transações",
 
-    href: '/transactions',
+    href: "/transactions",
+
+    roles: [UserRole.ADMIN, UserRole.USER],
   },
 
   {
-    label: 'Categorias',
+    label: "Categorias",
 
-    href: '/categories',
+    href: "/categories",
+
+    roles: [UserRole.ADMIN, UserRole.USER],
   },
 
   {
-    label: 'Cartões',
+    label: "Relatórios",
 
-    href: '/cards',
+    href: "/reports",
+
+    roles: [UserRole.ADMIN, UserRole.MANAGER],
   },
 
   {
-    label: 'Veículos',
+    label: "Usuários",
 
-    href: '/vehicles',
-  },
+    href: "/users",
 
-  {
-    label: 'Relatórios',
-
-    href: '/reports',
+    roles: [UserRole.ADMIN],
   },
 ];
