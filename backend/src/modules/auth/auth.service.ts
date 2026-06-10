@@ -7,12 +7,14 @@ import * as bcrypt from 'bcrypt';
 import { PrismaService } from '@/database/prisma.service';
 
 import { LoginDto } from './dto/login.dto';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
+     private usersService: UsersService
   ) {}
 
   async login(loginDto: LoginDto) {
@@ -38,12 +40,23 @@ export class AuthService {
     const payload = {
       sub: user.id,
       email: user.email,
+      role: user.role,
     };
 
     const access_token = await this.jwtService.signAsync(payload);
 
     return {
       access_token,
+    };
+  }
+  async getMe(userId: string) {
+    const user = await this.usersService.findOne(userId);
+
+    const { password _password, ...safeUser } = user;
+
+    return {
+      success: true,
+      data: safeUser,
     };
   }
 }

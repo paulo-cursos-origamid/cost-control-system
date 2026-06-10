@@ -18,10 +18,9 @@ export class AuthController {
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
-  getMe(@CurrentUser() user: JwtUser): JwtUser {
-    return user;
+  async getMe(@CurrentUser() user: JwtUser) {
+    return this.authService.getMe(user.sub);
   }
-
   @Post('login')
   async login(
     @Body() loginDto: LoginDto,

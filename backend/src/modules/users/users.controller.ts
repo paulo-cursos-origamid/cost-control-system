@@ -25,17 +25,23 @@ import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  /*
-   * PUBLIC
-   */
-  @Post()
-  create(@Body() data: CreateUserDto) {
-    return this.usersService.create(data);
-  }
+  // /*
+  //  * PUBLIC
+  //  */
+  // @Post()
+  // create(@Body() data: CreateUserDto) {
+  //   return this.usersService.create(data);
+  // }
 
   /*
    * ADMIN + MANAGER
    */
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
+  @Post()
+  create(@Body() data: CreateUserDto) {
+    return this.usersService.create(data);
+  }
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @Get()
