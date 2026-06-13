@@ -1,5 +1,7 @@
 "use client";
 
+import { LogOut, UserCircle2, ShieldCheck } from "lucide-react";
+
 import { useAuth } from "@/modules/auth/hooks/use-auth";
 import { useLogout } from "@/modules/auth/hooks/use-logout";
 
@@ -13,20 +15,25 @@ export function Header() {
   return (
     <header className={styles.header}>
       <div className={styles.user}>
-        <span className={styles.name}>
-          {user?.name}
-        </span>
+        <div className={styles.avatar}>
+          <UserCircle2 size={34} />
+        </div>
 
-        <span className={styles.role}>
-          {user?.role}
-        </span>
+        <div className={styles.userInfo}>
+          <span className={styles.name}>{user?.name}</span>
+
+          <span className={styles.role}>
+            <ShieldCheck size={14} />
+
+            {user?.role}
+          </span>
+        </div>
       </div>
 
-      <button
-        className={styles.logout}
-        onClick={signOut}
-      >
-        Sair
+      <button className={styles.logout} onClick={signOut}>
+        <LogOut size={18} />
+
+        <span>Sair</span>
       </button>
     </header>
   );

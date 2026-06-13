@@ -14,7 +14,7 @@ export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
-     private usersService: UsersService
+    private usersService: UsersService,
   ) {}
 
   async login(loginDto: LoginDto) {
@@ -52,7 +52,7 @@ export class AuthService {
   async getMe(userId: string) {
     const user = await this.usersService.findOne(userId);
 
-    const { password _password, ...safeUser } = user;
+    const { password: _, ...safeUser } = user;
 
     return {
       success: true,

@@ -6,7 +6,8 @@ import { CrudModal } from "./CrudModal";
 
 import { CrudSchema } from "./types";
 import { CrudTable } from "./CrudTable";
-
+import styles from "./crud-page.module.scss";
+import { Plus } from "lucide-react";
 
 type BaseEntity = {
   id: string;
@@ -47,30 +48,55 @@ export function CrudPage<T extends BaseEntity>({
     setOpen(false);
   }
 
-  return (
-    <>
-      <button onClick={handleCreate}>+ Criar {schema.title}</button>
+ return (
+  <div className={styles.page}>
+    <div className={styles.header}>
+      <div className={styles.titleWrapper}>
+        <h1 className={styles.title}>
+          {schema.title}
+        </h1>
 
+        <p className={styles.subtitle}>
+          Gerencie os registros cadastrados
+        </p>
+      </div>
+
+      <button
+        className={styles.createButton}
+        onClick={handleCreate}
+      >
+        <Plus size={18} />
+
+        Criar {schema.title}
+      </button>
+    </div>
+
+    <div className={styles.content}>
       <CrudTable
         data={data}
         columns={schema.columns}
         onEdit={(item) => handleEdit(item as T)}
         onDelete={onDelete}
       />
+    </div>
 
-      <CrudModal
-        open={open}
-        title={editing ? `Editar ${schema.title}` : `Criar ${schema.title}`}
-        schema={schema}
-        initialData={
-          editing as Record<
-            string,
-            string | number | boolean | null | undefined
-          >
-        }
-        onClose={() => setOpen(false)}
-        onSuccess={handleSuccess}
-      />
-    </>
-  );
+    <CrudModal
+      open={open}
+      title={
+        editing
+          ? `Editar ${schema.title}`
+          : `Criar ${schema.title}`
+      }
+      schema={schema}
+      initialData={
+        editing as Record<
+          string,
+          string | number | boolean | null | undefined
+        >
+      }
+      onClose={() => setOpen(false)}
+      onSuccess={handleSuccess}
+    />
+  </div>
+);
 }

@@ -1,23 +1,43 @@
+@use "@/styles/abstracts/breakpoints" as *;
+
 .button {
   height: 48px;
 
   border: none;
-
   border-radius: 12px;
 
   background: var(--accent-primary);
-
   color: var(--button-text);
 
   font-weight: 600;
-
   cursor: pointer;
 
   padding: 0 24px;
 
-  transition: all 0.2s;
+  transition: all 0.2s ease;
+
+  /* MOBILE: botão mais confortável e clicável */
+  @include mobile {
+    height: 44px;
+    width: 100%;
+    padding: 0 16px;
+  }
+
+  /* FOCUS (acessibilidade importante) */
+  &:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
+  }
+
+  /* ACTIVE (feedback real de clique) */
+  &:active {
+    transform: scale(0.98);
+  }
 }
 
-.button:hover {
-  transform: translateY(-1px);
+/* HOVER só em devices com hover (evita bug no mobile) */
+@media (hover: hover) {
+  .button:hover {
+    transform: translateY(-1px);
+  }
 }

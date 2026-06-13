@@ -1,5 +1,8 @@
 "use client";
 
+import styles from "./crud-table.module.scss";
+import { Pencil, Trash2 } from "lucide-react";
+
 export type CrudColumn = {
   key: string;
   label: string;
@@ -18,32 +21,50 @@ type Props = {
 
 export function CrudTable({ data, columns, onEdit, onDelete }: Props) {
   return (
-    <table>
-      <thead>
-        <tr>
-          {columns.map((column) => (
-            <th key={column.key}>{column.label}</th>
-          ))}
-
-          <th>Ações</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        {(Array.isArray(data) ? data : []).map((item) => (
-          <tr key={item.id}>
+    <div className={styles.tableWrapper}>
+      <table className={styles.table}>
+        <thead>
+          <tr>
             {columns.map((column) => (
-              <td key={column.key}>{String(item[column.key] ?? "")}</td>
+              <th key={column.key}>{column.label}</th>
             ))}
 
-            <td>
-              <button onClick={() => onEdit(item)}>Editar</button>
-
-              <button onClick={() => onDelete(item.id)}>Excluir</button>
-            </td>
+            <th>Ações</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+
+        <tbody>
+          {data.map((item) => (
+            <tr key={item.id}>
+              {columns.map((column) => (
+                <td key={column.key}>{String(item[column.key] ?? "")}</td>
+              ))}
+
+              <td>
+                <div className={styles.actions}>
+                  <button
+                    type="button"
+                    title="Editar"
+                    className={styles.editButton}
+                    onClick={() => onEdit(item)}
+                  >
+                    <Pencil size={16} />
+                  </button>
+
+                  <button
+                    type="button"
+                    title="Excluir"
+                    className={styles.deleteButton}
+                    onClick={() => onDelete(item.id)}
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }

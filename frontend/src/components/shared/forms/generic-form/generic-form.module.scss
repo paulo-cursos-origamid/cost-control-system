@@ -1,0 +1,100 @@
+@use "@/styles/abstracts/breakpoints" as *;
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* FIELD WRAPPER */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* LABEL */
+.label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* INPUT + SELECT BASE */
+.input,
+.select {
+  width: 100%;
+  height: 48px;
+
+  border-radius: 12px;
+  border: 1px solid var(--border-primary);
+
+  background: var(--surface-secondary);
+  color: var(--text-primary);
+
+  padding: 0 14px;
+
+  transition: all 0.2s ease;
+
+  @include mobile {
+    height: 44px;
+    font-size: 0.95rem;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+/* PLACEHOLDER */
+.input::placeholder {
+  color: var(--text-muted);
+}
+
+/* SELECT ARROW IMPROVEMENT */
+.select {
+  cursor: pointer;
+}
+
+/* BUTTON */
+.submitButton {
+  height: 48px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: var(--accent-primary);
+  color: var(--button-text);
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  margin-top: 8px;
+
+  transition: all 0.2s ease;
+
+  @include mobile {
+    width: 100%;
+  }
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
+  }
+}

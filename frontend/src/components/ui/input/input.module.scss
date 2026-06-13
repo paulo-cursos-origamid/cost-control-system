@@ -1,19 +1,53 @@
+@use "@/styles/abstracts/breakpoints" as *;
+
 .input {
   width: 100%;
-
   height: 48px;
 
   border-radius: 12px;
-
   border: 1px solid var(--border-primary);
 
   background: var(--surface-secondary);
-
   color: var(--text-primary);
 
   padding: 0 16px;
+
+  transition: all 0.2s ease;
+
+  /* MOBILE: melhor toque */
+  @include mobile {
+    height: 44px;
+    font-size: 0.95rem;
+  }
+
+  /* FOCUS (ESSENCIAL UX) */
+  &:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  }
+
+  /* DISABLED */
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  /* ACCESSIBILITY */
+  &:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
+  }
 }
 
+/* PLACEHOLDER */
 .input::placeholder {
   color: var(--text-muted);
+}
+
+/* DARK UX IMPROVEMENT (opcional mas recomendado) */
+@media (hover: hover) {
+  .input:hover {
+    border-color: var(--border-secondary);
+  }
 }

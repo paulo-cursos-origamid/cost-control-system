@@ -5,7 +5,7 @@ import { AppProvider } from "@/providers/app-provider";
 import { AuthProvider } from "@/providers/auth-provider";
 
 export const metadata: Metadata = {
-  title: "CCP",
+  title: "CostPilot - Centro de Controle Pessoal",
   description: "Centro de Controle Pessoal",
 };
 

@@ -1,0 +1,103 @@
+@use "@/styles/abstracts/breakpoints" as *;
+
+/* PAGE WRAPPER */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  @include mobile {
+    gap: 16px;
+  }
+}
+
+/* HEADER */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  @include mobile {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
+
+/* TITLE AREA */
+.titleWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+
+  @include mobile {
+    font-size: 1.4rem;
+  }
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+
+  @include mobile {
+    font-size: 0.85rem;
+  }
+}
+
+/* BUTTON */
+.createButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 12px 20px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: var(--accent-primary);
+  color: var(--button-text);
+
+  font-weight: 600;
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+
+  /* mobile: botão full width (UX melhor) */
+  @include mobile {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.createButton:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* CONTENT CARD */
+.content {
+  background: var(--surface-secondary);
+
+  border: 1px solid var(--border-primary);
+  border-radius: 20px;
+
+  overflow: hidden;
+
+  box-shadow: var(--shadow-sm);
+
+  /* tablet/mobile: menos “peso visual” */
+  @include tablet {
+    border-radius: 16px;
+  }
+
+  @include mobile {
+    border-radius: 12px;
+  }
+}

@@ -1,3 +1,6 @@
+@use "@/styles/abstracts/breakpoints" as *;
+
+/* OVERLAY */
 .overlay {
   position: fixed;
   inset: 0;
@@ -9,8 +12,16 @@
   justify-content: center;
 
   z-index: 999;
+
+  /* evita scroll bug no mobile */
+  padding: 16px;
+
+  @include mobile {
+    align-items: flex-end; /* modal sobe estilo mobile sheet */
+  }
 }
 
+/* MODAL */
 .modal {
   width: 100%;
   max-width: 900px;
@@ -18,10 +29,41 @@
   background: var(--surface-primary);
 
   border-radius: 24px;
-
   border: 1px solid var(--border-primary);
 
   box-shadow: var(--shadow-lg);
 
   padding: 32px;
+
+  max-height: 90vh;
+  overflow-y: auto;
+
+  /* TABLET */
+  @include tablet {
+    max-width: 720px;
+    padding: 24px;
+  }
+
+  /* MOBILE: vira bottom sheet */
+  @include mobile {
+    max-width: 100%;
+    border-radius: 20px 20px 0 0;
+    padding: 20px;
+
+    max-height: 85vh;
+  }
+}
+.modal {
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }

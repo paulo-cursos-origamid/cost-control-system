@@ -10,7 +10,7 @@ export type CrudSchema = {
 
   endpoint: string;
 
-  method: "POST" | "PATCH";
+  // method: "POST" | "PATCH";
 
   columns: CrudColumn[];
 

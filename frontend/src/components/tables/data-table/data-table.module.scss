@@ -1,3 +1,5 @@
+@use "@/styles/abstracts/breakpoints" as *;
+
 .table {
   width: 100%;
   border-collapse: collapse;
@@ -6,10 +8,20 @@
   td {
     padding: 12px;
     text-align: left;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--border-primary);
+
+    @include mobile {
+      padding: 10px;
+      font-size: 0.85rem;
+    }
   }
 
   th {
     font-weight: 600;
+    color: var(--text-secondary);
+  }
+
+  td {
+    color: var(--text-primary);
   }
 }

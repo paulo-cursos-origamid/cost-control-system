@@ -1,5 +1,6 @@
-@forward "./abstracts/variables";
-@forward "./abstracts/mixins";
+@use "./abstracts/variables";
+@use "./abstracts/breakpoints";
+@use "./abstracts/mixins";
 
 @use "./themes/light";
 @use "./themes/dark";

@@ -1,7 +1,11 @@
 "use client";
 
+import { useState } from "react";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+
+import { Menu, X, BarChart3 } from "lucide-react";
 
 import { dashboardNavigation } from "@/configs/navigation";
 import { useAuthStore } from "@/modules/auth/store/auth.store";
@@ -11,18 +15,30 @@ import styles from "./sidebar.module.scss";
 export function Sidebar() {
   const pathname = usePathname();
 
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   const user = useAuthStore((state) => state.user);
+
   const isLoading = useAuthStore((state) => state.isLoading);
-  console.log("USER STORE", JSON.stringify(user, null, 2));
+
   if (isLoading) {
     return (
-      <aside className={styles.sidebar}>
-        <div className={styles.logo}>
-          <h2>ECP</h2>
-        </div>
+      <>
+        <aside className={styles.sidebar}>
+          <div className={styles.logo}>
+            <div className={styles.logoIcon}>
+              <BarChart3 size={22} />
 
-        <div className={styles.loading}>Carregando...</div>
-      </aside>
+              <div>
+                <h2>CCP</h2>
+                <h6>Centro de Controle Pessoal</h6>
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.loading}>Carregando...</div>
+        </aside>
+      </>
     );
   }
 
@@ -35,39 +51,74 @@ export function Sidebar() {
   );
 
   return (
-    <aside className={styles.sidebar}>
-      <div className={styles.logo}>
-        <h2>ECP</h2>
+    <>
+      {/* HAMBURGER MOBILE */}
+      <button
+        className={styles.mobileMenuButton}
+        onClick={() => setMobileOpen(true)}
+      >
+        <Menu size={24} />
+      </button>
 
-        <span className={styles.version}>v1.0</span>
-      </div>
+      {/* SIDEBAR */}
+      <aside className={`${styles.sidebar} ${mobileOpen ? styles.open : ""}`}>
+        {/* LOGO */}
+        <div className={styles.logo}>
+          <div className={styles.logoIcon}>
+            <BarChart3 size={22} />
 
-      <nav className={styles.nav}>
-        {items.map((item) => {
-          const Icon = item.icon;
+            <div>
+              <h2>CCP</h2>
 
-          const active =
-            pathname === item.href || pathname.startsWith(`${item.href}/`);
+              <h6>Centro de Controle Pessoal</h6>
+            </div>
+          </div>
 
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`${styles.link} ${active ? styles.active : ""}`}
-            >
-              <Icon size={20} />
+          <button
+            className={styles.closeButton}
+            onClick={() => setMobileOpen(false)}
+          >
+            <X size={20} />
+          </button>
 
-              <span>{item.label}</span>
-            </Link>
-          );
-        })}
-      </nav>
+          <span className={styles.version}>v1.0</span>
+        </div>
 
-      <div className={styles.footer}>
-        <small>{user.name}</small>
+        {/* MENU */}
+        <nav className={styles.nav}>
+          {items.map((item) => {
+            const Icon = item.icon;
 
-        <span>{user.role}</span>
-      </div>
-    </aside>
+            const active =
+              pathname === item.href || pathname.startsWith(`${item.href}/`);
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`${styles.link} ${active ? styles.active : ""}`}
+                onClick={() => setMobileOpen(false)}
+              >
+                <Icon size={20} />
+
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* FOOTER */}
+        <div className={styles.footer}>
+          <small>{user.name}</small>
+
+          <span>{user.role}</span>
+        </div>
+      </aside>
+
+      {/* OVERLAY */}
+      {mobileOpen && (
+        <div className={styles.overlay} onClick={() => setMobileOpen(false)} />
+      )}
+    </>
   );
 }
