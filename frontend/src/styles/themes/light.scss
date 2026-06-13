@@ -1,0 +1,26 @@
+:root[data-theme="light"] {
+  --surface-primary: #f8fafc;
+  --surface-secondary: #ffffff;
+  --surface-tertiary: #eef2ff;
+
+  --card-bg: #ffffff;
+
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+
+  --border-primary: #e2e8f0;
+
+  --accent-primary: #fbb755;
+
+  --success: #22c55e;
+  --danger: #ef4444;
+  --warning: #fbbf24;
+  --info: #38bdf8;
+
+  --surface-card: var(--card-bg);
+
+  --border-color: var(--border-primary);
+
+  --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.08);
+}

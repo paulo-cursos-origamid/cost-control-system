@@ -11,21 +11,30 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const setUser = useAuthStore((state) => state.setUser);
+
   const setLoading = useAuthStore((state) => state.setLoading);
 
   useEffect(() => {
     async function loadUser() {
       try {
-        const user = await authApi.me();
+        const response = await authApi.me();
+
+        console.log("AUTH RESPONSE JSON", JSON.stringify(response, null, 2));
+
+        const user =
+          (response as any)?.data?.data ?? (response as any)?.data ?? response;
+
         setUser(user);
-      } catch {
+      } catch (error) {
+        console.error(error);
+
         setUser(null);
       } finally {
         setLoading(false);
       }
     }
 
-    loadUser();
+    void loadUser();
   }, [setUser, setLoading]);
 
   return <>{children}</>;

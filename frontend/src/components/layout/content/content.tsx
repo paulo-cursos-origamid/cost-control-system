@@ -1,14 +1,10 @@
-import { ReactNode } from 'react';
-
-import styles from './content.module.scss';
-
-interface ContentProps {
-  children: ReactNode;
-}
+import styles from "./content.module.scss";
 
 export function Content({
   children,
-}: ContentProps) {
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <main className={styles.content}>
       {children}

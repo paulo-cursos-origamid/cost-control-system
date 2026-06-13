@@ -1,0 +1,21 @@
+@mixin card {
+  border-radius: 20px;
+  background: var(--surface-card);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-md);
+}
+
+@mixin input {
+  height: 48px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  background: var(--surface-secondary);
+  color: var(--text-primary);
+  padding: 0 16px;
+}
+
+@mixin button {
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+}

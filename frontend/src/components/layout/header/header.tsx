@@ -1,25 +1,33 @@
 "use client";
 
-import { useLogout } from "@/modules/auth/hooks/use-logout";
-
 import { useAuth } from "@/modules/auth/hooks/use-auth";
+import { useLogout } from "@/modules/auth/hooks/use-logout";
 
 import styles from "./header.module.scss";
 
 export function Header() {
-  const { signOut } = useLogout();
-
   const { user } = useAuth();
+
+  const { signOut } = useLogout();
 
   return (
     <header className={styles.header}>
-      <div>
-        <strong>{user?.name}</strong>
+      <div className={styles.user}>
+        <span className={styles.name}>
+          {user?.name}
+        </span>
 
-        <span>{user?.role}</span>
+        <span className={styles.role}>
+          {user?.role}
+        </span>
       </div>
 
-      <button onClick={signOut}>Sair</button>
+      <button
+        className={styles.logout}
+        onClick={signOut}
+      >
+        Sair
+      </button>
     </header>
   );
 }

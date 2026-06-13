@@ -1,0 +1,275 @@
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.dashboardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dashboardTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -1px;
+}
+
+.dashboardSubtitle {
+  margin-top: 4px;
+  color: var(--text-secondary);
+}
+
+/* ==========================================
+   STATS
+========================================== */
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.statCard {
+  background: var(--surface-secondary);
+
+  border: 1px solid var(--border-primary);
+
+  border-radius: 18px;
+
+  padding: 24px;
+
+  box-shadow: var(--shadow-sm);
+
+  transition:
+    transform .2s ease,
+    box-shadow .2s ease,
+    border-color .2s ease;
+}
+
+.statCard:hover {
+  transform: translateY(-2px);
+
+  border-color: rgba(251, 191, 36, 0.2);
+
+  box-shadow: var(--shadow-md);
+}
+
+.statHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 20px;
+}
+
+.statTitle {
+  color: var(--text-secondary);
+  font-size: .875rem;
+  font-weight: 500;
+}
+
+.statIcon {
+  width: 52px;
+  height: 52px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 14px;
+
+  border: 1px solid rgba(255,255,255,.05);
+
+  backdrop-filter: blur(10px);
+}
+
+.statValue {
+  font-size: clamp(2rem, 4vw, 2.75rem);
+
+  font-weight: 700;
+
+  color: var(--text-primary);
+
+  letter-spacing: -1px;
+
+  line-height: 1;
+}
+
+.statFooter {
+  margin-top: 12px;
+
+  color: var(--text-muted);
+
+  font-size: .875rem;
+}
+
+/* ==========================================
+   CARD COLORS
+========================================== */
+
+.cardUsers .statIcon {
+  background: rgba(56, 189, 248, .15);
+  color: var(--info);
+}
+
+.cardAdmins .statIcon {
+  background: rgba(251, 191, 36, .15);
+  color: var(--accent-primary);
+}
+
+.cardTransactions .statIcon {
+  background: rgba(34, 197, 94, .15);
+  color: var(--success);
+}
+
+.cardBalance .statIcon {
+  background: rgba(139, 92, 246, .15);
+  color: #a78bfa;
+}
+
+.cardBalance .statValue {
+  color: #a78bfa;
+
+  text-shadow: 0 0 20px rgba(167, 139, 250, .15);
+}
+
+/* ==========================================
+   PANELS
+========================================== */
+
+.section {
+  background: var(--surface-secondary);
+
+  border: 1px solid var(--border-primary);
+
+  border-radius: 18px;
+
+  padding: 24px;
+
+  box-shadow: var(--shadow-sm);
+}
+
+.sectionTitle {
+  position: relative;
+
+  padding-left: 14px;
+
+  margin-bottom: 24px;
+
+  font-size: 1.1rem;
+
+  font-weight: 600;
+
+  color: var(--text-primary);
+}
+
+.sectionTitle::before {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  top: 2px;
+
+  width: 4px;
+  height: 20px;
+
+  border-radius: 999px;
+
+  background: var(--accent-primary);
+}
+
+/* ==========================================
+   USERS LIST
+========================================== */
+
+.userList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.userItem {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  padding: 16px;
+
+  background: var(--surface-tertiary);
+
+  border: 1px solid var(--border-primary);
+
+  border-radius: 14px;
+
+  transition: all .2s ease;
+}
+
+.userItem:hover {
+  background: rgba(255,255,255,.03);
+
+  border-color: rgba(251,191,36,.15);
+
+  transform: translateX(4px);
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.userName {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.userEmail {
+  color: var(--text-secondary);
+  font-size: .875rem;
+}
+
+.role {
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 8px 14px;
+
+  border-radius: 999px;
+
+  font-size: .75rem;
+
+  font-weight: 700;
+
+  letter-spacing: .5px;
+
+  text-transform: uppercase;
+}
+
+.admin {
+  background: rgba(251,191,36,.15);
+  color: var(--accent-primary);
+}
+
+.user {
+  background: rgba(56,189,248,.15);
+  color: var(--info);
+}
+
+.manager {
+  background: rgba(34,197,94,.15);
+  color: var(--success);
+}
+
+.support {
+  background: rgba(139,92,246,.15);
+  color: #a78bfa;
+}

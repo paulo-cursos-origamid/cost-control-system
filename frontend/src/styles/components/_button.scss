@@ -1,21 +1,19 @@
 .button {
-  height: 48px;
+  background: var(--accent-primary);
+
+  color: #020617;
 
   border: none;
 
   border-radius: 12px;
 
-  background: var(--accent-primary);
-
-  color: var(--button-text);
+  padding: 12px 24px;
 
   font-weight: 600;
 
   cursor: pointer;
 
-  padding: 0 24px;
-
-  transition: all 0.2s;
+  transition: 0.2s;
 }
 
 .button:hover {

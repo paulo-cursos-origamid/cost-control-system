@@ -1,30 +1,23 @@
-import { ReactNode } from 'react';
+import { ReactNode } from "react";
 
-import { Sidebar } from '@/components/layout/sidebar/sidebar';
+import { Sidebar } from "../sidebar/sidebar";
+import { Header } from "../header/header";
 
-import { Header } from '@/components/layout/header/header';
-
-import { Content } from '@/components/layout/content/content';
-
-import styles from './dashboard-shell.module.scss';
+import styles from "./dashboard-shell.module.scss";
 
 interface DashboardShellProps {
   children: ReactNode;
 }
 
-export function DashboardShell({
-  children,
-}: DashboardShellProps) {
+export function DashboardShell({ children }: DashboardShellProps) {
   return (
-    <div className={styles.container}>
+    <div className={styles.wrapper}>
       <Sidebar />
 
-      <div className={styles.wrapper}>
+      <div className={styles.main}>
         <Header />
 
-        <Content>
-          {children}
-        </Content>
+        <main className={styles.content}>{children}</main>
       </div>
     </div>
   );

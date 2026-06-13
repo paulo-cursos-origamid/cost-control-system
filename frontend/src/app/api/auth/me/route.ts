@@ -2,24 +2,24 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  const token = (await cookies()).get("token")?.value;
+  const token = (await cookies()).get("access_token")?.value;
 
   if (!token) {
-    return NextResponse.json({ user: null }, { status: 401 });
+    return NextResponse.json({ success: false }, { status: 401 });
   }
 
-  // aqui você valida com seu backend
-  const res = await fetch(`${process.env.API_URL}/auth/me`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     },
+  );
+
+  const data = await response.json();
+
+  return NextResponse.json(data, {
+    status: response.status,
   });
-
-  if (!res.ok) {
-    return NextResponse.json({ user: null }, { status: 401 });
-  }
-
-  const user = await res.json();
-
-  return NextResponse.json({ user });
 }

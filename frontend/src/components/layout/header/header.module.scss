@@ -1,15 +1,44 @@
 .header {
   height: 72px;
 
-  background: white;
-
-  border-bottom: 1px solid #eaecf0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
   padding: 0 24px;
 
+  background: var(--surface-secondary);
+
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.user {
   display: flex;
+  flex-direction: column;
+}
 
-  align-items: center;
+.name {
+  color: var(--text-primary);
 
-  justify-content: space-between;
+  font-weight: 600;
+}
+
+.role {
+  color: var(--text-secondary);
+
+  font-size: 0.875rem;
+}
+
+.logout {
+  border: none;
+
+  background: var(--accent-primary);
+
+  color: var(--button-text);
+
+  padding: 10px 16px;
+
+  border-radius: 10px;
+
+  cursor: pointer;
 }

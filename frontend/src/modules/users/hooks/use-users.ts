@@ -14,7 +14,7 @@ export function useUsers() {
         const data = await usersApi.findAll();
 
         // setUsers(data);
-        setUsers(data.data ? (Array.isArray(data.data) ? data.data : [data.data]) : []);
+        setUsers(data ? (Array.isArray(data) ? data : [data]) : []);
       } catch (error) {
         console.error("Error loading users:", error);
         setError("Failed to load users");

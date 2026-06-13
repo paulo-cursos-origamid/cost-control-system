@@ -1,13 +1,23 @@
-.container {
+.wrapper {
   display: flex;
-
   min-height: 100vh;
+
+  background: var(--surface-primary);
 }
 
-.wrapper {
+.main {
   flex: 1;
 
-  display: flex;
+  margin-left: 280px;
 
+  display: flex;
   flex-direction: column;
+}
+
+.content {
+  flex: 1;
+
+  padding: 24px;
+
+  background: var(--surface-primary);
 }

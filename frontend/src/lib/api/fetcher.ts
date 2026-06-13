@@ -13,13 +13,6 @@ export async function apiFetch<T>(
     },
   });
 
-  if (res.status === 401) {
-    if (typeof window !== "undefined") {
-      window.location.href = "/login";
-    }
-
-    throw new Error("Unauthorized");
-  }
 
   const data = await res.json().catch(() => null);
 

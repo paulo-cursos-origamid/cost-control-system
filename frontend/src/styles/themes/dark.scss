@@ -1,0 +1,28 @@
+@use "../abstracts/variables" as v;
+
+:root[data-theme="dark"] {
+  --surface-primary: #{v.$bl11};
+  --surface-secondary: #{v.$bl09};
+  --surface-tertiary: #{v.$bl08};
+
+  --card-bg: #{v.$bl09};
+
+  --text-primary: #ffffff;
+  --text-secondary: #9fb4d6;
+  --text-muted: #64748b;
+
+  --border-primary: #{v.$bl08};
+
+  --accent-primary: #{v.$ethos-gold};
+
+  --success: #{v.$success};
+  --danger: #{v.$danger};
+  --warning: #{v.$warning};
+  --info: #{v.$info};
+
+  --surface-card: var(--card-bg);
+
+  --border-color: var(--border-primary);
+
+  --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.35);
+}

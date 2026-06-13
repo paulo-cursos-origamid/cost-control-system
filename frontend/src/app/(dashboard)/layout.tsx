@@ -3,6 +3,8 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
+import { DashboardShell } from "@/components/layout/dashboard-shell/dashboard-shell";
+
 import { useAuthStore } from "@/modules/auth/store/auth.store";
 
 export default function DashboardLayout({
@@ -24,5 +26,9 @@ export default function DashboardLayout({
     return <div>Carregando...</div>;
   }
 
-  return <>{children}</>;
+  if (!user) {
+    return null;
+  }
+
+  return <DashboardShell>{children}</DashboardShell>;
 }
