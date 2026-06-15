@@ -1,0 +1,33 @@
+.chartCard {
+  border-radius: 16px;
+
+  padding: 24px;
+
+  min-height: 320px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 20px;
+}
+
+.title {
+  font-size: 1rem;
+
+  font-weight: 600;
+}
+
+.placeholder {
+  flex: 1;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 12px;
+
+  opacity: 0.7;
+}

@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 
 import { StatCard } from "@/modules/dashboard/shared/cards/stat-card";
+import { SubscriptionsDashboard } from "./subscriptions-dashboard";
 
 import styles from "./admin-dashboard.module.scss";
 
@@ -110,6 +111,7 @@ export function AdminDashboard() {
           value={metrics.cancellations}
         />
       </div>
+      <SubscriptionsDashboard />
     </div>
   );
 }
