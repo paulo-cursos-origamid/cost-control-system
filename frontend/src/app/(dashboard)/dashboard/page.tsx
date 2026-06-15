@@ -1,201 +1,196 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Wallet, TrendingUp, TrendingDown, Car } from "lucide-react";
 
-import {
-  Users,
-  Shield,
-  Receipt,
-  Wallet,
-} from "lucide-react";
-
-import { apiFetch } from "@/lib/api";
+import { useDashboard } from "@/modules/dashboard/hooks/use-dashboard";
 
 import styles from "./dashboard.module.scss";
 
-type User = {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-};
-
-type ApiResponse<T> = {
-  success: boolean;
-  data: T;
-};
-
 export default function DashboardPage() {
-  const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { cards, financial, vehicles, loading } = useDashboard();
 
-  useEffect(() => {
-    async function load() {
-      try {
-        const response =
-          await apiFetch<ApiResponse<User[]>>(
-            "/api/users",
-          );
-
-        setUsers(response.data);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    void load();
-  }, []);
-
-  const totalUsers = users.length;
-
-  const totalAdmins = users.filter(
-    (user) => user.role === "ADMIN",
-  ).length;
-
-  const totalTransactions = 0;
-
-  const totalBalance = 0;
+  if (loading || !cards || !financial || !vehicles) {
+    return <p>Carregando dashboard...</p>;
+  }
 
   return (
     <div className={styles.dashboard}>
       <div className={styles.dashboardHeader}>
         <div>
-          <h1 className={styles.dashboardTitle}>
-            Dashboard
-          </h1>
+          <h1 className={styles.dashboardTitle}>Dashboard</h1>
 
-          <p className={styles.dashboardSubtitle}>
-            Visão geral do sistema ECP
-          </p>
+          <p className={styles.dashboardSubtitle}>Visão geral do sistema ECP</p>
         </div>
       </div>
+
+      {/* KPIs */}
 
       <div className={styles.statsGrid}>
-        <div
-          className={`${styles.statCard} ${styles.cardUsers}`}
-        >
-          <div className={styles.statHeader}>
-            <span className={styles.statTitle}>
-              Usuários
-            </span>
+        <StatCard
+          title="Saldo"
+          value={`R$ ${cards.balance.toFixed(2)}`}
+          icon={<Wallet size={22} />}
+        />
 
-            <div className={styles.statIcon}>
-              <Users size={22} />
-            </div>
-          </div>
+        <StatCard
+          title="Receitas"
+          value={`R$ ${cards.income.toFixed(2)}`}
+          icon={<TrendingUp size={22} />}
+        />
 
-          <div className={styles.statValue}>
-            {totalUsers}
-          </div>
+        <StatCard
+          title="Despesas"
+          value={`R$ ${cards.expense.toFixed(2)}`}
+          icon={<TrendingDown size={22} />}
+        />
 
-          <div className={styles.statFooter}>
-            usuários cadastrados
-          </div>
-        </div>
-
-        <div
-          className={`${styles.statCard} ${styles.cardAdmins}`}
-        >
-          <div className={styles.statHeader}>
-            <span className={styles.statTitle}>
-              Administradores
-            </span>
-
-            <div className={styles.statIcon}>
-              <Shield size={22} />
-            </div>
-          </div>
-
-          <div className={styles.statValue}>
-            {totalAdmins}
-          </div>
-
-          <div className={styles.statFooter}>
-            acessos privilegiados
-          </div>
-        </div>
-
-        <div
-          className={`${styles.statCard} ${styles.cardTransactions}`}
-        >
-          <div className={styles.statHeader}>
-            <span className={styles.statTitle}>
-              Transações
-            </span>
-
-            <div className={styles.statIcon}>
-              <Receipt size={22} />
-            </div>
-          </div>
-
-          <div className={styles.statValue}>
-            {totalTransactions}
-          </div>
-
-          <div className={styles.statFooter}>
-            movimentações registradas
-          </div>
-        </div>
-
-        <div
-          className={`${styles.statCard} ${styles.cardBalance}`}
-        >
-          <div className={styles.statHeader}>
-            <span className={styles.statTitle}>
-              Saldo Geral
-            </span>
-
-            <div className={styles.statIcon}>
-              <Wallet size={22} />
-            </div>
-          </div>
-
-          <div className={styles.statValue}>
-            R$ {totalBalance.toFixed(2)}
-          </div>
-
-          <div className={styles.statFooter}>
-            patrimônio consolidado
-          </div>
-        </div>
+        <StatCard
+          title="Veículos"
+          value={cards.vehicles}
+          icon={<Car size={22} />}
+        />
       </div>
 
-      <div className={styles.section}>
-        <h3 className={styles.sectionTitle}>
-          Últimos usuários
-        </h3>
+      {/* RESUMOS */}
 
-        {loading ? (
-          <p>Carregando...</p>
-        ) : (
-          <div className={styles.userList}>
-            {users.slice(0, 5).map((user) => (
-              <div
-                key={user.id}
-                className={styles.userItem}
-              >
+      <div className={styles.financialGrid}>
+        <section className={styles.section}>
+          <h3 className={styles.sectionTitle}>Resumo Financeiro</h3>
+
+          <div className={styles.summaryList}>
+            <SummaryItem
+              label="Receitas"
+              value={`R$ ${financial.summary.income.toFixed(2)}`}
+            />
+
+            <SummaryItem
+              label="Despesas"
+              value={`R$ ${financial.summary.expense.toFixed(2)}`}
+            />
+
+            <SummaryItem
+              label="Saldo"
+              value={`R$ ${financial.summary.balance.toFixed(2)}`}
+            />
+          </div>
+        </section>
+
+        <section className={styles.section}>
+          <h3 className={styles.sectionTitle}>Custos da Frota</h3>
+
+          <div className={styles.summaryList}>
+            <SummaryItem
+              label="Combustível"
+              value={`R$ ${vehicles.costs.fuel.toFixed(2)}`}
+            />
+
+            <SummaryItem
+              label="Manutenção"
+              value={`R$ ${vehicles.costs.maintenance.toFixed(2)}`}
+            />
+
+            <SummaryItem
+              label="Total"
+              value={`R$ ${vehicles.costs.total.toFixed(2)}`}
+            />
+          </div>
+        </section>
+      </div>
+
+      {/* TRANSAÇÕES */}
+
+      <section className={styles.section}>
+        <h3 className={styles.sectionTitle}>Últimas Transações</h3>
+
+        <div className={styles.userList}>
+          {financial.latestTransactions.length === 0 ? (
+            <p>Nenhuma transação encontrada.</p>
+          ) : (
+            financial.latestTransactions.map((transaction) => (
+              <div key={transaction.id} className={styles.userItem}>
+                <div className={styles.userInfo}>
+                  <span className={styles.userName}>{transaction.title}</span>
+
+                  <span className={styles.userEmail}>{transaction.type}</span>
+                </div>
+
+                <strong>R$ {transaction.amount.toFixed(2)}</strong>
+              </div>
+            ))
+          )}
+        </div>
+      </section>
+
+      {/* ABASTECIMENTOS */}
+
+      <section className={styles.section}>
+        <h3 className={styles.sectionTitle}>Últimos Abastecimentos</h3>
+
+        <div className={styles.userList}>
+          {vehicles.latestFuelSupplies.length === 0 ? (
+            <p>Nenhum abastecimento encontrado.</p>
+          ) : (
+            vehicles.latestFuelSupplies.map((fuel) => (
+              <div key={fuel.id} className={styles.userItem}>
                 <div className={styles.userInfo}>
                   <span className={styles.userName}>
-                    {user.name}
-                  </span>
-
-                  <span className={styles.userEmail}>
-                    {user.email}
+                    {fuel.vehicle?.name ?? "Veículo"}
                   </span>
                 </div>
 
-                <span
-                  className={`${styles.role} ${
-                    styles[user.role.toLowerCase()]
-                  }`}
-                >
-                  {user.role}
-                </span>
+                <strong>R$ {fuel.totalAmount.toFixed(2)}</strong>
               </div>
-            ))}
-          </div>
-        )}
+            ))
+          )}
+        </div>
+      </section>
+    </div>
+  );
+}
+function StatCard({
+  title,
+  value,
+  icon,
+}: {
+  title: string;
+  value: string | number;
+  icon: React.ReactNode;
+}) {
+  return (
+    <div className={styles.statCard}>
+      <div className={styles.statHeader}>
+        <span className={styles.statTitle}>
+          {title}
+        </span>
+
+        <div className={styles.statIcon}>
+          {icon}
+        </div>
       </div>
+
+      <div className={styles.statValue}>
+        {value}
+      </div>
+    </div>
+  );
+}
+
+function SummaryItem({
+  label,
+  value,
+}: {
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className={styles.summaryItem}>
+      <span className={styles.summaryLabel}>
+        {label}
+      </span>
+
+      <strong className={styles.summaryValue}>
+        {value}
+      </strong>
     </div>
   );
 }
