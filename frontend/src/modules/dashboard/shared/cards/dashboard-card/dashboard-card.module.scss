@@ -1,0 +1,52 @@
+.card {
+  background: #081325;
+  
+  border-radius: 16px;
+  padding: 24px;
+
+  transition: 0.2s;
+
+  &:hover {
+    transform: translateY(-3px);
+  }
+}
+
+.users {
+  border-left: 4px solid #10b981;
+}
+
+.premium {
+  border-left: 4px solid #3b82f6;
+}
+
+.gold {
+  border-left: 4px solid #f59e0b;
+}
+
+.lifetime {
+  border-left: 4px solid #8b5cf6;
+}
+
+.paid {
+  border-left: 4px solid #22c55e;
+}
+
+.late {
+  border-left: 4px solid #ef4444;
+}
+
+.mrr {
+  border-left: 4px solid #06b6d4;
+}
+
+.arr {
+  border-left: 4px solid #6366f1;
+}
+
+.new {
+  border-left: 4px solid #84cc16;
+}
+
+.cancelled {
+  border-left: 4px solid #f97316;
+}

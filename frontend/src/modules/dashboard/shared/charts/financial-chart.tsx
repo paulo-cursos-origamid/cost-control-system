@@ -2,66 +2,47 @@
 
 import {
   ResponsiveContainer,
-  AreaChart,
-  Area,
+  BarChart,
+  CartesianGrid,
+  Tooltip,
+  Legend,
   XAxis,
   YAxis,
-  Tooltip,
-  CartesianGrid,
+  Bar,
 } from "recharts";
 
-type Props = {
-  data: {
-    month: string;
-    income: number;
-    expense: number;
-    balance: number;
-  }[];
-};
+import type { CashflowItem } from "@/modules/dashboard/shared/types/dashboard.types";
 
-export function FinancialChart({ data }: Props) {
-  return (
-    <div style={{ width: "100%", height: 320 }}>
-      <ResponsiveContainer>
-        <AreaChart data={data}>
-          <defs>
-            <linearGradient id="income" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#22c55e" stopOpacity={0.4} />
-              <stop offset="95%" stopColor="#22c55e" stopOpacity={0} />
-            </linearGradient>
+import styles from "./financial-chart.module.scss";
 
-            <linearGradient id="expense" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#ef4444" stopOpacity={0.4} />
-              <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
-            </linearGradient>
-          </defs>
-
-          <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
-
-          <XAxis dataKey="month" />
-
-          <YAxis />
-
-          <Tooltip />
-
-          <Area
-            type="monotone"
-            dataKey="income"
-            stroke="#22c55e"
-            fill="url(#income)"
-            strokeWidth={2}
-          />
-
-          <Area
-            type="monotone"
-            dataKey="expense"
-            stroke="#ef4444"
-            fill="url(#expense)"
-            strokeWidth={2}
-          />
-        </AreaChart>
-      </ResponsiveContainer>
-    </div>
-  );
+interface FinancialChartProps {
+  data: CashflowItem[];
 }
 
+export function FinancialChart({ data }: FinancialChartProps) {
+  return (
+    <section className={styles.container}>
+      <h2 className={styles.title}>Fluxo Financeiro</h2>
+
+      <div className={styles.chart}>
+        <ResponsiveContainer width="100%" height={350}>
+          <BarChart data={data}>
+            <CartesianGrid strokeDasharray="3 3" />
+
+            <XAxis dataKey="month" />
+
+            <YAxis />
+
+            <Tooltip />
+
+            <Legend />
+
+            <Bar dataKey="income" name="Receitas" />
+
+            <Bar dataKey="expense" name="Despesas" />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+    </section>
+  );
+}
