@@ -1,14 +1,57 @@
 .card {
   background: #081325;
-  
-  border-radius: 16px;
-  padding: 24px;
 
-  transition: 0.2s;
+  border-radius: 16px;
+
+  padding: 20px;
+
+  transition: 0.2s ease;
+
+  min-height: 120px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 
   &:hover {
     transform: translateY(-3px);
   }
+}
+
+.header {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  color: #94a3b8;
+
+  font-size: 14px;
+}
+
+.value {
+  font-size: 34px;
+
+  font-weight: 700;
+
+  color: white;
+}
+
+.icon {
+  width: 40px;
+
+  height: 40px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 12px;
+
+  background: rgba(255,255,255,.05);
 }
 
 .users {
