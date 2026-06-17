@@ -1,213 +1,159 @@
+@use "@/styles/abstracts/mixins" as *;
+@use "@/styles/abstracts/variables" as *;
+@use "@/styles/abstracts/breakpoints" as *;
+
 .card {
+  @include card;
+  @include card-hover;
+
   position: relative;
-
-  display: flex;
-  flex-direction: column;
-
-  justify-content: space-between;
-
-  min-height: 140px;
 
   padding: 24px;
 
-  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 
-  background: #0f172a;
+  overflow: hidden;
 
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: 0.25s ease;
 
-  transition:
-    transform 0.2s ease,
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
-}
+  @include tablet {
+    padding: 20px;
+  }
 
-.card:hover {
-  transform: translateY(-3px);
-
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+  @include mobile {
+    padding: 16px;
+  }
 }
 
 .header {
   display: flex;
-
-  align-items: center;
-
   justify-content: space-between;
-
-  margin-bottom: 20px;
+  align-items: center;
 }
 
 .title {
-  font-size: 0.875rem;
-
+  font-size: 14px;
   font-weight: 500;
-
-  color: #94a3b8;
+  color: var(--text-secondary);
 }
 
 .value {
-  font-size: 2rem;
-
+  font-size: 32px;
   font-weight: 700;
-
+  color: var(--text-primary);
   line-height: 1;
+}
 
-  color: #f8fafc;
+.subtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
 }
 
 .icon {
   width: 44px;
-
   height: 44px;
 
   display: flex;
-
   align-items: center;
-
   justify-content: center;
 
   border-radius: 12px;
 
-  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.05);
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
 }
-
-/* ========================= */
-/* USERS */
-/* ========================= */
-
 .users {
-  border-left: 4px solid #10b981;
+  border-left: 4px solid #38bdf8;
+
+  .icon {
+    background: rgba(56, 189, 248, 0.15);
+    color: #38bdf8;
+  }
 }
-
-.users .icon {
-  background: rgba(16, 185, 129, 0.15);
-
-  color: #10b981;
-}
-
-/* ========================= */
-/* PREMIUM */
-/* ========================= */
 
 .premium {
-  border-left: 4px solid #3b82f6;
+  border-left: 4px solid #fbb755;
+
+  .icon {
+    background: rgba(251, 183, 85, 0.15);
+    color: #fbb755;
+  }
 }
-
-.premium .icon {
-  background: rgba(59, 130, 246, 0.15);
-
-  color: #3b82f6;
-}
-
-/* ========================= */
-/* GOLD */
-/* ========================= */
 
 .gold {
   border-left: 4px solid #f59e0b;
+
+  .icon {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+  }
 }
-
-.gold .icon {
-  background: rgba(245, 158, 11, 0.15);
-
-  color: #f59e0b;
-}
-
-/* ========================= */
-/* LIFETIME */
-/* ========================= */
 
 .lifetime {
-  border-left: 4px solid #8b5cf6;
+  border-left: 4px solid #eab308;
+
+  .icon {
+    background: rgba(234, 179, 8, 0.15);
+    color: #eab308;
+  }
 }
-
-.lifetime .icon {
-  background: rgba(139, 92, 246, 0.15);
-
-  color: #8b5cf6;
-}
-
-/* ========================= */
-/* PAID */
-/* ========================= */
 
 .paid {
   border-left: 4px solid #22c55e;
+
+  .icon {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+  }
 }
-
-.paid .icon {
-  background: rgba(34, 197, 94, 0.15);
-
-  color: #22c55e;
-}
-
-/* ========================= */
-/* LATE */
-/* ========================= */
 
 .late {
   border-left: 4px solid #ef4444;
+
+  .icon {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+  }
 }
-
-.late .icon {
-  background: rgba(239, 68, 68, 0.15);
-
-  color: #ef4444;
-}
-
-/* ========================= */
-/* MRR */
-/* ========================= */
 
 .mrr {
-  border-left: 4px solid #06b6d4;
+  border-left: 4px solid #10b981;
+
+  .icon {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+  }
 }
-
-.mrr .icon {
-  background: rgba(6, 182, 212, 0.15);
-
-  color: #06b6d4;
-}
-
-/* ========================= */
-/* ARR */
-/* ========================= */
 
 .arr {
-  border-left: 4px solid #6366f1;
+  border-left: 4px solid #047857;
+
+  .icon {
+    background: rgba(4, 120, 87, 0.15);
+    color: #047857;
+  }
 }
-
-.arr .icon {
-  background: rgba(99, 102, 241, 0.15);
-
-  color: #6366f1;
-}
-
-/* ========================= */
-/* NEW */
-/* ========================= */
 
 .new {
-  border-left: 4px solid #84cc16;
+  border-left: 4px solid #6366f1;
+
+  .icon {
+    background: rgba(99, 102, 241, 0.15);
+    color: #6366f1;
+  }
 }
-
-.new .icon {
-  background: rgba(132, 204, 22, 0.15);
-
-  color: #84cc16;
-}
-
-/* ========================= */
-/* CANCELLED */
-/* ========================= */
 
 .cancelled {
-  border-left: 4px solid #f97316;
-}
+  border-left: 4px solid #dc2626;
 
-.cancelled .icon {
-  background: rgba(249, 115, 22, 0.15);
-
-  color: #f97316;
+  .icon {
+    background: rgba(220, 38, 38, 0.15);
+    color: #dc2626;
+  }
 }

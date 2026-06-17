@@ -1,8 +1,44 @@
-.dashboard {
-  display: flex;
-  min-height: 100vh;
+@use "../abstracts/breakpoints" as *;
 
-  background: var(--surface-primary);
+.dashboard-grid {
+  display: grid;
+  gap: 24px;
 }
-.container {
+
+.dashboard-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+
+  @include laptop {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dashboard-row-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+
+  @include desktop {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include tablet {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dashboard-row-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+
+  @include desktop {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include tablet {
+    grid-template-columns: 1fr;
+  }
 }

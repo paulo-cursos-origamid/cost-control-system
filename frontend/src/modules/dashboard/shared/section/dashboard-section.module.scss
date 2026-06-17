@@ -1,0 +1,15 @@
+@use "@/styles/abstracts/mixins" as *;
+
+.section {
+  @include card;
+
+  padding: 24px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.title {
+  @include section-title;
+}

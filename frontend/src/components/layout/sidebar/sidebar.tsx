@@ -11,6 +11,7 @@ import { dashboardNavigation } from "@/configs/navigation";
 import { useAuthStore } from "@/modules/auth/store/auth.store";
 
 import styles from "./sidebar.module.scss";
+import { LoadingState } from "@/components/feedback/loading-state/loading-state";
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -36,7 +37,7 @@ export function Sidebar() {
             </div>
           </div>
 
-          <div className={styles.loading}>Carregando...</div>
+          <div className={styles.loading}><LoadingState /></div>
         </aside>
       </>
     );

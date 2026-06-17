@@ -4,47 +4,59 @@ import type { ReactNode } from "react";
 
 import styles from "./stat-card.module.scss";
 
-export type StatCardVariant =
-  | "users"
-  | "premium"
-  | "gold"
-  | "lifetime"
-  | "paid"
-  | "late"
-  | "mrr"
-  | "arr"
-  | "new"
-  | "cancelled";
-
 interface StatCardProps {
   title: string;
   value: string | number;
-
+  subtitle?: string;
   icon?: ReactNode;
 
-  subtitle?: string;
-
-  variant?: StatCardVariant;
+  variant?:
+    | "users"
+    | "premium"
+    | "gold"
+    | "lifetime"
+    | "paid"
+    | "late"
+    | "mrr"
+    | "arr"
+    | "new"
+    | "cancelled";
 }
 
 export function StatCard({
   title,
   value,
-  icon,
   subtitle,
+  icon,
   variant,
 }: StatCardProps) {
   return (
-    <div className={`${styles.card} ${variant ? styles[variant] : ""}`}>
+    <div
+      className={`${styles.card} ${
+        variant ? styles[variant] : ""
+      }`}
+    >
       <div className={styles.header}>
-        <span className={styles.title}>{title}</span>
+        <span className={styles.title}>
+          {title}
+        </span>
 
-        {icon && <div className={styles.icon}>{icon}</div>}
+        {icon && (
+          <div className={styles.icon}>
+            {icon}
+          </div>
+        )}
       </div>
 
-      <div className={styles.value}>{value}</div>
+      <div className={styles.value}>
+        {value}
+      </div>
 
-      {subtitle && <div className={styles.subtitle}>{subtitle}</div>}
+      {subtitle && (
+        <div className={styles.subtitle}>
+          {subtitle}
+        </div>
+      )}
     </div>
   );
 }

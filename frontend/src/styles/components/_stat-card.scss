@@ -1,15 +1,14 @@
 @use "../abstracts/mixins" as *;
-@use "../abstracts/variables" as *;
 
-.ecp-card {
+.stat-card {
   @include card;
+  @include card-hover;
 
   padding: 24px;
 
   display: flex;
   flex-direction: column;
-
   gap: 16px;
 
-  height: 100%;
+  min-height: 130px;
 }

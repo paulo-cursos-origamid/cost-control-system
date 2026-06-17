@@ -1,0 +1,24 @@
+@use "@/styles/abstracts/mixins" as *;
+@use "@/styles/abstracts/breakpoints" as *;
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.title {
+  @include page-title;
+
+  @include tablet {
+    font-size: 28px;
+  }
+
+  @include mobile {
+    font-size: 24px;
+  }
+}
+
+.subtitle {
+  @include page-subtitle;
+}

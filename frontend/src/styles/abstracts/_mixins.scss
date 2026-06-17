@@ -1,8 +1,17 @@
 @mixin card {
-  border-radius: 20px;
   background: var(--surface-card);
   border: 1px solid var(--border-color);
+  border-radius: 20px;
   box-shadow: var(--shadow-md);
+}
+
+@mixin card-hover {
+  transition: 0.25s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
 }
 
 @mixin input {
@@ -18,4 +27,21 @@
   border: none;
   border-radius: 12px;
   cursor: pointer;
+}
+
+@mixin section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+@mixin page-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+@mixin page-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
 }

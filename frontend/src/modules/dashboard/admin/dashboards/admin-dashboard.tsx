@@ -12,9 +12,19 @@ import { StatCard } from "@/modules/dashboard/shared/cards/stat-card";
 import { SubscriptionsDashboard } from "./subscriptions-dashboard";
 
 import styles from "./admin-dashboard.module.scss";
+import { FinancialSummary } from "../components/financial-summary/financial-summary";
+import { FleetSummary } from "../components/fleet-summary/fleet-summary";
+import { LatestTransactions } from "../components/latest-transactions/latest-transactions";
+
+import { FleetCosts } from "../components/fleet-costs/fleet-costs";
+
+import { LatestFuelSupplies } from "../components/latest-fuel-supplies/latest-fuel-supplies";
+import { PageHeader } from "../../shared/page-header/page-header";
+import { DashboardGrid } from "../../shared/grid/dashboard-grid";
+import { DashboardSection } from "../../shared/section/dashboard-section";
 
 export function AdminDashboard() {
-  const { cashflow } = useDashboard();
+  const { cashflow, financial, vehicles } = useDashboard();
 
   const metrics = {
     activeUsers: 156,
@@ -34,18 +44,17 @@ export function AdminDashboard() {
 
   return (
     <div className={styles.dashboard}>
-      <header className={styles.header}>
-        <h1>Dashboard Administrativo</h1>
-
-        <p>Visão geral da plataforma ECP</p>
-      </header>
+      <PageHeader
+        title="Dashboard Administrativo"
+        subtitle="Visão geral da plataforma ECP"
+      />
 
       {/* ========================= */}
       {/* MÉTRICAS */}
       {/* ========================= */}
 
       <section className={styles.section}>
-        <div className={styles.grid}>
+        <DashboardGrid>
           <StatCard
             title="Usuários Ativos"
             value={metrics.activeUsers}
@@ -77,7 +86,6 @@ export function AdminDashboard() {
           <StatCard
             title="Pagantes"
             value={metrics.payingUsers}
-            icon={<DollarSign size={20} />}
             variant="paid"
           />
 
@@ -105,42 +113,79 @@ export function AdminDashboard() {
           <StatCard
             title="Novos Clientes"
             value={metrics.newCustomers}
-            icon={<Users size={20} />}
             variant="new"
           />
 
           <StatCard
             title="Cancelamentos"
             value={metrics.cancellations}
-            icon={<AlertTriangle size={20} />}
             variant="cancelled"
           />
-        </div>
+        </DashboardGrid>
       </section>
 
       {/* ========================= */}
       {/* AÇÕES RÁPIDAS */}
       {/* ========================= */}
 
-      <section className={styles.section}>
+      <DashboardSection title="Ações Rapidas">
         <QuickActions />
-      </section>
+      </DashboardSection>
 
       {/* ========================= */}
       {/* FLUXO FINANCEIRO */}
       {/* ========================= */}
 
-      <section className={styles.section}>
+      <DashboardSection title="Fluxo Financeiro">
         <FinancialChart data={cashflow} />
-      </section>
+      </DashboardSection>
 
       {/* ========================= */}
       {/* ASSINATURAS */}
       {/* ========================= */}
 
-      <section className={styles.section}>
+      <DashboardSection title="Assinantes">
         <SubscriptionsDashboard />
-      </section>
+      </DashboardSection>
+
+      {financial && (
+        <FinancialSummary
+          income={financial.summary.income}
+          expense={financial.summary.expense}
+          balance={financial.summary.balance}
+        />
+      )}
+
+      {vehicles && (
+        <FleetSummary
+          fuel={vehicles.costs.fuel}
+          maintenance={vehicles.costs.maintenance}
+          total={vehicles.costs.total}
+        />
+      )}
+
+      {financial && (
+        <LatestTransactions transactions={financial.latestTransactions} />
+      )}
+
+      {financial && (
+        <FinancialSummary
+          income={financial.summary.income}
+          expense={financial.summary.expense}
+          balance={financial.summary.balance}
+        />
+      )}
+      {vehicles && (
+        <FleetCosts
+          fuel={vehicles.costs.fuel}
+          maintenance={vehicles.costs.maintenance}
+          total={vehicles.costs.total}
+        />
+      )}
+
+      {vehicles && (
+        <LatestFuelSupplies supplies={vehicles.latestFuelSupplies} />
+      )}
     </div>
   );
 }

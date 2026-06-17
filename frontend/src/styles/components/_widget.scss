@@ -1,0 +1,29 @@
+@use "../abstracts/mixins" as *;
+@use "../abstracts/variables" as *;
+
+.ecp-widget {
+  @include card;
+
+  padding: 24px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.ecp-widget-title {
+  font-size: 1rem;
+  font-weight: 600;
+
+  color: var(--text-primary);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ecp-widget-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}

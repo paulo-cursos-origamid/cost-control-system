@@ -1,6 +1,9 @@
 @use "./abstracts/variables";
 @use "./abstracts/breakpoints";
-@use "./abstracts/mixins";
+@use ".//abstracts/mixins";
+@use "./abstracts/spacing";
+@use "./abstracts/typography";
+@use "./abstracts/animations";
 
 @use "./themes/light";
 @use "./themes/dark";
@@ -16,5 +19,7 @@
 @use "./components/button";
 @use "./components/input";
 @use "./components/card";
+@use "./components/stat-card";
 @use "./components/table";
 @use "./components/modal";
+@use "./components/widget";

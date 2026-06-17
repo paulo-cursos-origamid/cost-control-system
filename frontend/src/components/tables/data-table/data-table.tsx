@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 
 import styles from "./data-table.module.scss";
+import { EmptyState } from "@/components/feedback/empty-state/empty-state";
+import { LoadingState } from "@/components/feedback/loading-state/loading-state";
 
 export interface DataTableColumn<T extends Record<string, unknown>> {
   key: keyof T;
@@ -20,14 +22,25 @@ export function DataTable<T extends Record<string, unknown>>({
   columns,
   loading = false,
 }: DataTableProps<T>) {
-  if (loading) {
-    return <p>Carregando...</p>;
+  // if (loading) {
+  //   return <p>Carregando...</p>;
+  // }
+if (loading) {
+  return (
+    <LoadingState message="Carregando transações..." />
+  );
+}
+  // if (data.length === 0) {
+  //   return <p>Nenhum registro encontrado.</p>;
+  // }
+  if (!data.length) {
+    return (
+      <EmptyState
+        title="Nenhum registro encontrado"
+        description="Não existem informações para exibir."
+      />
+    );
   }
-
-  if (data.length === 0) {
-    return <p>Nenhum registro encontrado.</p>;
-  }
-
   return (
     <table className={styles.table}>
       <thead>

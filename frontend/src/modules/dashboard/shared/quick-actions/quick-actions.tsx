@@ -37,9 +37,6 @@ const actions = [
 export function QuickActions() {
   return (
     <section className={styles.container}>
-      <h2 className={styles.title}>
-        Ações Rápidas
-      </h2>
 
       <div className={styles.grid}>
         {actions.map((action) => {

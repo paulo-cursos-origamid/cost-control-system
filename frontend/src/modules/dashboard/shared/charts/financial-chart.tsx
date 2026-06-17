@@ -22,8 +22,6 @@ interface FinancialChartProps {
 export function FinancialChart({ data }: FinancialChartProps) {
   return (
     <section className={styles.container}>
-      <h2 className={styles.title}>Fluxo Financeiro</h2>
-
       <div className={styles.chart}>
         <ResponsiveContainer width="100%" height={350}>
           <BarChart data={data}>
