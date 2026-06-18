@@ -1,6 +1,6 @@
 import { useAuthStore } from "@/modules/auth/store/auth.store";
 
-import { UserRole } from "@/modules/users/types/user.types";
+import { UserRole } from "@/constants/roles";
 
 export function useAuth() {
   const user = useAuthStore((s) => s.user);

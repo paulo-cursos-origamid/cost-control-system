@@ -3,14 +3,14 @@
 import { CrudPage } from "@/components/shared/crud/CrudPage";
 
 import { useAccounts } from "../hooks/use-accounts";
-import { accountSchema } from "../schemas/account.schema";
+import { accountSchema } from "../../../modules/accounts/schemas/account.schema";
 
 export function AccountsPage() {
   const {
     data,
     loading,
     deleteItem,
-    refresh,
+    fetchData,
   } = useAccounts();
 
   if (loading) {
@@ -22,7 +22,7 @@ export function AccountsPage() {
       schema={accountSchema}
       data={data}
       onDelete={deleteItem}
-      onRefresh={refresh}
+      onRefresh={fetchData}
     />
   );
 }

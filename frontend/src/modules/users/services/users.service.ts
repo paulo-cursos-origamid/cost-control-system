@@ -1,51 +1,27 @@
 import { apiFetch } from "@/lib/api";
+import { User } from "../types/user.types";
 
-import {
-  User,
-  CreateUserDTO,
-  UpdateUserDTO,
-} from "../types/user.types";
-
-type ApiResponse<T> = {
-  success: boolean;
-  data: T;
-  message: string;
-  timestamp: string;
-};
-
-export const userService = {
-  async getAll(): Promise<User[]> {
-    const response = await apiFetch<ApiResponse<User[]>>("/api/users");
-
-    return response.data;
+export const usersService = {
+  getAll(): Promise<User[]> {
+    return apiFetch<User[]>("/api/users");
   },
 
-  async create(data: CreateUserDTO): Promise<User> {
-    const response = await apiFetch<ApiResponse<User>>("/api/users", {
+  create(data: Partial<User>): Promise<User> {
+    return apiFetch<User>("/api/users", {
       method: "POST",
       body: JSON.stringify(data),
     });
-
-    return response.data;
   },
 
-  async update(
-    id: string,
-    data: UpdateUserDTO,
-  ): Promise<User> {
-    const response = await apiFetch<ApiResponse<User>>(
-      `/api/users/${id}`,
-      {
-        method: "PATCH",
-        body: JSON.stringify(data),
-      },
-    );
-
-    return response.data;
+  update(id: string, data: Partial<User>): Promise<User> {
+    return apiFetch<User>(`/api/users/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(data),
+    });
   },
 
-  async delete(id: string): Promise<void> {
-    await apiFetch(`/api/users/${id}`, {
+  delete(id: string): Promise<void> {
+    return apiFetch<void>(`/api/users/${id}`, {
       method: "DELETE",
     });
   },

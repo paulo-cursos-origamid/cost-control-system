@@ -12,9 +12,15 @@ type Props = {
   schema: CrudFormSchema;
   initialData?: CrudFormData;
   onSuccess?: () => void;
+  onCancel?: () => void;
 };
 
-export function GenericForm({ schema, initialData, onSuccess }: Props) {
+export function GenericForm({
+  schema,
+  initialData,
+  onSuccess,
+  onCancel,
+}: Props) {
   const [form, setForm] = useState<CrudFormData>(initialData ?? {});
 
   const [loading, setLoading] = useState(false);
@@ -35,7 +41,7 @@ export function GenericForm({ schema, initialData, onSuccess }: Props) {
       const payload = Object.fromEntries(
         schema.fields.map((field) => [field.name, form[field.name]]),
       );
-
+      console.log(payload);
       const isEditing = Boolean(initialData?.id);
 
       const endpoint = isEditing
@@ -78,13 +84,31 @@ export function GenericForm({ schema, initialData, onSuccess }: Props) {
                   </option>
                 ))}
               </select>
+            ) : field.type === "checkbox" ? (
+              <input
+                type="checkbox"
+                checked={Boolean(form[field.name])}
+                onChange={(e) => handleChange(field.name, e.target.checked)}
+              />
             ) : (
               <input
                 className={styles.input}
                 type={field.type}
                 placeholder={field.placeholder}
-                value={String(form[field.name] ?? "")}
-                onChange={(e) => handleChange(field.name, e.target.value)}
+                // value={String(form[field.name] ?? "")}
+                value={
+                  field.type === "color"
+                    ? String(form[field.name] ?? "#047857")
+                    : String(form[field.name] ?? "")
+                }
+                onChange={(e) =>
+                  handleChange(
+                    field.name,
+                    field.type === "number"
+                      ? Number(e.target.value)
+                      : e.target.value,
+                  )
+                }
               />
             )}
           </div>
@@ -92,7 +116,11 @@ export function GenericForm({ schema, initialData, onSuccess }: Props) {
       </div>
 
       <div className={styles.actions}>
-        <button type="button" className={styles.cancelButton}>
+        <button
+          type="button"
+          className={styles.cancelButton}
+          onClick={onCancel}
+        >
           Cancelar
         </button>
 
@@ -101,11 +129,7 @@ export function GenericForm({ schema, initialData, onSuccess }: Props) {
           className={styles.submitButton}
           disabled={loading}
         >
-          {loading
-            ? "Salvando..."
-            : initialData?.id
-              ? "Atualizar"
-              : "Criar Usuário"}
+          {loading ? "Salvando..." : initialData?.id ? "Atualizar" : "Criar"}
         </button>
       </div>
     </form>

@@ -3,7 +3,9 @@ export type CrudFieldType =
   | "email"
   | "password"
   | "number"
-  | "select";
+  | "select"
+  | "color"
+  | "checkbox";
 
 export interface CrudFieldOption {
   label: string;
@@ -15,6 +17,7 @@ export interface CrudField {
   label: string;
   type: CrudFieldType;
   placeholder?: string;
+  required?: boolean;
   options?: CrudFieldOption[];
 }
 
@@ -24,18 +27,13 @@ export interface CrudColumn {
 }
 
 export interface CrudFormData {
-  [key: string]:
-    | string
-    | number
-    | boolean
-    | null
-    | undefined;
+  [key: string]: string | number | boolean | null | undefined;
 }
 
 export interface CrudFormSchema {
   title: string;
   endpoint: string;
-  method: "POST" | "PATCH";
+  // method: "POST" | "PATCH";
 
   columns: CrudColumn[];
   fields: CrudField[];

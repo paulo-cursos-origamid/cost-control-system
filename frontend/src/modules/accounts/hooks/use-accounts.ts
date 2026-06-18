@@ -1,6 +1,6 @@
 import { useCrud } from "@/components/shared/crud/useCrud";
 
-import { accountsService } from "../services/accounts.service";
+import { accountsService } from "../services/account.service";
 import { Account } from "../types/account.types";
 
 export function useAccounts() {

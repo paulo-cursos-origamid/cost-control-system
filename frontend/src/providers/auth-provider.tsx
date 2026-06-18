@@ -11,7 +11,6 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const setUser = useAuthStore((state) => state.setUser);
-
   const setLoading = useAuthStore((state) => state.setLoading);
 
   useEffect(() => {
@@ -19,15 +18,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
       try {
         const response = await authApi.me();
 
-        console.log("AUTH RESPONSE JSON", JSON.stringify(response, null, 2));
+        console.log("AUTH RESPONSE JSON", response);
 
-        const user =
-          (response as any)?.data?.data ?? (response as any)?.data ?? response;
-
+        // ✅ PADRÃO ÚNICO E LIMPO
+        const user = response.data?.data ?? response.data;
         setUser(user);
       } catch (error) {
         console.error(error);
-
         setUser(null);
       } finally {
         setLoading(false);

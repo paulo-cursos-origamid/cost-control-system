@@ -7,7 +7,8 @@ import {
   Users,
 } from "lucide-react";
 
-import { UserRole } from "@/modules/users/types/user.types";
+// import { UserRole } from "@/modules/users/types/user.types";
+import { UserRole } from "@/constants/roles";
 
 interface NavigationItem {
   label: string;

@@ -6,6 +6,7 @@ import { Pencil, Trash2 } from "lucide-react";
 export type CrudColumn = {
   key: string;
   label: string;
+  render?: (value: unknown, row: Entity) => React.ReactNode;
 };
 
 export type Entity = {
@@ -37,7 +38,11 @@ export function CrudTable({ data, columns, onEdit, onDelete }: Props) {
           {data.map((item) => (
             <tr key={item.id}>
               {columns.map((column) => (
-                <td key={column.key}>{String(item[column.key] ?? "")}</td>
+                <td key={column.key}>
+                  {column.render
+                    ? column.render(item[column.key], item)
+                    : String(item[column.key] ?? "")}
+                </td>
               ))}
 
               <td>

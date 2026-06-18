@@ -41,6 +41,7 @@ export function CrudModal({
             schema={schema}
             initialData={initialData}
             onSuccess={onSuccess}
+            onCancel={onClose}
           />
         </div>
       </div>
