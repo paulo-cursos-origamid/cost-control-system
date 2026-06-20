@@ -1,0 +1,46 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.grid {
+  display: grid;
+  gap: 16px;
+
+  grid-template-columns:
+    repeat(auto-fill, minmax(220px, 1fr));
+}
+
+.card {
+  background: var(--surface-secondary);
+
+  border: 1px solid var(--border-primary);
+
+  border-radius: 16px;
+
+  padding: 16px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.name {
+  font-weight: 600;
+}
+
+.type {
+  font-size: 0.85rem;
+
+  color: var(--text-secondary);
+}
+
+.balance {
+  font-size: 1.1rem;
+}

@@ -5,7 +5,7 @@ import type {
   FinancialSummary,
   VehicleSummary,
   CashflowItem,
-} from "../types/dashboard.types";
+} from "../shared/types/dashboard.types";
 
 export const dashboardService = {
   getCards: () =>

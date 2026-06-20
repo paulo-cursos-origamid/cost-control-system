@@ -2,29 +2,26 @@
 
 import { AlertTriangle, Crown, DollarSign, Users } from "lucide-react";
 
-import { useDashboard } from "../../hooks/use-dashboard";
-
-import { FinancialChart } from "../../shared/charts/financial-chart";
-import { QuickActions } from "../../shared/quick-actions/quick-actions";
-
 import { StatCard } from "@/modules/dashboard/shared/cards/stat-card";
 
-import { SubscriptionsDashboard } from "./subscriptions-dashboard";
-
 import styles from "./admin-dashboard.module.scss";
-import { FinancialSummary } from "../components/financial-summary/financial-summary";
-import { FleetSummary } from "../components/fleet-summary/fleet-summary";
-import { LatestTransactions } from "../components/latest-transactions/latest-transactions";
-
-import { FleetCosts } from "../components/fleet-costs/fleet-costs";
-
-import { LatestFuelSupplies } from "../components/latest-fuel-supplies/latest-fuel-supplies";
-import { PageHeader } from "../../shared/page-header/page-header";
-import { DashboardGrid } from "../../shared/grid/dashboard-grid";
-import { DashboardSection } from "../../shared/section/dashboard-section";
+import { useDashboard } from "@/modules/dashboard/hooks/use-dashboard";
+import { FinancialChart } from "@/modules/dashboard/shared/charts/financial-chart";
+import { DashboardGrid } from "@/modules/dashboard/shared/grid/dashboard-grid";
+import { PageHeader } from "@/modules/dashboard/shared/page-header/page-header";
+import { QuickActions } from "@/modules/dashboard/shared/quick-actions/quick-actions";
+import { DashboardSection } from "@/modules/dashboard/shared/section/dashboard-section";
+import { FinancialSummary } from "../../components/financial-summary/financial-summary";
+import { FleetCosts } from "../../components/fleet-costs/fleet-costs";
+import { FleetSummary } from "../../components/fleet-summary/fleet-summary";
+import { LatestFuelSupplies } from "../../components/latest-fuel-supplies/latest-fuel-supplies";
+import { LatestTransactions } from "../../components/latest-transactions/latest-transactions";
+import { SubscriptionsDashboard } from "../subscriptions-dashboard";
+import { FinancialKpiCard } from "@/modules/dashboard/shared/cards/financial-kpi-card/financial-kpi-card";
+import { TopCategories } from "../../components/top-categories/top-categories";
 
 export function AdminDashboard() {
-  const { cashflow, financial, vehicles } = useDashboard();
+  const { cashflow, financial, vehicles, loading, reload } = useDashboard();
 
   const metrics = {
     activeUsers: 156,
@@ -49,6 +46,42 @@ export function AdminDashboard() {
         subtitle="Visão geral da plataforma ECP"
       />
 
+      {financial && (
+        <DashboardGrid>
+          <FinancialKpiCard
+            title="Receitas"
+            value={financial.summary.income}
+            variant="income"
+          />
+
+          <FinancialKpiCard
+            title="Despesas"
+            value={financial.summary.expense}
+            variant="expense"
+          />
+
+          <FinancialKpiCard
+            title="Saldo"
+            value={financial.summary.balance}
+            variant="balance"
+          />
+        </DashboardGrid>
+      )}
+      {/* ========================= */}
+      {/* FLUXO FINANCEIRO */}
+      {/* ========================= */}
+
+      {financial && (
+        <div className={styles.analyticsGrid}>
+          <DashboardSection title="Fluxo Financeiro">
+            <FinancialChart data={cashflow} />
+          </DashboardSection>
+
+          <DashboardSection title="Categorias">
+            <TopCategories categories={financial.topCategories} />
+          </DashboardSection>
+        </div>
+      )}
       {/* ========================= */}
       {/* MÉTRICAS */}
       {/* ========================= */}
@@ -133,14 +166,6 @@ export function AdminDashboard() {
       </DashboardSection>
 
       {/* ========================= */}
-      {/* FLUXO FINANCEIRO */}
-      {/* ========================= */}
-
-      <DashboardSection title="Fluxo Financeiro">
-        <FinancialChart data={cashflow} />
-      </DashboardSection>
-
-      {/* ========================= */}
       {/* ASSINATURAS */}
       {/* ========================= */}
 
@@ -168,13 +193,7 @@ export function AdminDashboard() {
         <LatestTransactions transactions={financial.latestTransactions} />
       )}
 
-      {financial && (
-        <FinancialSummary
-          income={financial.summary.income}
-          expense={financial.summary.expense}
-          balance={financial.summary.balance}
-        />
-      )}
+  
       {vehicles && (
         <FleetCosts
           fuel={vehicles.costs.fuel}

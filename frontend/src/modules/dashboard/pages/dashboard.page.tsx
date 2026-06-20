@@ -1,6 +1,7 @@
 "use client";
 
-import { AdminDashboard } from "../admin/dashboards/admin-dashboard";
+
+import { AdminDashboard } from "../admin/dashboards/admin-dashboard/admin-dashboard";
 import { UserDashboard } from "../user/dashboards/user-dashboard";
 
 export function DashboardPage() {

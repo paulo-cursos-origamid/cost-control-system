@@ -7,7 +7,7 @@ import type {
   FinancialSummary,
   VehicleSummary,
   CashflowItem,
-} from "../types/dashboard.types";
+} from "../shared/types/dashboard.types";
 
 export function useDashboard() {
   const [cards, setCards] = useState<DashboardCards | null>(null);
@@ -28,10 +28,10 @@ export function useDashboard() {
           dashboardService.getCashflow(),
         ]);
 
-      setCards(cardsRes.data);
-      setFinancial(financialRes.data);
-      setVehicles(vehiclesRes.data);
-      setCashflow(cashflowRes.data);
+      setCards(cardsRes);
+      setFinancial(financialRes);
+      setVehicles(vehiclesRes);
+      setCashflow(cashflowRes);
     } finally {
       setLoading(false);
     }

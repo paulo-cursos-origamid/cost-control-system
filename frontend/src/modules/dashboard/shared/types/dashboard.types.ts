@@ -10,8 +10,15 @@ export type DashboardCards = {
   monthlyGrowth: number;
 };
 
+
 // ==========================
 // FINANCIAL
+export type TransactionSummary = {
+  income: number;
+  expense: number;
+  balance: number;
+};
+
 export type FinancialSummary = {
   summary: {
     income: number;
@@ -19,20 +26,26 @@ export type FinancialSummary = {
     balance: number;
   };
 
-  accounts: unknown[];
+  accounts: {
+    id: string;
+    name: string;
+    balance: number;
+    type: string;
+    isActive: boolean;
+  }[];
 
   latestTransactions: {
     id: string;
     title: string;
     amount: number;
     type: "INCOME" | "EXPENSE";
+    date: string;
   }[];
 
   topCategories: {
     categoryId: string;
-    category: string;
-    type: string;
-    amount: number;
+    categoryName: string;
+    total: number;
   }[];
 };
 

@@ -25,15 +25,15 @@ export function DataTable<T extends Record<string, unknown>>({
   // if (loading) {
   //   return <p>Carregando...</p>;
   // }
-if (loading) {
-  return (
-    <LoadingState message="Carregando transações..." />
-  );
-}
+  if (loading) {
+    return <LoadingState message="Carregando transações..." />;
+  }
   // if (data.length === 0) {
   //   return <p>Nenhum registro encontrado.</p>;
   // }
-  if (!data.length) {
+  const rows = data ?? [];
+
+  if (rows.length === 0) {
     return (
       <EmptyState
         title="Nenhum registro encontrado"
