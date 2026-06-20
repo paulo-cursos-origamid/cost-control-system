@@ -1,0 +1,32 @@
+.cards {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 20px;
+}
+
+.card {
+  background: var(--surface-primary);
+
+  border: 1px solid var(--border-primary);
+
+  border-radius: 16px;
+
+  padding: 20px;
+}
+
+.label {
+  color: var(--text-secondary);
+
+  font-size: 0.875rem;
+}
+
+.value {
+  margin-top: 8px;
+
+  font-size: 1.6rem;
+  font-weight: 700;
+
+  color: var(--text-primary);
+}

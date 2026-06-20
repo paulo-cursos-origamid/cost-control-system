@@ -1,5 +1,5 @@
-// import { TransactionsPage } from "@/modules/transactions/pages/transactions.page";
+import { TransactionsPage } from "@/modules/transactions/pages/transactions.page";
 
 export default function Page() {
-  // return <TransactionsPage />;
+  return <TransactionsPage />;
 }

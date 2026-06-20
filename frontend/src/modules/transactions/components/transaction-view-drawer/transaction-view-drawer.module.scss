@@ -1,0 +1,35 @@
+.drawer {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 20px;
+
+  padding: 24px;
+}
+
+.title {
+  font-size: 1.25rem;
+
+  font-weight: 700;
+}
+
+.section {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 12px;
+}
+
+.label {
+  color: var(--text-secondary);
+
+  font-size: 0.875rem;
+}
+
+.value {
+  color: var(--text-primary);
+
+  font-weight: 500;
+}

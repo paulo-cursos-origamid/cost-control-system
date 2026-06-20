@@ -1,35 +1,34 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { transactionsService, Transaction } from "../services/transactions.service";
+import { useCallback, useEffect, useState } from "react";
 
-export function useTransactions(params?: { page?: number; limit?: number }) {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
+import { transactionsService } from "../services/transactions.service";
+import { Transaction } from "../types/transaction.types";
+
+export function useTransactions() {
+  const [data, setData] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
-  const [meta, setMeta] = useState<any>(null);
 
-  async function fetchTransactions() {
+  const fetchTransactions = useCallback(async () => {
     try {
       setLoading(true);
+      const transactions = await transactionsService.getAll();
 
-      const response = await transactionsService.list(params);
+      console.log(transactions);
+      console.log(Array.isArray(transactions));
 
-      setTransactions(response.data.data);
-      setMeta(response.data.meta);
-    } catch (error) {
-      console.error("Erro ao buscar transações:", error);
+      setData(transactions);
     } finally {
       setLoading(false);
     }
-  }
+  }, []);
 
   useEffect(() => {
-    fetchTransactions();
-  }, [params?.page, params?.limit]);
+    void fetchTransactions();
+  }, [fetchTransactions]);
 
   return {
-    transactions,
-    meta,
+    data,
     loading,
     refetch: fetchTransactions,
   };
