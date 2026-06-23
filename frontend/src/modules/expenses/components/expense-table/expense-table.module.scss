@@ -1,0 +1,74 @@
+.container {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(12px);
+
+  border-radius: 16px;
+  padding: 16px;
+
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* ❗ AGORA tudo fica escopado */
+.table th {
+  text-align: left;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  padding: 12px;
+}
+
+.table td {
+  padding: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+}
+
+.title {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.title small {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.expense {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.actions button {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 6px 10px;
+  border-radius: 8px;
+
+  cursor: pointer;
+  color: var(--text-primary);
+}
+
+.actions button:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.loading {
+  padding: 16px;
+  opacity: 0.6;
+}
+
+.empty {
+  padding: 16px;
+  opacity: 0.6;
+}
