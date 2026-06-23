@@ -11,7 +11,7 @@ export async function login(
   payload: LoginPayload,
 ): Promise<LoginResponse> {
   return httpClient<LoginResponse>(
-    '/api/auth/sign-in',
+    '/api/auth/login',
     {
       method: 'POST',
 
@@ -32,7 +32,7 @@ export async function getMe(): Promise<User | null> {
 
 export async function logout(): Promise<void> {
   await httpClient(
-    '/api/auth/sign-out',
+    '/api/auth/logout',
     {
       method: 'POST',
     },

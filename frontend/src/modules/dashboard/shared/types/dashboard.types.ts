@@ -1,3 +1,5 @@
+import type { Transaction } from "@/modules/transactions/types/transaction.types";
+
 // ==========================
 // CARDS (KPIs)
 export type DashboardCards = {
@@ -9,7 +11,6 @@ export type DashboardCards = {
   transactions: number;
   monthlyGrowth: number;
 };
-
 
 // ==========================
 // FINANCIAL
@@ -26,21 +27,26 @@ export type FinancialSummary = {
     balance: number;
   };
 
-  accounts: {
-    id: string;
-    name: string;
-    balance: number;
-    type: string;
-    isActive: boolean;
-  }[];
+  comparison: {
+    income: {
+      current: number;
+      previous: number;
+    };
 
-  latestTransactions: {
-    id: string;
-    title: string;
-    amount: number;
-    type: "INCOME" | "EXPENSE";
-    date: string;
-  }[];
+    expense: {
+      current: number;
+      previous: number;
+    };
+
+    balance: {
+      current: number;
+      previous: number;
+    };
+  };
+
+  accounts: unknown[];
+
+  latestTransactions: Transaction[];
 
   topCategories: {
     categoryId: string;
@@ -48,7 +54,6 @@ export type FinancialSummary = {
     total: number;
   }[];
 };
-
 // ==========================
 // VEHICLES
 export type VehicleSummary = {

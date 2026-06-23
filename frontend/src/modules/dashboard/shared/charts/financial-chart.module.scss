@@ -1,23 +1,100 @@
 .container {
-  display: flex;
-  flex-direction: column;
-
-  gap: 20px;
-}
-
-.title {
-  font-size: 1.1rem;
-  font-weight: 600;
+  height: 100%;
 }
 
 .chart {
-  height: 350px;
+  height: 460px;
 
   padding: 24px;
 
-  border-radius: 16px;
+  border-radius: 18px;
 
-  background: rgba(255,255,255,.03);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(10, 18, 45, 0.98),
+      rgba(6, 12, 34, 0.98)
+    );
 
-  border: 1px solid rgba(255,255,255,.05);
+  border: 1px solid rgba(110, 146, 255, 0.16);
+
+  box-shadow:
+    0 20px 60px rgba(4, 15, 45, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.chartHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.chartLabel {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.periodControls {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.periodButton,
+.periodButtonActive {
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.84);
+  padding: 0.75rem 1rem;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.periodButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.periodButtonActive {
+  background: rgba(59, 130, 246, 0.18);
+  border-color: rgba(59, 130, 246, 0.34);
+  color: #ffffff;
+}
+
+.tooltip {
+  background: rgba(7, 18, 42, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 14px 16px;
+  color: rgba(255, 255, 255, 0.95);
+  min-width: 180px;
+}
+
+.tooltipLabel {
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.tooltipRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.tooltipName {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.tooltipValue {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.95);
 }

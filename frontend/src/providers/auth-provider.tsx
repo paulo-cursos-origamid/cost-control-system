@@ -21,7 +21,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         console.log("AUTH RESPONSE JSON", response);
 
         // ✅ PADRÃO ÚNICO E LIMPO
-        const user = response.data?.data ?? response.data;
+        const user = response.data ?? response.data;
         setUser(user);
       } catch (error) {
         console.error(error);

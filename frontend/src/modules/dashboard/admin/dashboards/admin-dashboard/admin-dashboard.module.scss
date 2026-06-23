@@ -1,36 +1,171 @@
+@use "@/styles/abstracts/spacing" as *;
+@use "@/styles/abstracts/breakpoints" as *;
+
 .dashboard {
   display: flex;
-
   flex-direction: column;
+  gap: $space-4;
 
-  gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+
+  padding: $space-6 $space-8;
+
+  @media (max-width: 1024px) {
+    padding: $space-6 $space-4;
+  }
+
+  @media (max-width: 640px) {
+    padding: $space-4 $space-3;
+  }
+
+  /* 🔥 fundo igual imagem (azul profundo com vinheta) */
+  background: radial-gradient(
+    circle at top,
+    rgba(25, 35, 70, 0.9),
+    #050b18 65%
+  );
+
+  min-height: 100vh;
 }
 
-.header {
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 4px;
-}
-
-.grid {
+/* =========================
+   KPI GRID (TOP HERO STRIP)
+========================= */
+// .kpiGrid {
+//   display: grid;
+//   grid-template-columns: repeat(5, 1fr);
+//   gap: $space-4;
+// }
+.kpiGrid {
   display: grid;
 
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(3, minmax(320px, 1fr));
+  gap: $space-4;
 
-  gap: 20px;
+  align-items: stretch;
+
+  @media (max-width: 1600px) {
+    grid-template-columns: repeat(3, minmax(300px, 1fr));
+  }
+
+  @media (max-width: 1400px) {
+    grid-template-columns: repeat(2, minmax(320px, 1fr));
+  }
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+  }
 }
+
+.topCategoriesCard {
+  min-width: 0;
+}
+
+.overviewGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $space-4;
+  align-items: stretch;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 🔥 KPI CARD ENHANCEMENT (igual imagem)
+   destaque + glow leve por cor */
+.kpiGrid :global(.stat-card) {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(120, 160, 255, 0.18);
+  border-radius: 16px;
+
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(10px);
+}
+
+/* =========================
+   ANALYTICS GRID (CHART AREA)
+========================= */
+.analyticsGrid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: $space-4;
+  align-items: stretch;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 🔥 CHART CONTAINER (muito importante para ficar igual imagem) */
+.analyticsGrid :global(.dashboard-section) {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(120, 160, 255, 0.12);
+  border-radius: 18px;
+
+  padding: $space-4;
+
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+}
+
+/* =========================
+   METRICS GRID (SECOND ROW)
+========================= */
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: $space-4;
+
+  @media (max-width: 1400px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================
+   SECTION SPACING (Stripe rhythm)
+========================= */
 .section {
   display: flex;
   flex-direction: column;
-
-  gap: 20px;
+  gap: $space-4;
 }
-.analyticsGrid {
-  display: grid;
 
-  grid-template-columns: 2fr 1fr;
+/* =========================
+   🎨 CHART AREA POLISH (linha azul igual imagem)
+========================= */
+.analyticsGrid svg {
+  filter: drop-shadow(0 4px 12px rgba(0, 120, 255, 0.25));
+}
 
-  gap: 24px;
+/* =========================
+   KPI HOVER (microinteraction Stripe-like)
+========================= */
+.kpiGrid :global(.stat-card):hover {
+  transform: translateY(-2px);
+  border-color: rgba(120, 180, 255, 0.4);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* =========================
+   TYPOGRAPHY (igual imagem)
+========================= */
+.title {
+  font-size: 20px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.92);
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.55);
 }

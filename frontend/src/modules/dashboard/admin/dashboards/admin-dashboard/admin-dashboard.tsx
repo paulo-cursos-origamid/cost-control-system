@@ -2,39 +2,38 @@
 
 import { AlertTriangle, Crown, DollarSign, Users } from "lucide-react";
 
-import { StatCard } from "@/modules/dashboard/shared/cards/stat-card";
-
 import styles from "./admin-dashboard.module.scss";
+
 import { useDashboard } from "@/modules/dashboard/hooks/use-dashboard";
+import { StatCard } from "@/modules/dashboard/shared/cards/stat-card";
+import { FinancialKpiCard } from "@/modules/dashboard/shared/cards/financial-kpi-card/financial-kpi-card";
+
 import { FinancialChart } from "@/modules/dashboard/shared/charts/financial-chart";
-import { DashboardGrid } from "@/modules/dashboard/shared/grid/dashboard-grid";
 import { PageHeader } from "@/modules/dashboard/shared/page-header/page-header";
 import { QuickActions } from "@/modules/dashboard/shared/quick-actions/quick-actions";
 import { DashboardSection } from "@/modules/dashboard/shared/section/dashboard-section";
+
+import { TopCategories } from "../../components/top-categories/top-categories";
+import { SubscriptionsDashboard } from "../subscriptions-dashboard";
 import { FinancialSummary } from "../../components/financial-summary/financial-summary";
 import { FleetCosts } from "../../components/fleet-costs/fleet-costs";
 import { FleetSummary } from "../../components/fleet-summary/fleet-summary";
 import { LatestFuelSupplies } from "../../components/latest-fuel-supplies/latest-fuel-supplies";
 import { LatestTransactions } from "../../components/latest-transactions/latest-transactions";
-import { SubscriptionsDashboard } from "../subscriptions-dashboard";
-import { FinancialKpiCard } from "@/modules/dashboard/shared/cards/financial-kpi-card/financial-kpi-card";
-import { TopCategories } from "../../components/top-categories/top-categories";
+import { calculateGrowth } from "@/utils/helpers/calculate-growth";
 
 export function AdminDashboard() {
-  const { cashflow, financial, vehicles, loading, reload } = useDashboard();
+  const { cashflow, financial, vehicles } = useDashboard();
 
   const metrics = {
     activeUsers: 156,
     premiumUsers: 72,
     goldUsers: 48,
     lifetimeUsers: 36,
-
     payingUsers: 142,
     overdueUsers: 14,
-
     mrr: 8520,
     arr: 102240,
-
     newCustomers: 23,
     cancellations: 2,
   };
@@ -46,73 +45,92 @@ export function AdminDashboard() {
         subtitle="Visão geral da plataforma ECP"
       />
 
+      {/* ================= KPI FINANCEIRO ================= */}
       {financial && (
-        <DashboardGrid>
+        <div className={styles.kpiGrid}>
           <FinancialKpiCard
             title="Receitas"
+            growth={calculateGrowth(
+              financial.comparison.income.current,
+              financial.comparison.income.previous,
+            )}
             value={financial.summary.income}
             variant="income"
           />
 
           <FinancialKpiCard
             title="Despesas"
+            growth={calculateGrowth(
+              financial.comparison.income.current,
+              financial.comparison.income.previous,
+            )}
             value={financial.summary.expense}
             variant="expense"
           />
 
           <FinancialKpiCard
             title="Saldo"
+            growth={calculateGrowth(
+              financial.comparison.income.current,
+              financial.comparison.income.previous,
+            )}
             value={financial.summary.balance}
             variant="balance"
           />
-        </DashboardGrid>
+
+          {/* <div className={styles.topCategoriesCard}>
+            <TopCategories categories={financial.topCategories} />
+          </div> */}
+        </div>
       )}
-      {/* ========================= */}
-      {/* FLUXO FINANCEIRO */}
-      {/* ========================= */}
+
+      {/* ================= OVERVIEW ROW (ACTIONS + TOP CATEGORIES) ================= */}
 
       {financial && (
-        <div className={styles.analyticsGrid}>
-          <DashboardSection title="Fluxo Financeiro">
-            <FinancialChart data={cashflow} />
+        <div className={styles.overviewGrid}>
+          <DashboardSection title="Ações Rápidas">
+            <QuickActions />
           </DashboardSection>
 
-          <DashboardSection title="Categorias">
+          <DashboardSection title="Top Categorias (Despesas)">
             <TopCategories categories={financial.topCategories} />
           </DashboardSection>
         </div>
       )}
-      {/* ========================= */}
-      {/* MÉTRICAS */}
-      {/* ========================= */}
 
-      <section className={styles.section}>
-        <DashboardGrid>
+      {/* ================= CHART ROW ================= */}
+      <DashboardSection title="Fluxo Financeiro">
+        <FinancialChart data={cashflow} />
+      </DashboardSection>
+
+      {/* ================= METRICS GRID ================= */}
+      <DashboardSection title="Métricas da Plataforma">
+        <div className={styles.metricsGrid}>
           <StatCard
             title="Usuários Ativos"
             value={metrics.activeUsers}
-            icon={<Users size={20} />}
+            icon={<Users size={18} />}
             variant="users"
           />
 
           <StatCard
             title="Premium"
             value={metrics.premiumUsers}
-            icon={<Crown size={20} />}
+            icon={<Crown size={18} />}
             variant="premium"
           />
 
           <StatCard
             title="Gold"
             value={metrics.goldUsers}
-            icon={<Crown size={20} />}
+            icon={<Crown size={18} />}
             variant="gold"
           />
 
           <StatCard
             title="Vitalício"
             value={metrics.lifetimeUsers}
-            icon={<Crown size={20} />}
+            icon={<Crown size={18} />}
             variant="lifetime"
           />
 
@@ -125,21 +143,21 @@ export function AdminDashboard() {
           <StatCard
             title="Inadimplentes"
             value={metrics.overdueUsers}
-            icon={<AlertTriangle size={20} />}
+            icon={<AlertTriangle size={18} />}
             variant="late"
           />
 
           <StatCard
             title="MRR"
             value={`R$ ${metrics.mrr.toLocaleString("pt-BR")}`}
-            icon={<DollarSign size={20} />}
+            icon={<DollarSign size={18} />}
             variant="mrr"
           />
 
           <StatCard
             title="ARR"
             value={`R$ ${metrics.arr.toLocaleString("pt-BR")}`}
-            icon={<DollarSign size={20} />}
+            icon={<DollarSign size={18} />}
             variant="arr"
           />
 
@@ -154,25 +172,15 @@ export function AdminDashboard() {
             value={metrics.cancellations}
             variant="cancelled"
           />
-        </DashboardGrid>
-      </section>
-
-      {/* ========================= */}
-      {/* AÇÕES RÁPIDAS */}
-      {/* ========================= */}
-
-      <DashboardSection title="Ações Rapidas">
-        <QuickActions />
+        </div>
       </DashboardSection>
 
-      {/* ========================= */}
-      {/* ASSINATURAS */}
-      {/* ========================= */}
-
+      {/* ================= SUBSCRIPTIONS ================= */}
       <DashboardSection title="Assinantes">
         <SubscriptionsDashboard />
       </DashboardSection>
 
+      {/* ================= EXTRA DATA ================= */}
       {financial && (
         <FinancialSummary
           income={financial.summary.income}
@@ -193,7 +201,6 @@ export function AdminDashboard() {
         <LatestTransactions transactions={financial.latestTransactions} />
       )}
 
-  
       {vehicles && (
         <FleetCosts
           fuel={vehicles.costs.fuel}
@@ -208,3 +215,213 @@ export function AdminDashboard() {
     </div>
   );
 }
+
+// "use client";
+
+// import { AlertTriangle, Crown, DollarSign, Users } from "lucide-react";
+
+// import { StatCard } from "@/modules/dashboard/shared/cards/stat-card";
+
+// import styles from "./admin-dashboard.module.scss";
+// import { useDashboard } from "@/modules/dashboard/hooks/use-dashboard";
+// import { FinancialChart } from "@/modules/dashboard/shared/charts/financial-chart";
+// import { DashboardGrid } from "@/modules/dashboard/shared/grid/dashboard-grid";
+// import { PageHeader } from "@/modules/dashboard/shared/page-header/page-header";
+// import { QuickActions } from "@/modules/dashboard/shared/quick-actions/quick-actions";
+// import { DashboardSection } from "@/modules/dashboard/shared/section/dashboard-section";
+// import { FinancialSummary } from "../../components/financial-summary/financial-summary";
+// import { FleetCosts } from "../../components/fleet-costs/fleet-costs";
+// import { FleetSummary } from "../../components/fleet-summary/fleet-summary";
+// import { LatestFuelSupplies } from "../../components/latest-fuel-supplies/latest-fuel-supplies";
+// import { LatestTransactions } from "../../components/latest-transactions/latest-transactions";
+// import { SubscriptionsDashboard } from "../subscriptions-dashboard";
+// import { FinancialKpiCard } from "@/modules/dashboard/shared/cards/financial-kpi-card/financial-kpi-card";
+// import { TopCategories } from "../../components/top-categories/top-categories";
+
+// export function AdminDashboard() {
+//   const { cashflow, financial, vehicles, loading, reload } = useDashboard();
+
+//   const metrics = {
+//     activeUsers: 156,
+//     premiumUsers: 72,
+//     goldUsers: 48,
+//     lifetimeUsers: 36,
+
+//     payingUsers: 142,
+//     overdueUsers: 14,
+
+//     mrr: 8520,
+//     arr: 102240,
+
+//     newCustomers: 23,
+//     cancellations: 2,
+//   };
+
+//   return (
+//     <div className={styles.dashboard}>
+//       <PageHeader
+//         title="Dashboard Administrativo"
+//         subtitle="Visão geral da plataforma ECP"
+//       />
+
+//       {financial && (
+//         <DashboardGrid>
+//           <FinancialKpiCard
+//             title="Receitas"
+//             value={financial.summary.income}
+//             variant="income"
+//           />
+
+//           <FinancialKpiCard
+//             title="Despesas"
+//             value={financial.summary.expense}
+//             variant="expense"
+//           />
+
+//           <FinancialKpiCard
+//             title="Saldo"
+//             value={financial.summary.balance}
+//             variant="balance"
+//           />
+//         </DashboardGrid>
+//       )}
+//       {/* ========================= */}
+//       {/* FLUXO FINANCEIRO */}
+//       {/* ========================= */}
+
+//       {financial && (
+//         <div className={styles.analyticsGrid}>
+//           <DashboardSection title="Fluxo Financeiro">
+//             <FinancialChart data={cashflow} />
+//           </DashboardSection>
+
+//           <DashboardSection title="Categorias">
+//             <TopCategories categories={financial.topCategories} />
+//           </DashboardSection>
+//         </div>
+//       )}
+//       {/* ========================= */}
+//       {/* MÉTRICAS */}
+//       {/* ========================= */}
+
+//       <section className={styles.section}>
+//         <DashboardGrid>
+//           <StatCard
+//             title="Usuários Ativos"
+//             value={metrics.activeUsers}
+//             icon={<Users size={20} />}
+//             variant="users"
+//           />
+
+//           <StatCard
+//             title="Premium"
+//             value={metrics.premiumUsers}
+//             icon={<Crown size={20} />}
+//             variant="premium"
+//           />
+
+//           <StatCard
+//             title="Gold"
+//             value={metrics.goldUsers}
+//             icon={<Crown size={20} />}
+//             variant="gold"
+//           />
+
+//           <StatCard
+//             title="Vitalício"
+//             value={metrics.lifetimeUsers}
+//             icon={<Crown size={20} />}
+//             variant="lifetime"
+//           />
+
+//           <StatCard
+//             title="Pagantes"
+//             value={metrics.payingUsers}
+//             variant="paid"
+//           />
+
+//           <StatCard
+//             title="Inadimplentes"
+//             value={metrics.overdueUsers}
+//             icon={<AlertTriangle size={20} />}
+//             variant="late"
+//           />
+
+//           <StatCard
+//             title="MRR"
+//             value={`R$ ${metrics.mrr.toLocaleString("pt-BR")}`}
+//             icon={<DollarSign size={20} />}
+//             variant="mrr"
+//           />
+
+//           <StatCard
+//             title="ARR"
+//             value={`R$ ${metrics.arr.toLocaleString("pt-BR")}`}
+//             icon={<DollarSign size={20} />}
+//             variant="arr"
+//           />
+
+//           <StatCard
+//             title="Novos Clientes"
+//             value={metrics.newCustomers}
+//             variant="new"
+//           />
+
+//           <StatCard
+//             title="Cancelamentos"
+//             value={metrics.cancellations}
+//             variant="cancelled"
+//           />
+//         </DashboardGrid>
+//       </section>
+
+//       {/* ========================= */}
+//       {/* AÇÕES RÁPIDAS */}
+//       {/* ========================= */}
+
+//       <DashboardSection title="Ações Rapidas">
+//         <QuickActions />
+//       </DashboardSection>
+
+//       {/* ========================= */}
+//       {/* ASSINATURAS */}
+//       {/* ========================= */}
+
+//       <DashboardSection title="Assinantes">
+//         <SubscriptionsDashboard />
+//       </DashboardSection>
+
+//       {financial && (
+//         <FinancialSummary
+//           income={financial.summary.income}
+//           expense={financial.summary.expense}
+//           balance={financial.summary.balance}
+//         />
+//       )}
+
+//       {vehicles && (
+//         <FleetSummary
+//           fuel={vehicles.costs.fuel}
+//           maintenance={vehicles.costs.maintenance}
+//           total={vehicles.costs.total}
+//         />
+//       )}
+
+//       {financial && (
+//         <LatestTransactions transactions={financial.latestTransactions} />
+//       )}
+
+//       {vehicles && (
+//         <FleetCosts
+//           fuel={vehicles.costs.fuel}
+//           maintenance={vehicles.costs.maintenance}
+//           total={vehicles.costs.total}
+//         />
+//       )}
+
+//       {vehicles && (
+//         <LatestFuelSupplies supplies={vehicles.latestFuelSupplies} />
+//       )}
+//     </div>
+//   );
+// }

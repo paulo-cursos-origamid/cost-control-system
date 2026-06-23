@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 
-import { TransactionFilters } from "../components/transaction-filters";
+import { TransactionFilters } from "../components/transaction-filters/transaction-filters";
 import { TransactionSummaryCards } from "../components/transaction-summary-cards/transaction-summary-cards";
 import { TransactionTable } from "../components/transaction-table/transaction-table";
 import { useTransactions } from "../hooks/use-transactions";

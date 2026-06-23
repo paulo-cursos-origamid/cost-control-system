@@ -2,13 +2,9 @@
 
 import styles from "./latest-transactions.module.scss";
 
-type Transaction = {
-  id: string;
-  title: string;
-  amount: number;
-  type: "INCOME" | "EXPENSE";
-  date: string;
-};
+import type { Transaction as BaseTransaction, TransactionType } from "@/modules/transactions/types/transaction.types";
+
+type Transaction = Pick<BaseTransaction, "id" | "title" | "amount" | "type" | "date">;
 
 type Props = {
   transactions: Transaction[];

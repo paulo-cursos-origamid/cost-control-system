@@ -4,27 +4,30 @@
   display: flex;
   min-height: 100vh;
   background: var(--surface-primary);
+  overflow-x: hidden;
 }
 
 /* MAIN DESKTOP */
 .main {
   flex: 1;
-  margin-left: 280px;
+  width: 100%;
   display: flex;
   flex-direction: column;
+  padding-left: 280px;
 
   @include tablet {
-    margin-left: 80px; // sidebar colapsada
+    padding-left: 80px; // sidebar colapsada
   }
 
   @include mobile {
-    margin-left: 0; // sidebar vira drawer/topbar
+    padding-left: 0; // sidebar vira drawer/topbar
   }
 }
 
 /* CONTENT */
 .content {
   flex: 1;
+  min-width: 0;
   padding: 24px;
   background: var(--surface-primary);
 

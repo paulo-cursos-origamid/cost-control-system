@@ -13,91 +13,202 @@ export class DashboardService {
     DASHBOARD FINANCEIRO
     =====================================
   */
+  /*
+  =====================================
+  DASHBOARD FINANCEIRO
+  =====================================
+*/
   async financial(userId: string) {
-    /*
-      ENTRADAS
+    const now = new Date();
+
+    const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    const previousMonthStart = new Date(
+      now.getFullYear(),
+      now.getMonth() - 1,
+      1,
+    );
+
+    const previousMonthEnd = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      0,
+      23,
+      59,
+      59,
+    );
+
+    const [
+      incomes,
+      expenses,
+
+      currentIncome,
+      previousIncome,
+
+      currentExpense,
+      previousExpense,
+
+      accounts,
+
+      latestTransactions,
+
+      topCategories,
+    ] = await Promise.all([
+      /*
+      TOTAL GERAL RECEITAS
     */
-    const incomes = await this.prisma.transaction.aggregate({
-      where: {
-        userId,
-        type: TransactionType.INCOME,
-      },
+      this.prisma.transaction.aggregate({
+        where: {
+          userId,
+          type: TransactionType.INCOME,
+        },
 
-      _sum: {
-        amount: true,
-      },
-    });
+        _sum: {
+          amount: true,
+        },
+      }),
 
-    /*
-      SAÍDAS
+      /*
+      TOTAL GERAL DESPESAS
     */
-    const expenses = await this.prisma.transaction.aggregate({
-      where: {
-        userId,
-        type: TransactionType.EXPENSE,
-      },
+      this.prisma.transaction.aggregate({
+        where: {
+          userId,
+          type: TransactionType.EXPENSE,
+        },
 
-      _sum: {
-        amount: true,
-      },
-    });
+        _sum: {
+          amount: true,
+        },
+      }),
 
-    /*
+      /*
+      RECEITAS MÊS ATUAL
+    */
+      this.prisma.transaction.aggregate({
+        where: {
+          userId,
+          type: TransactionType.INCOME,
+          date: {
+            gte: currentMonthStart,
+          },
+        },
+
+        _sum: {
+          amount: true,
+        },
+      }),
+
+      /*
+      RECEITAS MÊS ANTERIOR
+    */
+      this.prisma.transaction.aggregate({
+        where: {
+          userId,
+          type: TransactionType.INCOME,
+          date: {
+            gte: previousMonthStart,
+            lte: previousMonthEnd,
+          },
+        },
+
+        _sum: {
+          amount: true,
+        },
+      }),
+
+      /*
+      DESPESAS MÊS ATUAL
+    */
+      this.prisma.transaction.aggregate({
+        where: {
+          userId,
+          type: TransactionType.EXPENSE,
+          date: {
+            gte: currentMonthStart,
+          },
+        },
+
+        _sum: {
+          amount: true,
+        },
+      }),
+
+      /*
+      DESPESAS MÊS ANTERIOR
+    */
+      this.prisma.transaction.aggregate({
+        where: {
+          userId,
+          type: TransactionType.EXPENSE,
+          date: {
+            gte: previousMonthStart,
+            lte: previousMonthEnd,
+          },
+        },
+
+        _sum: {
+          amount: true,
+        },
+      }),
+
+      /*
       CONTAS
     */
-    const accounts = await this.prisma.account.findMany({
-      where: {
-        userId,
-      },
+      this.prisma.account.findMany({
+        where: {
+          userId,
+        },
 
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
 
-    /*
+      /*
       ÚLTIMAS TRANSAÇÕES
     */
-    const latestTransactions = await this.prisma.transaction.findMany({
-      where: {
-        userId,
-      },
+      this.prisma.transaction.findMany({
+        where: {
+          userId,
+        },
 
-      include: {
-        category: true,
-        account: true,
-      },
+        include: {
+          category: true,
+          account: true,
+        },
 
-      orderBy: {
-        date: 'desc',
-      },
+        orderBy: {
+          date: 'desc',
+        },
 
-      take: 10,
-    });
+        take: 10,
+      }),
 
-    /*
+      /*
       TOP CATEGORIAS
     */
-    const topCategories = await this.prisma.transaction.groupBy({
-      by: ['categoryId'],
+      this.prisma.transaction.groupBy({
+        by: ['categoryId'],
 
-      where: {
-        userId,
-        type: TransactionType.EXPENSE,
-      },
-
-      _sum: {
-        amount: true,
-      },
-
-      orderBy: {
-        _sum: {
-          amount: 'desc',
+        where: {
+          userId,
+          type: TransactionType.EXPENSE,
         },
-      },
 
-      take: 5,
-    });
+        _sum: {
+          amount: true,
+        },
+
+        orderBy: {
+          _sum: {
+            amount: 'desc',
+          },
+        },
+
+        take: 5,
+      }),
+    ]);
 
     const categories = await Promise.all(
       topCategories.map(async (item) => {
@@ -119,12 +230,35 @@ export class DashboardService {
 
     const expense = expenses._sum.amount ?? 0;
 
+    const comparison = {
+      income: {
+        current: currentIncome._sum.amount ?? 0,
+        previous: previousIncome._sum.amount ?? 0,
+      },
+
+      expense: {
+        current: currentExpense._sum.amount ?? 0,
+        previous: previousExpense._sum.amount ?? 0,
+      },
+
+      balance: {
+        current:
+          (currentIncome._sum.amount ?? 0) - (currentExpense._sum.amount ?? 0),
+
+        previous:
+          (previousIncome._sum.amount ?? 0) -
+          (previousExpense._sum.amount ?? 0),
+      },
+    };
+
     return {
       summary: {
         income,
         expense,
         balance: income - expense,
       },
+
+      comparison,
 
       accounts,
 
@@ -133,7 +267,6 @@ export class DashboardService {
       topCategories: categories,
     };
   }
-
   /*
     =====================================
     DASHBOARD AUTOMOTIVO

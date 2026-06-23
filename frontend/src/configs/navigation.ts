@@ -24,6 +24,12 @@ export const dashboardNavigation: NavigationItem[] = [
     icon: LayoutDashboard,
     roles: [UserRole.ADMIN, UserRole.USER, UserRole.MANAGER, UserRole.SUPPORT],
   },
+  {
+  label: "Despesas",
+  href: "/expenses",
+  icon: Wallet, // ou o icon que você já usa no projeto
+  roles: [UserRole.ADMIN, UserRole.USER],
+},
 
   {
     label: "Contas",

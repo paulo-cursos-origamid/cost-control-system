@@ -20,10 +20,9 @@ export function useCategories() {
       try {
         setLoading(true);
 
-        const response =
-          await categoryService.findAll();
+        const data = await categoryService.findAll();
 
-        setCategories(response.data);
+        setCategories(data);
       } finally {
         setLoading(false);
       }
