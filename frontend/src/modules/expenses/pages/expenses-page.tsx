@@ -8,14 +8,16 @@ import { ExpenseModal } from "../components/expense-modals/expense-modal";
 
 import { useExpenses } from "../hooks/use-expenses";
 import { expensesService } from "../services/expenses.service";
+import { Expense } from "../types/expense.types";
+import { ExpenseFormData } from "../types/expense.types";
 
 export function ExpensesPage() {
   const { refetch } = useExpenses();
 
   const [open, setOpen] = useState(false);
-  const [editing, setEditing] = useState<any>(null);
+  const [editing, setEditing] = useState<Expense | undefined>(undefined);
 
-  async function handleSubmit(data: any) {
+  async function handleSubmit(data: ExpenseFormData) {
     if (editing) {
       await expensesService.update(editing.id, data);
     } else {
@@ -23,12 +25,7 @@ export function ExpensesPage() {
     }
 
     setOpen(false);
-    setEditing(null);
-    refetch();
-  }
-
-  async function handleDelete(id: string) {
-    await expensesService.delete(id);
+    setEditing(undefined);
     refetch();
   }
 
@@ -46,7 +43,7 @@ export function ExpensesPage() {
         open={open}
         onClose={() => {
           setOpen(false);
-          setEditing(null);
+          setEditing(undefined);
         }}
         initialData={editing}
         onSubmit={handleSubmit}

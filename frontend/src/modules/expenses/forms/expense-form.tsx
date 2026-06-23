@@ -20,7 +20,6 @@ export function ExpenseForm({ initialData, onSubmit }: Props) {
     accountId: initialData?.accountId || "",
     categoryId: initialData?.categoryId || "",
     creditCardId: initialData?.creditCardId,
-    type: "EXPENSE",
   });
 
   function handleChange<K extends keyof ExpenseFormData>(

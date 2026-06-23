@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 
 import { useTransactions } from "@/modules/transactions/hooks/use-transactions";
-import { TransactionType } from "@/modules/transactions/types/transaction.types";
+
 
 export function useExpenses() {
   const { data, loading, refetch } = useTransactions();

@@ -5,6 +5,7 @@ import { GenericForm } from "../forms/generic-form/GenericForm";
 import { CrudFormData } from "../forms/generic-form/types";
 import { CrudSchema } from "./types";
 import styles from "./crud-modal.module.scss";
+import { ReactNode } from "react";
 
 type Props = {
   open: boolean;
@@ -13,6 +14,7 @@ type Props = {
   initialData?: CrudFormData;
   onClose: () => void;
   onSuccess?: () => void;
+  children: ReactNode,
 };
 
 export function CrudModal({
