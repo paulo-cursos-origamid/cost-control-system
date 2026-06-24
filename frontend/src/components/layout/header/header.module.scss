@@ -2,6 +2,7 @@
 
 .header {
   height: 72px;
+
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -16,8 +17,11 @@
 
   position: sticky;
   top: 0;
-
   z-index: 100;
+
+  transition:
+    background var(--transition-normal),
+    border-color var(--transition-normal);
 
   @include tablet {
     padding: 0 16px;
@@ -25,16 +29,15 @@
 
   @include mobile {
     height: auto;
-
     padding: 16px;
-
     flex-wrap: wrap;
-
     gap: 12px;
   }
 }
 
-/* USER */
+/* =========================
+   USER
+========================= */
 
 .user {
   display: flex;
@@ -75,7 +78,19 @@
   font-size: 0.8rem;
 }
 
-/* LOGOUT */
+/* =========================
+   ACTIONS
+========================= */
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* =========================
+   LOGOUT
+========================= */
 
 .logout {
   display: flex;
@@ -86,21 +101,20 @@
 
   background: var(--accent-primary);
 
-  color: var(--button-text);
+  color: #fff;
 
   padding: 10px 16px;
 
-  border-radius: 12px;
+  border-radius: var(--radius-md);
 
   cursor: pointer;
 
   font-weight: 600;
 
-  transition: all 0.2s ease;
+  transition: all var(--transition-fast);
 
   &:hover {
     transform: translateY(-2px);
-
     box-shadow: var(--shadow-md);
   }
 
@@ -110,7 +124,6 @@
 
   @include mobile {
     width: 100%;
-
     justify-content: center;
   }
 }

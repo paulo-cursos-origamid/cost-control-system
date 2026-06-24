@@ -1,0 +1,115 @@
+.switch {
+  all: unset;
+
+  display: inline-flex;
+  align-items: center;
+
+  cursor: pointer;
+
+  background: transparent !important;
+  border: none !important;
+
+  line-height: 0;
+}
+
+/* =========================
+   TRACK
+========================= */
+
+.track {
+  width: 52px;
+  height: 28px;
+
+  border-radius: 999px;
+
+  display: flex;
+  align-items: center;
+
+  padding: 2px;
+
+  background: var(--surface-secondary);
+
+  border: 1px solid var(--border-primary);
+
+  overflow: hidden;
+
+  position: relative;
+
+  transition:
+    background var(--transition-normal),
+    border-color var(--transition-normal);
+}
+
+/* variação de tema */
+.dark {
+  background: rgba(2, 6, 23, 0.55);
+}
+
+.light {
+  background: rgba(255, 255, 255, 0.75);
+}
+
+/* =========================
+   THUMB
+========================= */
+
+.thumb {
+  width: 24px;
+  height: 24px;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: var(--surface-card);
+
+  border: 1px solid var(--border-primary);
+
+  box-shadow: var(--shadow-sm);
+
+  transform: translateX(0);
+
+  transition:
+    transform var(--transition-normal),
+    background var(--transition-normal),
+    border-color var(--transition-normal);
+
+  overflow: hidden;
+
+  isolation: isolate;
+}
+
+/* move no dark mode */
+.dark .thumb {
+  transform: translateX(24px);
+}
+
+/* =========================
+   ICON (FIX DEFINITIVO LUCIDE)
+========================= */
+
+.thumb svg {
+  all: unset;
+
+  width: 14px;
+  height: 14px;
+
+  display: block;
+
+  background: transparent !important;
+  box-shadow: none !important;
+
+  color: var(--text-primary);
+
+  stroke: currentColor;
+  fill: none;
+
+  overflow: visible;
+}
+
+/* hover */
+.switch:hover .thumb {
+  box-shadow: var(--shadow-md);
+}

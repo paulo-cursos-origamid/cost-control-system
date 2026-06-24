@@ -11,6 +11,18 @@
 
   padding: $space-6 $space-8;
 
+  min-height: 100vh;
+
+  background: radial-gradient(
+    circle at top,
+    var(--dashboard-bg-start),
+    var(--dashboard-bg-end) 65%
+  );
+
+  transition:
+    background var(--transition-normal),
+    color var(--transition-normal);
+
   @media (max-width: 1024px) {
     padding: $space-6 $space-4;
   }
@@ -18,32 +30,19 @@
   @media (max-width: 640px) {
     padding: $space-4 $space-3;
   }
-
-  /* 🔥 fundo igual imagem (azul profundo com vinheta) */
-  background: radial-gradient(
-    circle at top,
-    rgba(25, 35, 70, 0.9),
-    #050b18 65%
-  );
-
-  min-height: 100vh;
 }
 
-/* =========================
-   KPI GRID (TOP HERO STRIP)
-========================= */
-// .kpiGrid {
-//   display: grid;
-//   grid-template-columns: repeat(5, 1fr);
-//   gap: $space-4;
-// }
+/* =====================================
+   KPI GRID
+===================================== */
+
 .kpiGrid {
   display: grid;
-
-  grid-template-columns: repeat(3, minmax(320px, 1fr));
   gap: $space-4;
 
   align-items: stretch;
+
+  grid-template-columns: repeat(3, minmax(320px, 1fr));
 
   @media (max-width: 1600px) {
     grid-template-columns: repeat(3, minmax(300px, 1fr));
@@ -62,60 +61,100 @@
   min-width: 0;
 }
 
+/* =====================================
+   OVERVIEW
+===================================== */
+
 .overviewGrid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+
   gap: $space-4;
+
   align-items: stretch;
+
+  grid-template-columns: 1fr 1fr;
 
   @media (max-width: 1200px) {
     grid-template-columns: 1fr;
   }
 }
 
-/* 🔥 KPI CARD ENHANCEMENT (igual imagem)
-   destaque + glow leve por cor */
-.kpiGrid :global(.stat-card) {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(120, 160, 255, 0.18);
-  border-radius: 16px;
+/* =====================================
+   KPI CARDS
+===================================== */
 
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.02);
+.kpiGrid :global(.stat-card) {
+  background: var(--surface-card);
+
+  border: 1px solid var(--border-primary);
+
+  border-radius: var(--radius-lg);
+
+  box-shadow: var(--shadow-md);
+
   backdrop-filter: blur(10px);
+
+  transition:
+    transform var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background var(--transition-fast);
 }
 
-/* =========================
-   ANALYTICS GRID (CHART AREA)
-========================= */
+.kpiGrid :global(.stat-card):hover {
+  transform: translateY(-2px);
+
+  background: var(--surface-hover);
+
+  border-color: var(--border-hover);
+
+  box-shadow: var(--shadow-lg);
+}
+
+/* =====================================
+   ANALYTICS
+===================================== */
+
 .analyticsGrid {
   display: grid;
-  grid-template-columns: 1fr 2fr;
+
   gap: $space-4;
+
   align-items: stretch;
+
+  grid-template-columns: 1fr 2fr;
 
   @media (max-width: 1200px) {
     grid-template-columns: 1fr;
   }
 }
 
-/* 🔥 CHART CONTAINER (muito importante para ficar igual imagem) */
 .analyticsGrid :global(.dashboard-section) {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(120, 160, 255, 0.12);
-  border-radius: 18px;
+  background: var(--surface-widget);
+
+  border: 1px solid var(--border-secondary);
+
+  border-radius: var(--radius-xl);
 
   padding: $space-4;
 
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--shadow-md);
+
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast);
 }
 
-/* =========================
-   METRICS GRID (SECOND ROW)
-========================= */
+/* =====================================
+   METRICS
+===================================== */
+
 .metricsGrid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+
   gap: $space-4;
+
+  grid-template-columns: repeat(5, 1fr);
 
   @media (max-width: 1400px) {
     grid-template-columns: repeat(3, 1fr);
@@ -130,42 +169,39 @@
   }
 }
 
-/* =========================
-   SECTION SPACING (Stripe rhythm)
-========================= */
+/* =====================================
+   SECTIONS
+===================================== */
+
 .section {
   display: flex;
   flex-direction: column;
   gap: $space-4;
 }
 
-/* =========================
-   🎨 CHART AREA POLISH (linha azul igual imagem)
-========================= */
+/* =====================================
+   CHARTS
+===================================== */
+
 .analyticsGrid svg {
-  filter: drop-shadow(0 4px 12px rgba(0, 120, 255, 0.25));
+  filter: drop-shadow(var(--chart-glow));
 }
 
-/* =========================
-   KPI HOVER (microinteraction Stripe-like)
-========================= */
-.kpiGrid :global(.stat-card):hover {
-  transform: translateY(-2px);
-  border-color: rgba(120, 180, 255, 0.4);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
-}
+/* =====================================
+   TYPOGRAPHY
+===================================== */
 
-/* =========================
-   TYPOGRAPHY (igual imagem)
-========================= */
 .title {
   font-size: 20px;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.92);
+
+  color: var(--text-primary);
+
   letter-spacing: -0.02em;
 }
 
 .subtitle {
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.55);
+
+  color: var(--text-secondary);
 }

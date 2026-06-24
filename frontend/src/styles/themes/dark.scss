@@ -1,28 +1,94 @@
 @use "../abstracts/variables" as v;
 
 :root[data-theme="dark"] {
+  /* ==================================================
+     SURFACES
+  ================================================== */
+
   --surface-primary: #{v.$bl11};
-  --surface-secondary: #{v.$bl09};
-  --surface-tertiary: #{v.$bl08};
+  --surface-secondary: #{v.$bl10};
+  --surface-tertiary: #{v.$bl09};
 
-  --card-bg: #{v.$bl09};
+  /* ==================================================
+     COMPONENTS
+  ================================================== */
 
-  --text-primary: #ffffff;
-  --text-secondary: #9fb4d6;
-  --text-muted: #64748b;
+  --surface-card: rgba(255, 255, 255, 0.04);
+  --surface-widget: rgba(255, 255, 255, 0.03);
+  --surface-hover: rgba(255, 255, 255, 0.06);
 
-  --border-primary: #{v.$bl08};
+  /* ==================================================
+     TEXT
+  ================================================== */
+
+  --text-primary: rgba(255, 255, 255, 0.92);
+  --text-secondary: rgba(255, 255, 255, 0.65);
+  --text-muted: rgba(255, 255, 255, 0.45);
+
+  /* ==================================================
+     BORDERS
+  ================================================== */
+
+  --border-primary: rgba(120, 160, 255, 0.18);
+  --border-secondary: rgba(120, 160, 255, 0.12);
+  --border-hover: rgba(120, 180, 255, 0.4);
+
+  --border-color: var(--border-primary);
+
+  /* ==================================================
+     BRAND
+  ================================================== */
 
   --accent-primary: #{v.$ecp-green};
+  --accent-secondary: #{v.$ecp-gold};
+
+  /* ==================================================
+     STATUS
+  ================================================== */
 
   --success: #{v.$success};
   --danger: #{v.$danger};
   --warning: #{v.$warning};
   --info: #{v.$info};
 
-  --surface-card: var(--card-bg);
+  /* ==================================================
+     SHADOWS
+  ================================================== */
 
-  --border-color: var(--border-primary);
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.2);
 
   --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.35);
+
+  --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.45);
+
+  /* ==================================================
+     DASHBOARD
+  ================================================== */
+
+  --dashboard-bg-start: rgba(10, 37, 88, 0.9);
+  --dashboard-bg-end: #{v.$bl11};
+
+  /* ==================================================
+     CHARTS
+  ================================================== */
+
+  --chart-glow: 0 4px 12px rgba(56, 189, 248, 0.25);
+
+  /* ==================================================
+     RADIUS
+  ================================================== */
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+
+  /* ==================================================
+     TRANSITIONS
+  ================================================== */
+
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+  --transition-slow: 0.4s ease;
 }

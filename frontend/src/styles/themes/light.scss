@@ -1,26 +1,105 @@
+@use "../abstracts/variables" as v;
+
 :root[data-theme="light"] {
-  --surface-primary: #f8fafc;
+  /* ==================================================
+     SURFACES
+  ================================================== */
+
+  --surface-primary: #f4f7fb;
   --surface-secondary: #ffffff;
-  --surface-tertiary: #eef2ff;
+  --surface-tertiary: #edf3fb;
 
-  --card-bg: #ffffff;
+  /* ==================================================
+     COMPONENTS
+  ================================================== */
 
-  --text-primary: #0f172a;
+  --surface-card: rgba(255, 255, 255, 0.85);
+
+  --surface-widget: rgba(255, 255, 255, 0.95);
+
+  --surface-hover: #f8fbff;
+
+  /* ==================================================
+     TEXT
+  ================================================== */
+
+  --text-primary: #{v.$bl10};
+
   --text-secondary: #475569;
+
   --text-muted: #64748b;
 
-  --border-primary: #e2e8f0;
+  /* ==================================================
+     BORDERS
+  ================================================== */
 
-  --accent-primary: #fbb755;
+  --border-primary: rgba(18, 48, 110, 0.12);
 
-  --success: #22c55e;
-  --danger: #ef4444;
-  --warning: #fbbf24;
-  --info: #38bdf8;
+  --border-secondary: rgba(18, 48, 110, 0.08);
 
-  --surface-card: var(--card-bg);
+  --border-hover: rgba(18, 48, 110, 0.2);
 
   --border-color: var(--border-primary);
 
-  --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.08);
+  /* ==================================================
+     BRAND
+  ================================================== */
+
+  --accent-primary: #{v.$ecp-green};
+
+  --accent-secondary: #{v.$ecp-gold};
+
+  /* ==================================================
+     STATUS
+  ================================================== */
+
+  --success: #{v.$success};
+
+  --danger: #{v.$danger};
+
+  --warning: #{v.$warning};
+
+  --info: #{v.$info};
+
+  /* ==================================================
+     SHADOWS
+  ================================================== */
+
+  --shadow-sm: 0 2px 10px rgba(2, 6, 23, 0.04);
+
+  --shadow-md: 0 8px 25px rgba(2, 6, 23, 0.08);
+
+  --shadow-lg: 0 20px 50px rgba(2, 6, 23, 0.12);
+
+  /* ==================================================
+     DASHBOARD
+  ================================================== */
+
+  --dashboard-bg-start: #ffffff;
+
+  --dashboard-bg-end: #eaf1fb;
+
+  /* ==================================================
+     CHARTS
+  ================================================== */
+
+  --chart-glow: 0 4px 12px rgba(59, 130, 246, 0.18);
+
+  /* ==================================================
+     RADIUS
+  ================================================== */
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+
+  /* ==================================================
+     TRANSITIONS
+  ================================================== */
+
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+  --transition-slow: 0.4s ease;
 }
