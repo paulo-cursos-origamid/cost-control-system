@@ -5,7 +5,7 @@ import { AppProvider } from "@/providers/app-provider";
 import { AuthProvider } from "@/providers/auth-provider";
 
 export const metadata: Metadata = {
-  title: "CostPilot - Centro de Controle Pessoal",
+  title: "CCP - Centro de Controle Pessoal",
   description: "Centro de Controle Pessoal",
 };
 
@@ -15,7 +15,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" data-theme="dark">
+    <html lang="pt-BR" data-theme="light">
       <body>
         <AppProvider>
           <AuthProvider>{children}</AuthProvider>

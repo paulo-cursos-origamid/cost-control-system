@@ -118,7 +118,11 @@
   color: var(--text-secondary);
 }
 
-@include mobile {
+/* ==================================================
+   MOBILE
+================================================== */
+
+@include down-sm {
   .table th,
   .table td {
     padding: 12px;

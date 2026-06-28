@@ -28,7 +28,7 @@
 
   border-bottom: 1px solid var(--border-primary);
 
-  @include mobile {
+  @include down-sm {
     padding: 12px;
     font-size: 0.75rem;
   }
@@ -40,7 +40,7 @@
   color: var(--text-primary);
   border-bottom: 1px solid var(--border-primary);
 
-  @include mobile {
+  @include down-sm {
     padding: 12px;
     font-size: 0.85rem;
   }
@@ -50,7 +50,7 @@
 .table tbody tr {
   transition: background 0.2s ease;
 
-  @include mobile {
+  @include down-sm {
     transition: none;
   }
 }
@@ -64,7 +64,7 @@
   display: flex;
   gap: 10px;
 
-  @include mobile {
+  @include down-sm {
     gap: 6px;
   }
 }
@@ -84,7 +84,7 @@
 
   transition: all 0.2s ease;
 
-  @include mobile {
+  @include down-sm {
     padding: 6px 10px;
     font-size: 0.7rem;
   }
@@ -109,3 +109,115 @@
 .deleteButton:hover {
   background: rgba(239, 68, 68, 0.25);
 }
+
+// @use "@/styles/abstracts/breakpoints" as *;
+
+// /* WRAPPER (ESSENCIAL PARA MOBILE) */
+// .tableWrapper {
+//   overflow-x: auto;
+//   width: 100%;
+// }
+
+// /* TABLE BASE */
+// .table {
+//   width: 100%;
+//   border-collapse: collapse;
+//   min-width: 600px; /* evita quebra feia no mobile */
+// }
+
+// /* HEADER */
+// .table thead {
+//   background: var(--surface-tertiary);
+// }
+
+// .table th {
+//   padding: 18px;
+//   text-align: left;
+
+//   font-size: 0.85rem;
+//   font-weight: 600;
+//   color: var(--text-secondary);
+
+//   border-bottom: 1px solid var(--border-primary);
+
+//   @include mobile {
+//     padding: 12px;
+//     font-size: 0.75rem;
+//   }
+// }
+
+// /* CELLS */
+// .table td {
+//   padding: 18px;
+//   color: var(--text-primary);
+//   border-bottom: 1px solid var(--border-primary);
+
+//   @include mobile {
+//     padding: 12px;
+//     font-size: 0.85rem;
+//   }
+// }
+
+// /* ROW HOVER (desktop only melhor UX) */
+// .table tbody tr {
+//   transition: background 0.2s ease;
+
+//   @include mobile {
+//     transition: none;
+//   }
+// }
+
+// .table tbody tr:hover {
+//   background: var(--hover-overlay);
+// }
+
+// /* ACTIONS */
+// .actions {
+//   display: flex;
+//   gap: 10px;
+
+//   @include mobile {
+//     gap: 6px;
+//   }
+// }
+
+// /* BUTTONS BASE */
+// .editButton,
+// .deleteButton {
+//   border: none;
+//   border-radius: 10px;
+
+//   padding: 8px 12px;
+
+//   cursor: pointer;
+
+//   font-size: 0.8rem;
+//   font-weight: 600;
+
+//   transition: all 0.2s ease;
+
+//   @include mobile {
+//     padding: 6px 10px;
+//     font-size: 0.7rem;
+//   }
+// }
+
+// /* EDIT */
+// .editButton {
+//   background: rgba(56, 189, 248, 0.15);
+//   color: var(--info);
+// }
+
+// .editButton:hover {
+//   background: rgba(56, 189, 248, 0.25);
+// }
+
+// /* DELETE */
+// .deleteButton {
+//   background: rgba(239, 68, 68, 0.15);
+//   color: var(--danger);
+// }
+
+// .deleteButton:hover {
+//   background: rgba(239, 68, 68, 0.25);
+// }

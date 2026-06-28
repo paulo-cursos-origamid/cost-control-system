@@ -1,27 +1,88 @@
 @use "@/styles/abstracts/breakpoints" as *;
 
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+
+  background: var(--surface-primary);
+
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-xl);
+
+  box-shadow: var(--shadow-sm);
+}
+
 .table {
   width: 100%;
+  min-width: 700px;
+
   border-collapse: collapse;
+}
 
-  th,
-  td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid var(--border-primary);
+.table thead {
+  background: var(--surface-secondary);
+}
 
-    @include mobile {
-      padding: 10px;
-      font-size: 0.85rem;
-    }
+.table th {
+  padding: var(--spacing-md);
+
+  text-align: left;
+
+  color: var(--text-secondary);
+
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-semibold);
+
+  border-bottom: 1px solid var(--border-primary);
+
+  white-space: nowrap;
+}
+
+.table td {
+  padding: var(--spacing-md);
+
+  color: var(--text-primary);
+
+  font-size: var(--font-sm);
+
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.table tbody tr {
+  transition:
+    background var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.table tbody tr:hover {
+  background: var(--surface-hover);
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 240px;
+
+  color: var(--text-secondary);
+
+  padding: var(--spacing-xl);
+}
+
+@include down-sm {
+  .table {
+    min-width: 600px;
   }
 
-  th {
-    font-weight: 600;
-    color: var(--text-secondary);
-  }
+  .table th,
+  .table td {
+    padding: var(--spacing-sm);
 
-  td {
-    color: var(--text-primary);
+    font-size: var(--font-xs);
   }
 }

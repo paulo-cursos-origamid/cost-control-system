@@ -1,0 +1,532 @@
+// @use "@/styles/abstracts/breakpoints" as *;
+
+// /* ==================================================
+//    CONTAINER
+// ================================================== */
+
+// .container {
+//   min-height: 100vh;
+
+//   display: grid;
+//   grid-template-columns: 1fr 560px;
+
+//   overflow: hidden;
+
+//   background:
+//     radial-gradient(
+//       circle at top left,
+//       rgba(var(--accent-primary-rgb), 0.15),
+//       transparent 45%
+//     ),
+//     radial-gradient(
+//       circle at bottom right,
+//       rgba(var(--accent-secondary-rgb), 0.08),
+//       transparent 45%
+//     ),
+//     linear-gradient(
+//       135deg,
+//       var(--surface-primary),
+//       var(--surface-secondary)
+//     );
+
+//   @include down-lg {
+//     grid-template-columns: 1fr;
+//   }
+// }
+
+// /* ==================================================
+//    LEFT (MARKETING AREA)
+// ================================================== */
+
+// .left {
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+
+//   padding: 80px;
+
+//   position: relative;
+
+//   @include down-lg {
+//     display: none;
+//   }
+// }
+
+// .brand {
+//   max-width: 620px;
+// }
+
+// /* ==================================================
+//    LOGO
+// ================================================== */
+
+// .logo {
+//   display: flex;
+//   align-items: center;
+//   gap: 24px;
+
+//   margin-bottom: 48px;
+
+//   h1 {
+//     font-size: 56px;
+//     margin: 0;
+//     color: var(--text-primary);
+//   }
+
+//   span {
+//     color: var(--text-secondary);
+//   }
+// }
+
+// .logoIcon {
+//   width: 80px;
+//   height: 80px;
+
+//   border-radius: 24px;
+
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+
+//   font-size: 36px;
+//   font-weight: 700;
+
+//   color: white;
+
+//   background: linear-gradient(
+//     135deg,
+//     #00c2ff,
+//     var(--accent-primary)
+//   );
+
+//   box-shadow: 0 0 45px rgba(var(--accent-primary-rgb), 0.45);
+// }
+
+// /* ==================================================
+//    HEADLINE
+// ================================================== */
+
+// .brand h2 {
+//   font-size: 60px;
+//   line-height: 1.05;
+
+//   margin-bottom: 28px;
+
+//   color: var(--text-primary);
+
+//   span {
+//     color: var(--accent-primary);
+//   }
+// }
+
+// .brand p {
+//   font-size: 20px;
+//   line-height: 1.7;
+
+//   color: var(--text-secondary);
+
+//   margin-bottom: 48px;
+// }
+
+// /* ==================================================
+//    FEATURES
+// ================================================== */
+
+// .features {
+//   display: flex;
+//   flex-direction: column;
+//   gap: 28px;
+
+//   div {
+//     display: flex;
+//     flex-direction: column;
+//     gap: 6px;
+//   }
+
+//   strong {
+//     color: var(--text-primary);
+//     font-size: 18px;
+//   }
+
+//   span {
+//     color: var(--text-secondary);
+//     font-size: 14px;
+//   }
+// }
+
+// /* ==================================================
+//    RIGHT (LOGIN AREA)
+// ================================================== */
+
+// .right {
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+
+//   padding: 40px;
+
+//   position: relative;
+// }
+
+// /* ==================================================
+//    KPI CARD (ANIMATED)
+// ================================================== */
+
+// .kpiCard {
+//   width: 100%;
+//   max-width: 460px;
+
+//   padding: 28px;
+
+//   margin-bottom: 48px;
+
+//   border-radius: 28px;
+
+//   background: rgba(255, 255, 255, 0.04);
+
+//   border: 1px solid rgba(255, 255, 255, 0.08);
+
+//   backdrop-filter: blur(18px);
+
+//   box-shadow:
+//     0 25px 60px rgba(0, 0, 0, 0.18),
+//     inset 0 1px 0 rgba(255, 255, 255, 0.05);
+// }
+
+// .kpiHeader {
+//   display: flex;
+//   justify-content: space-between;
+//   align-items: flex-start;
+
+//   margin-bottom: 10px;
+
+//   span {
+//     font-size: 13px;
+//     color: var(--text-secondary);
+//   }
+
+//   strong {
+//     font-size: 34px;
+//     color: var(--text-primary);
+//     font-weight: 700;
+//   }
+// }
+
+// .kpiBadge {
+//   padding: 8px 12px;
+
+//   border-radius: 999px;
+
+//   background: rgba(34, 197, 94, 0.15);
+
+//   color: #22c55e;
+
+//   font-weight: 600;
+
+//   font-size: 13px;
+// }
+
+// .kpiDescription {
+//   font-size: 13px;
+
+//   color: var(--text-secondary);
+
+//   margin-bottom: 24px;
+// }
+
+// /* ==================================================
+//    CHART ANIMADO
+// ================================================== */
+
+// .chart {
+//   height: 110px;
+
+//   display: flex;
+//   align-items: flex-end;
+//   gap: 8px;
+
+//   span {
+//     flex: 1;
+
+//     border-radius: 999px;
+
+//     background: linear-gradient(
+//       to top,
+//       var(--accent-primary),
+//       #00c2ff
+//     );
+
+//     animation: pulse 2s ease-in-out infinite;
+//   }
+
+//   span:nth-child(1) { height: 30%; animation-delay: .1s; }
+//   span:nth-child(2) { height: 45%; animation-delay: .2s; }
+//   span:nth-child(3) { height: 60%; animation-delay: .3s; }
+//   span:nth-child(4) { height: 75%; animation-delay: .4s; }
+//   span:nth-child(5) { height: 55%; animation-delay: .5s; }
+//   span:nth-child(6) { height: 85%; animation-delay: .6s; }
+//   span:nth-child(7) { height: 100%; animation-delay: .7s; }
+// }
+
+// @keyframes pulse {
+//   0%, 100% {
+//     transform: scaleY(1);
+//     opacity: 0.75;
+//   }
+
+//   50% {
+//     transform: scaleY(1.1);
+//     opacity: 1;
+//   }
+// }
+
+@use "@/styles/abstracts/breakpoints" as *;
+
+/* ==========================================================
+   PAGE CONTAINER
+========================================================== */
+
+.container {
+  min-height: 100vh;
+
+  display: grid;
+  grid-template-columns: 1fr 650px;
+
+  position: relative;
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(var(--accent-primary-rgb), 0.18),
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at bottom left,
+      rgba(var(--accent-secondary-rgb), 0.08),
+      transparent 50%
+    ),
+    linear-gradient(135deg, var(--surface-primary), var(--surface-secondary));
+
+  @include down-lg {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================
+   LEFT SECTION (BRAND AREA)
+========================================================== */
+
+.left {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 80px;
+
+  overflow: hidden;
+
+  @include down-lg {
+    display: none;
+  }
+}
+
+/* ==========================================================
+   BACKGROUND CHART (DECORATIVE)
+========================================================== */
+
+.chartWrapper {
+  position: absolute;
+
+  left: -120px;
+  bottom: -80px;
+
+  width: 720px;
+  height: 360px;
+
+  opacity: 0.38;
+
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ==========================================================
+   BRAND CONTENT
+========================================================== */
+
+.brand {
+  position: relative;
+  z-index: 2;
+
+  max-width: 560px;
+}
+
+/* LOGO */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+
+  margin-bottom: 56px;
+
+  h1 {
+    margin: 0;
+
+    font-size: 64px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -2px;
+
+    color: var(--text-primary);
+  }
+
+  span {
+    font-size: 15px;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+  }
+}
+
+.logoImageWrapper {
+  width: 400px;
+  height: 90px;
+
+  display: flex;
+  align-items: center;
+  justify-content: start;
+
+  border-radius: 24px;
+
+  background: rgba(var(--accent-primary-rgb), 0.03);
+  backdrop-filter: blur(10px);
+
+  box-shadow:
+    0 0 50px rgba(var(--accent-primary-rgb), 0.05);
+
+  overflow: hidden;
+  span{
+    padding: 10px;
+    align-self:flex-end;
+  }
+}
+
+
+/* HEADLINE */
+.brand h2 {
+  margin: 0 0 28px;
+
+  font-size: 64px;
+  line-height: 1.05;
+  letter-spacing: -2px;
+
+  color: var(--text-primary);
+
+  span {
+    color: var(--accent-primary);
+  }
+}
+
+/* DESCRIPTION */
+.brand p {
+  max-width: 520px;
+  margin-bottom: 52px;
+
+  font-size: 21px;
+  line-height: 1.8;
+
+  color: var(--text-secondary);
+}
+
+/* ==========================================================
+   FEATURES LIST
+========================================================== */
+
+.features {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+
+  div {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    padding-left: 24px;
+
+    border-left: 3px solid rgba(var(--accent-primary-rgb), 0.5);
+  }
+
+  strong {
+    font-size: 20px;
+    font-weight: 700;
+
+    color: var(--text-primary);
+  }
+
+  span {
+    line-height: 1.7;
+    color: var(--text-secondary);
+  }
+}
+
+/* ==========================================================
+   RIGHT SECTION (LOGIN AREA)
+========================================================== */
+
+.right {
+  position: relative;
+  z-index: 5;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 32px;
+
+  @include down-lg {
+    padding: 24px;
+  }
+
+  @include down-md {
+    padding: 20px;
+  }
+
+  @include down-sm {
+    padding: 16px;
+  }
+}
+
+/* LOGIN WRAPPER */
+.loginContainer {
+  width: 100%;
+  max-width: 480px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* LOGIN CARD / CHART AREA */
+.loginChart {
+  width: 100%;
+  height: 220px;
+
+  padding: 30px;
+
+  border-radius: var(--radius-xl);
+
+  background: rgba(var(--accent-primary-rgb), 0.02);
+
+  backdrop-filter: blur(30px);
+  // box-shadow:
+    // 0 0 50px rgba(var(--accent-primary-rgb), 0.05);
+  box-shadow: var(--shadow-md, 0.05);
+
+  overflow: hidden;
+}
+
+.loginCard {
+  width: 100%;
+}

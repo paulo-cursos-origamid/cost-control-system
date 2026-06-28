@@ -1,0 +1,121 @@
+.chartContainer {
+  position: fixed;
+
+  left: 0;
+  bottom: 0;
+
+  width: 40vw;
+  min-width: 350px;
+  max-width: 700px;
+
+  height: 280px;
+
+  opacity: 0.85;
+
+  pointer-events: none;
+
+  z-index: 0;
+}
+
+.chart {
+  width: 100%;
+  height: 100%;
+}
+
+.area {
+  fill: url(#areaGradient);
+
+  animation: areaPulse 4s ease-in-out infinite;
+}
+
+.line {
+  fill: none;
+
+  stroke: url(#lineGradient);
+  stroke-width: 4;
+
+  stroke-linecap: round;
+  stroke-linejoin: round;
+
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+
+  animation: drawLine 3s ease forwards;
+}
+
+.dot {
+  fill: var(--accent-primary);
+
+  opacity: 0;
+
+  animation:
+    showDot 0.4s ease forwards,
+    pulse 2s ease infinite;
+
+  &:nth-of-type(1) {
+    animation-delay: 0.8s;
+  }
+
+  &:nth-of-type(2) {
+    animation-delay: 1.2s;
+  }
+
+  &:nth-of-type(3) {
+    animation-delay: 1.6s;
+  }
+
+  &:nth-of-type(4) {
+    animation-delay: 2s;
+  }
+}
+
+@keyframes drawLine {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes showDot {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.3);
+  }
+}
+
+@keyframes areaPulse {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+
+  50% {
+    opacity: 0.9;
+  }
+}
+
+@media (max-width: 1024px) {
+  .chartContainer {
+    width: 55vw;
+    height: 220px;
+  }
+}
+
+@media (max-width: 768px) {
+  .chartContainer {
+    width: 100%;
+    min-width: 0;
+    height: 180px;
+
+    opacity: 0.35;
+  }
+}
