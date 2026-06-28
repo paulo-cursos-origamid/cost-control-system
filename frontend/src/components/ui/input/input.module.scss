@@ -1,53 +1,36 @@
-@use "@/styles/abstracts/breakpoints" as *;
-
 .input {
   width: 100%;
   height: 48px;
 
-  border-radius: 12px;
+  padding: 0 var(--spacing-md);
+
   border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
 
   background: var(--surface-secondary);
+
   color: var(--text-primary);
 
-  padding: 0 16px;
+  font-size: var(--font-sm);
 
-  transition: all 0.2s ease;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background var(--transition-fast);
 
-  /* MOBILE: melhor toque */
-  @include mobile {
-    height: 44px;
-    font-size: 0.95rem;
+  &::placeholder {
+    color: var(--text-muted);
   }
 
-  /* FOCUS (ESSENCIAL UX) */
   &:focus {
-    outline: none;
     border-color: var(--accent-primary);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+
+    box-shadow:
+      0 0 0 3px rgba(var(--accent-primary-rgb), 0.15);
   }
 
-  /* DISABLED */
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
-  }
-
-  /* ACCESSIBILITY */
-  &:focus-visible {
-    outline: 2px solid var(--accent-primary);
-    outline-offset: 2px;
-  }
-}
-
-/* PLACEHOLDER */
-.input::placeholder {
-  color: var(--text-muted);
-}
-
-/* DARK UX IMPROVEMENT (opcional mas recomendado) */
-@media (hover: hover) {
-  .input:hover {
-    border-color: var(--border-secondary);
   }
 }

@@ -3,41 +3,49 @@
 .button {
   height: 48px;
 
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+
+  padding: 0 var(--spacing-lg);
+
   border: none;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
 
   background: var(--accent-primary);
-  color: var(--button-text);
+  color: var(--text-on-accent, #fff);
 
-  font-weight: 600;
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-semibold);
+
   cursor: pointer;
 
-  padding: 0 24px;
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background var(--transition-fast);
 
-  transition: all 0.2s ease;
-
-  /* MOBILE: botão mais confortável e clicável */
-  @include mobile {
-    height: 44px;
-    width: 100%;
-    padding: 0 16px;
-  }
-
-  /* FOCUS (acessibilidade importante) */
   &:focus-visible {
     outline: 2px solid var(--accent-primary);
     outline-offset: 2px;
   }
 
-  /* ACTIVE (feedback real de clique) */
   &:active {
     transform: scale(0.98);
   }
+
+  @include down-sm {
+    width: 100%;
+    height: 44px;
+
+    padding: 0 var(--spacing-md);
+  }
 }
 
-/* HOVER só em devices com hover (evita bug no mobile) */
 @media (hover: hover) {
   .button:hover {
     transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
   }
 }

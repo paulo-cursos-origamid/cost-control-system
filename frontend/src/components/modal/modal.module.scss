@@ -1,69 +1,49 @@
 @use "@/styles/abstracts/breakpoints" as *;
 
-/* OVERLAY */
 .overlay {
   position: fixed;
   inset: 0;
-
-  background: var(--overlay-bg);
 
   display: flex;
   align-items: center;
   justify-content: center;
 
+  padding: var(--spacing-lg);
+
+  background: rgba(0, 0, 0, 0.55);
+
+  backdrop-filter: blur(6px);
+
   z-index: 999;
-
-  /* evita scroll bug no mobile */
-  padding: 16px;
-
-  @include mobile {
-    align-items: flex-end; /* modal sobe estilo mobile sheet */
-  }
 }
 
-/* MODAL */
 .modal {
   width: 100%;
   max-width: 900px;
 
+  padding: var(--spacing-xl);
+
   background: var(--surface-primary);
 
-  border-radius: 24px;
   border: 1px solid var(--border-primary);
+  border-radius: var(--radius-2xl);
 
   box-shadow: var(--shadow-lg);
 
-  padding: 32px;
-
   max-height: 90vh;
+
   overflow-y: auto;
 
-  /* TABLET */
-  @include tablet {
-    max-width: 720px;
-    padding: 24px;
+  @include down-md {
+    padding: var(--spacing-lg);
   }
 
-  /* MOBILE: vira bottom sheet */
-  @include mobile {
+  @include down-sm {
     max-width: 100%;
-    border-radius: 20px 20px 0 0;
-    padding: 20px;
-
     max-height: 85vh;
-  }
-}
-.modal {
-  animation: fadeIn 0.2s ease;
-}
 
-@keyframes fadeIn {
-  from {
-    transform: translateY(10px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+
+    padding: var(--spacing-lg);
   }
 }

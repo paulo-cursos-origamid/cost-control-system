@@ -40,9 +40,9 @@ export function TopCategories({ categories }: Props) {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
+      {/* <div className={styles.header}>
         <h3>Top Categorias (Despesas)</h3>
-      </div>
+      </div> */}
 
       <div className={styles.content}>
         {/* DONUT REAL */}

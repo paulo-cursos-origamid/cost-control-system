@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -11,6 +11,7 @@ import { dashboardNavigation } from "@/configs/navigation";
 import { useAuthStore } from "@/modules/auth/store/auth.store";
 
 import styles from "./sidebar.module.scss";
+import logo from "../../../../public/ccp-logo.png"; // 👈 coloque sua imagem aqui
 import { LoadingState } from "@/components/feedback/loading-state/loading-state";
 
 export function Sidebar() {
@@ -27,17 +28,20 @@ export function Sidebar() {
       <>
         <aside className={styles.sidebar}>
           <div className={styles.logo}>
-            <div className={styles.logoIcon}>
-              <BarChart3 size={22} />
-
-              <div>
-                <h2>CCP</h2>
-                <h6>Centro de Controle Pessoal</h6>
-              </div>
+            <div className={styles.logoImageWrapper}>
+              <Image
+                src={logo}
+                alt="CCP Logo"
+                width={76}
+                height={76}
+                priority
+              />
+              <h6>Centro de Controle Pessoal</h6>
             </div>
           </div>
-
-          <div className={styles.loading}><LoadingState /></div>
+          <div className={styles.loading}>
+            <LoadingState />
+          </div>
         </aside>
       </>
     );
@@ -65,25 +69,28 @@ export function Sidebar() {
       <aside className={`${styles.sidebar} ${mobileOpen ? styles.open : ""}`}>
         {/* LOGO */}
         <div className={styles.logo}>
-          <div className={styles.logoIcon}>
-            <BarChart3 size={22} />
-
-            <div>
-              <h2>CCP</h2>
-
-              <h6>Centro de Controle Pessoal</h6>
+          <div>
+            <div className={styles.logoImageWrapper}>
+              <Image
+                src={logo}
+                alt="CCP Logo"
+                width={76}
+                height={76}
+                priority
+              />
             </div>
+            <h6>Centro de Controle Pessoal</h6>
           </div>
-
-          <button
-            className={styles.closeButton}
-            onClick={() => setMobileOpen(false)}
-          >
-            <X size={20} />
-          </button>
-
-          <span className={styles.version}>v1.0</span>
         </div>
+
+        <button
+          className={styles.closeButton}
+          onClick={() => setMobileOpen(false)}
+        >
+          <X size={20} />
+        </button>
+
+        <span className={styles.version}>v1.0</span>
 
         {/* MENU */}
         <nav className={styles.nav}>

@@ -18,11 +18,13 @@
 
   transition: 0.25s ease;
 
-  @include tablet {
+  /* TABLET */
+  @include down-md {
     padding: 20px;
   }
 
-  @include mobile {
+  /* MOBILE */
+  @include down-sm {
     padding: 16px;
   }
 }
@@ -68,6 +70,11 @@
     height: 20px;
   }
 }
+
+/* =========================================
+   VARIANTS
+========================================= */
+
 .users {
   border-left: 4px solid #38bdf8;
 
@@ -157,3 +164,163 @@
     color: #dc2626;
   }
 }
+
+// @use "@/styles/abstracts/mixins" as *;
+// @use "@/styles/abstracts/variables" as *;
+// @use "@/styles/abstracts/breakpoints" as *;
+
+// .card {
+//   @include card;
+//   @include card-hover;
+
+//   position: relative;
+
+//   padding: 24px;
+
+//   display: flex;
+//   flex-direction: column;
+//   gap: 16px;
+
+//   overflow: hidden;
+
+//   transition: 0.25s ease;
+
+//   @include tablet {
+//     padding: 20px;
+//   }
+
+//   @include mobile {
+//     padding: 16px;
+//   }
+// }
+
+// .header {
+//   display: flex;
+//   justify-content: space-between;
+//   align-items: center;
+// }
+
+// .title {
+//   font-size: 14px;
+//   font-weight: 500;
+//   color: var(--text-secondary);
+// }
+
+// .value {
+//   font-size: 32px;
+//   font-weight: 700;
+//   color: var(--text-primary);
+//   line-height: 1;
+// }
+
+// .subtitle {
+//   font-size: 13px;
+//   color: var(--text-secondary);
+// }
+
+// .icon {
+//   width: 44px;
+//   height: 44px;
+
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+
+//   border-radius: 12px;
+
+//   background: rgba(255, 255, 255, 0.05);
+
+//   svg {
+//     width: 20px;
+//     height: 20px;
+//   }
+// }
+// .users {
+//   border-left: 4px solid #38bdf8;
+
+//   .icon {
+//     background: rgba(56, 189, 248, 0.15);
+//     color: #38bdf8;
+//   }
+// }
+
+// .premium {
+//   border-left: 4px solid #fbb755;
+
+//   .icon {
+//     background: rgba(251, 183, 85, 0.15);
+//     color: #fbb755;
+//   }
+// }
+
+// .gold {
+//   border-left: 4px solid #f59e0b;
+
+//   .icon {
+//     background: rgba(245, 158, 11, 0.15);
+//     color: #f59e0b;
+//   }
+// }
+
+// .lifetime {
+//   border-left: 4px solid #eab308;
+
+//   .icon {
+//     background: rgba(234, 179, 8, 0.15);
+//     color: #eab308;
+//   }
+// }
+
+// .paid {
+//   border-left: 4px solid #22c55e;
+
+//   .icon {
+//     background: rgba(34, 197, 94, 0.15);
+//     color: #22c55e;
+//   }
+// }
+
+// .late {
+//   border-left: 4px solid #ef4444;
+
+//   .icon {
+//     background: rgba(239, 68, 68, 0.15);
+//     color: #ef4444;
+//   }
+// }
+
+// .mrr {
+//   border-left: 4px solid #10b981;
+
+//   .icon {
+//     background: rgba(16, 185, 129, 0.15);
+//     color: #10b981;
+//   }
+// }
+
+// .arr {
+//   border-left: 4px solid #047857;
+
+//   .icon {
+//     background: rgba(4, 120, 87, 0.15);
+//     color: #047857;
+//   }
+// }
+
+// .new {
+//   border-left: 4px solid #6366f1;
+
+//   .icon {
+//     background: rgba(99, 102, 241, 0.15);
+//     color: #6366f1;
+//   }
+// }
+
+// .cancelled {
+//   border-left: 4px solid #dc2626;
+
+//   .icon {
+//     background: rgba(220, 38, 38, 0.15);
+//     color: #dc2626;
+//   }
+// }

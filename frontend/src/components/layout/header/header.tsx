@@ -5,7 +5,7 @@ import { LogOut, UserCircle2, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/modules/auth/hooks/use-auth";
 import { useLogout } from "@/modules/auth/hooks/use-logout";
 
-import { ThemeSwitch } from "@/components/ui/themes-switch/ theme-switch";
+import { ThemeSwitch } from "@/components/ui/themes-switch/theme-switch";
 
 import styles from "./header.module.scss";
 

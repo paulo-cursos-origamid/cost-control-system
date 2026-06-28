@@ -15,12 +15,14 @@
   flex-direction: column;
   padding-left: 280px;
 
-  @include tablet {
-    padding-left: 80px; // sidebar colapsada
+  /* tablet -> sidebar colapsada */
+  @include down-md {
+    padding-left: 80px;
   }
 
-  @include mobile {
-    padding-left: 0; // sidebar vira drawer/topbar
+  /* mobile -> sidebar vira drawer/topbar */
+  @include down-sm {
+    padding-left: 0;
   }
 }
 
@@ -28,14 +30,14 @@
 .content {
   flex: 1;
   min-width: 0;
-  padding: 24px;
+  padding: var(--spacing-lg);
   background: var(--surface-primary);
 
-  @include tablet {
-    padding: 16px;
+  @include down-md {
+    padding: var(--spacing-md);
   }
 
-  @include mobile {
-    padding: 12px;
+  @include down-sm {
+   padding: var(--spacing-sm);
   }
 }
