@@ -1,29 +1,88 @@
 @use "../abstracts/mixins" as *;
-@use "../abstracts/variables" as *;
 
 .ecp-widget {
   @include card;
 
-  padding: 24px;
-
   display: flex;
   flex-direction: column;
-  gap: 20px;
+
+  gap: var(--spacing-lg);
+
+  padding: var(--spacing-lg);
+
+  border-radius: var(--radius-xl);
+
+  transition:
+    border-color var(--transition-fast),
+    transform var(--transition-fast);
 }
 
-.ecp-widget-title {
-  font-size: 1rem;
-  font-weight: 600;
+/* ==================================================
+   HOVER STATE
+================================================== */
 
-  color: var(--text-primary);
+.ecp-widget:hover {
+  border-color: var(--border-secondary);
+}
 
+/* ==================================================
+   HEADER
+================================================== */
+
+.ecp-widget__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  gap: var(--spacing-md);
 }
 
-.ecp-widget-content {
+.ecp-widget__title {
+  font-size: var(--font-md);
+  font-weight: var(--font-weight-semibold);
+
+  color: var(--text-primary);
+
+  line-height: 1.5;
+}
+
+.ecp-widget__subtitle {
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+}
+
+/* ==================================================
+   ACTIONS
+================================================== */
+
+.ecp-widget__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+/* ==================================================
+   CONTENT
+================================================== */
+
+.ecp-widget__content {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--spacing-md);
+}
+
+/* ==================================================
+   FOOTER
+================================================== */
+
+.ecp-widget__footer {
+  padding-top: var(--spacing-md);
+
+  border-top: 1px solid var(--border-primary);
+
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  gap: var(--spacing-sm);
 }

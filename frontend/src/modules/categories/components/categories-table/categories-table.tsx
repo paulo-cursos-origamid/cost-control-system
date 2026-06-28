@@ -13,6 +13,7 @@ type Props = {
   onDelete: (id: string) => Promise<void>;
 };
 
+
 export function CategoriesTable({
   categories,
   loading,

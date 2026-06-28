@@ -1,56 +1,80 @@
 .table {
   width: 100%;
+
   border-collapse: separate;
   border-spacing: 0;
 
   background: var(--surface-card);
-  border-radius: 20px;
+
+  border-radius: var(--radius-xl);
   overflow: hidden;
 
   box-shadow: var(--shadow-sm);
 }
 
-/* HEADER */
+/* ==================================================
+   HEADER
+================================================== */
+
 .table__header {
   background: var(--surface-secondary);
 }
 
 .table__header-cell {
   padding: var(--spacing-md);
+
   text-align: left;
 
   font-size: var(--font-sm);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
+
   color: var(--text-secondary);
 
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--border-primary);
 }
 
-/* BODY */
+/* ==================================================
+   BODY ROW
+================================================== */
+
 .table__row {
-  transition: background 0.2s ease;
+  transition: background-color var(--transition-fast);
 }
 
 .table__row:hover {
   background: var(--surface-hover);
 }
 
-/* opcional: zebra */
-.table__row--striped:nth-child(even) {
-  background: var(--surface-muted);
-}
+/* ==================================================
+   CELL
+================================================== */
 
-/* CELL */
 .table__cell {
   padding: var(--spacing-md);
 
   font-size: var(--font-sm);
   color: var(--text-primary);
 
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--border-primary);
 }
 
-/* LAST ROW CLEAN */
+/* remove border da última linha */
 .table__row:last-child .table__cell {
   border-bottom: none;
+}
+
+/* ==================================================
+   VARIANT: STRIPED
+================================================== */
+
+.table--striped .table__row:nth-child(even) {
+  background: var(--surface-tertiary);
+}
+
+/* ==================================================
+   VARIANT: COMPACT (pronto pra dashboards densos)
+================================================== */
+
+.table--compact .table__cell {
+  padding: var(--spacing-sm);
 }

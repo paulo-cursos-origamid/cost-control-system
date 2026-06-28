@@ -1,20 +1,24 @@
 @use "./abstracts/variables";
 @use "./abstracts/breakpoints";
-@use ".//abstracts/mixins";
+@use "./abstracts/mixins";
 @use "./abstracts/spacing";
 @use "./abstracts/typography";
 @use "./abstracts/animations";
+@use "./abstracts/radius";
+@use "./abstracts/shadows";
 
 @use "./themes/light";
 @use "./themes/dark";
 
 @use "./base/reset";
 @use "./base/globals";
+@use "./base/scrollbar";
 
 @use "./layout/dashboard";
 @use "./layout/sidebar";
 @use "./layout/header";
 @use "./layout/content";
+@use "./layout/auth";
 
 @use "./components/button";
 @use "./components/input";

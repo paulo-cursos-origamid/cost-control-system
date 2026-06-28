@@ -9,66 +9,62 @@
   --surface-secondary: #ffffff;
   --surface-tertiary: #edf3fb;
 
-  /* ==================================================
-     COMPONENTS
-  ================================================== */
-
   --surface-card: rgba(255, 255, 255, 0.85);
-
   --surface-widget: rgba(255, 255, 255, 0.95);
 
   --surface-hover: #f8fbff;
+  --hover-overlay: rgba(18, 48, 110, 0.04);
 
   /* ==================================================
      TEXT
   ================================================== */
 
-  --text-primary: #{v.$bl10};
-
+  --text-primary: #{v.$blue-950};
   --text-secondary: #475569;
-
   --text-muted: #64748b;
+
+  --text-on-accent: #ffffff;
 
   /* ==================================================
      BORDERS
   ================================================== */
 
   --border-primary: rgba(18, 48, 110, 0.12);
-
   --border-secondary: rgba(18, 48, 110, 0.08);
-
   --border-hover: rgba(18, 48, 110, 0.2);
-
-  --border-color: var(--border-primary);
 
   /* ==================================================
      BRAND
   ================================================== */
 
-  --accent-primary: #{v.$ecp-green};
+  --accent-primary: #{v.$color-green};
+  --accent-primary-rgb: 4, 120, 87;
 
-  --accent-secondary: #{v.$ecp-gold};
+  --accent-secondary: #{v.$color-gold};
+  --accent-secondary-rgb: 251, 183, 85;
 
   /* ==================================================
      STATUS
   ================================================== */
 
   --success: #{v.$success};
+  --success-rgb: 34, 197, 94;
 
   --danger: #{v.$danger};
+  --danger-rgb: 239, 68, 68;
 
   --warning: #{v.$warning};
+  --warning-rgb: 251, 191, 36;
 
   --info: #{v.$info};
+  --info-rgb: 56, 189, 248;
 
   /* ==================================================
      SHADOWS
   ================================================== */
 
   --shadow-sm: 0 2px 10px rgba(2, 6, 23, 0.04);
-
   --shadow-md: 0 8px 25px rgba(2, 6, 23, 0.08);
-
   --shadow-lg: 0 20px 50px rgba(2, 6, 23, 0.12);
 
   /* ==================================================
@@ -76,7 +72,6 @@
   ================================================== */
 
   --dashboard-bg-start: #ffffff;
-
   --dashboard-bg-end: #eaf1fb;
 
   /* ==================================================
@@ -84,16 +79,101 @@
   ================================================== */
 
   --chart-glow: 0 4px 12px rgba(59, 130, 246, 0.18);
+  /* ==========================================
+     PRIMARY BUTTON
+  ========================================== */
+
+  --button-primary-bg: #3b82f6;
+  --button-primary-bg-hover: #2563eb;
+  --button-primary-text: #ffffff;
+  --button-primary-dark-blue-text:#020617;
+  --button-primary-border: transparent;
+
+  --button-primary-shadow:
+    0 10px 30px rgba(59, 130, 246, 0.35);
+
+  /* ==========================================
+     SECONDARY BUTTON
+  ========================================== */
+
+  --button-secondary-bg: rgba(0, 0, 0, 0.03);
+  --button-secondary-bg-hover: rgba(0, 0, 0, 0.06);
+
+  --button-secondary-text: var(--text-primary);
+
+  --button-secondary-border: var(--border-primary);
+
+  /* ==========================================
+     SUCCESS BUTTON
+  ========================================== */
+
+  --button-success-bg: #22c55e;
+  --button-success-bg-hover: #16a34a;
+  --button-success-text: #ffffff;
+  --button-success-border: transparent;
+
+  /* ==========================================
+     DANGER BUTTON
+  ========================================== */
+
+  --button-danger-bg: #ef4444;
+  --button-danger-bg-hover: #dc2626;
+  --button-danger-text: #ffffff;
+  --button-danger-border: transparent;
+
+  /* ==========================================
+     WARNING BUTTON
+  ========================================== */
+
+  --button-warning-bg: #f59e0b;
+  --button-warning-bg-hover: #d97706;
+  --button-warning-text: #ffffff;
+  --button-warning-border: transparent;
 
   /* ==================================================
      RADIUS
   ================================================== */
 
+  --radius-xs: 4px;
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-xl: 20px;
   --radius-2xl: 24px;
+  --radius-full: 9999px;
+
+  /* ==================================================
+     SPACING
+  ================================================== */
+
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+
+  /* =================================================
+     OVERLAYS
+  ==================================================*/
+  --hover-overlay: rgba(15, 23, 42, 0.04);
+
+  /* ==================================================
+     TYPOGRAPHY
+  ================================================== */
+
+  --font-xs: 12px;
+  --font-sm: 14px;
+  --font-md: 16px;
+  --font-lg: 18px;
+  --font-xl: 20px;
+  --font-2xl: 24px;
+  --font-3xl: 32px;
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
 
   /* ==================================================
      TRANSITIONS

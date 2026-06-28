@@ -1,57 +1,89 @@
 .button {
   display: inline-flex;
+
   align-items: center;
   justify-content: center;
+
   gap: var(--spacing-sm);
 
   padding: var(--spacing-sm) var(--spacing-md);
 
-  border-radius: var(--radius-md);
   border: 1px solid transparent;
 
-  font-weight: 600;
+  border-radius: var(--radius-md);
+
   font-size: var(--font-sm);
+  font-weight: var(--font-weight-semibold);
 
   cursor: pointer;
 
-  transition: all 0.2s ease;
-
   user-select: none;
+
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast),
+    border-color var(--transition-fast),
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
+
+  &:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+
+    cursor: not-allowed;
+
+    transform: none;
+  }
 }
 
-/* PRIMARY */
+/* ==================================================
+   PRIMARY
+================================================== */
+
 .button--primary {
   background: var(--accent-primary);
+
   color: var(--text-on-accent);
+
+  &:hover:not(:disabled) {
+    filter: brightness(1.05);
+  }
 }
 
-.button--primary:hover {
-  filter: brightness(1.05);
-}
+/* ==================================================
+   SECONDARY
+================================================== */
 
-/* SECONDARY */
 .button--secondary {
   background: var(--surface-secondary);
+
   color: var(--text-primary);
-  border: 1px solid var(--border);
+
+  border-color: var(--border-primary);
+
+  &:hover:not(:disabled) {
+    background: var(--surface-hover);
+  }
 }
 
-.button--secondary:hover {
-  background: var(--surface-hover);
-}
+/* ==================================================
+   GHOST
+================================================== */
 
-/* GHOST */
 .button--ghost {
   background: transparent;
+
   color: var(--text-primary);
-}
 
-.button--ghost:hover {
-  background: var(--surface-hover);
-}
-
-/* DISABLED */
-.button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+  &:hover:not(:disabled) {
+    background: var(--surface-hover);
+  }
 }

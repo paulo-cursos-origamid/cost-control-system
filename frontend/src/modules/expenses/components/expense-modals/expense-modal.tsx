@@ -14,7 +14,7 @@ type Props = {
 
 export function ExpenseModal({ open, onClose, initialData, onSubmit }: Props) {
   return (
-    <CrudModal schema={undefined} open={open} onClose={onClose} title="Despesa">
+    <CrudModal open={open} onClose={onClose} title="Despesa">
       <ExpenseForm initialData={initialData} onSubmit={onSubmit} />
     </CrudModal>
   );

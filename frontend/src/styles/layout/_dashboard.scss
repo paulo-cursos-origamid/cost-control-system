@@ -2,43 +2,55 @@
 
 .dashboard-grid {
   display: grid;
-  gap: 24px;
+  gap: var(--spacing-lg);
 }
+
+/* ==================================================
+   2 COLUNAS
+================================================== */
 
 .dashboard-row {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
+  gap: var(--spacing-lg);
 
-  @include laptop {
+  @include down-lg {
     grid-template-columns: 1fr;
   }
 }
+
+/* ==================================================
+   3 COLUNAS
+================================================== */
 
 .dashboard-row-3 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+  gap: var(--spacing-lg);
 
-  @include desktop {
+  @include down-xl {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  @include tablet {
+  @include down-md {
     grid-template-columns: 1fr;
   }
 }
 
+/* ==================================================
+   4 COLUNAS
+================================================== */
+
 .dashboard-row-4 {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
+  gap: var(--spacing-lg);
 
-  @include desktop {
+  @include down-xl {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  @include tablet {
+  @include down-md {
     grid-template-columns: 1fr;
   }
 }

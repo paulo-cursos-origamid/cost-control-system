@@ -1,30 +1,39 @@
-// import { Transaction } from "@/modules/transactions/types/transaction.types";
-
 export type Expense = {
   id: string;
   title: string;
   description?: string;
   amount: number;
   date: string;
+
+  type: "INCOME" | "EXPENSE";
+
   accountId: string;
   categoryId: string;
   creditCardId?: string;
+
+  category?: {
+    id: string;
+    name: string;
+  };
+
+  account?: {
+    id: string;
+    name: string;
+  };
 };
-// export interface ExpenseFormData {
-//   title: string;
-//   description?: string;
-//   amount: number;
-//   date: string;
-//   accountId: string;
-//   categoryId: string;
-//   creditCardId?: string;
-//   type: "EXPENSE";
-// }
+
+/**
+ * DTO usado no formulário (CREATE / UPDATE)
+ * exatamente igual ao backend CreateTransactionDto
+ */
 export type ExpenseFormData = {
   title: string;
   description?: string;
   amount: number;
   date: string;
+
+  type: "INCOME" | "EXPENSE";
+
   accountId: string;
   categoryId: string;
   creditCardId?: string;

@@ -10,11 +10,11 @@ import { ReactNode } from "react";
 type Props = {
   open: boolean;
   title: string;
-  schema: CrudSchema;
+  schema?: CrudSchema;
   initialData?: CrudFormData;
   onClose: () => void;
   onSuccess?: () => void;
-  children: ReactNode,
+  children?: ReactNode;
 };
 
 export function CrudModal({
@@ -24,6 +24,7 @@ export function CrudModal({
   initialData,
   onClose,
   onSuccess,
+  children,
 }: Props) {
   return (
     <Modal open={open} onClose={onClose}>
@@ -39,12 +40,16 @@ export function CrudModal({
 
         {/* BODY */}
         <div className={styles.body}>
-          <GenericForm
-            schema={schema}
-            initialData={initialData}
-            onSuccess={onSuccess}
-            onCancel={onClose}
-          />
+          {schema ? (
+            <GenericForm
+              schema={schema}
+              initialData={initialData}
+              onSuccess={onSuccess}
+              onCancel={onClose}
+            />
+          ) : (
+            children
+          )}
         </div>
       </div>
     </Modal>

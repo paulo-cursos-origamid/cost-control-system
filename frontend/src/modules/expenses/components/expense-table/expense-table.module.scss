@@ -44,24 +44,51 @@
   font-weight: 600;
 }
 
+
+/* ACTIONS */
 .actions {
   display: flex;
+  align-items: center;
   gap: 8px;
 }
 
-.actions button {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 6px 10px;
-  border-radius: 8px;
+/* ICON BUTTON */
+.iconButton {
+  width: 36px;
+  height: 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+  border-radius: 10px;
 
   cursor: pointer;
-  color: var(--text-primary);
+
+  background: rgba(59, 130, 246, 0.12);
+
+  color: var(--info);
+
+  transition: all 0.2s ease;
 }
 
-.actions button:hover {
-  background: rgba(255, 255, 255, 0.05);
+.iconButton:hover {
+  transform: translateY(-1px);
+
+  background: rgba(59, 130, 246, 0.2);
 }
+
+.danger {
+  background: rgba(239, 68, 68, 0.12);
+
+  color: var(--danger);
+}
+
+.danger:hover {
+  background: rgba(239, 68, 68, 0.2);
+}
+
 
 .loading {
   padding: 16px;
