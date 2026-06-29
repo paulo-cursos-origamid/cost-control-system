@@ -1,20 +1,116 @@
-.container {
+@use "@/styles/abstracts/spacing" as *;
+@use "@/styles/abstracts/breakpoints" as *;
+
+.dashboard {
   display: flex;
   flex-direction: column;
 
-  gap: 24px;
+  gap: $space-6;
+
+  width: 100%;
 }
 
-.grid {
+.kpiGrid {
   display: grid;
 
-  gap: 24px;
+  gap: $space-4;
 
-  grid-template-columns: 1fr 1fr;
-}
+  grid-template-columns: repeat(4, 1fr);
 
-@media (max-width: 1024px) {
-  .grid {
+  @media (max-width: 1400px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 768px) {
     grid-template-columns: 1fr;
   }
 }
+
+.analyticsGrid {
+  display: grid;
+
+  gap: $space-4;
+
+  grid-template-columns: 2fr 1fr;
+
+  align-items: stretch;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: 1fr;
+  }
+}
+// .bottomGrid {
+//   display: grid;
+//   gap: $space-4;
+
+//   grid-template-columns: repeat(2, 1fr);
+
+//   @media (max-width: 1200px) {
+//     grid-template-columns: 1fr;
+//   }
+// }
+.bottomGrid {
+  display: grid;
+
+  gap: $space-4;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  align-items: stretch;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.emptyCard {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  min-height: 220px;
+
+  border-radius: var(--radius-xl);
+
+  border: 1px dashed var(--border-secondary);
+
+  color: var(--text-secondary);
+
+  background: var(--surface-widget);
+}
+
+// .bottomGrid {
+//   display: grid;
+
+//   gap: $space-4;
+
+//   grid-template-columns: repeat(3, 1fr);
+
+//   align-items: stretch;
+
+//   @media (max-width: 1200px) {
+//     grid-template-columns: 1fr;
+//   }
+// }
+
+// .container {
+//   display: flex;
+//   flex-direction: column;
+
+//   gap: 24px;
+// }
+
+// .grid {
+//   display: grid;
+
+//   gap: 24px;
+
+//   grid-template-columns: 1fr 1fr;
+// }
+
+// @media (max-width: 1024px) {
+//   .grid {
+//     grid-template-columns: 1fr;
+//   }
+// }

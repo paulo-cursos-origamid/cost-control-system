@@ -49,6 +49,15 @@ export function AdminDashboard() {
       {financial && (
         <div className={styles.kpiGrid}>
           <FinancialKpiCard
+            title="Saldo Total"
+            growth={calculateGrowth(
+              financial.comparison.income.current,
+              financial.comparison.income.previous,
+            )}
+            value={financial.summary.balance}
+            variant="balance"
+          />
+          <FinancialKpiCard
             title="Receitas"
             growth={calculateGrowth(
               financial.comparison.income.current,
@@ -67,20 +76,15 @@ export function AdminDashboard() {
             value={financial.summary.expense}
             variant="expense"
           />
-
           <FinancialKpiCard
-            title="Saldo"
+            title="Economia"
             growth={calculateGrowth(
               financial.comparison.income.current,
               financial.comparison.income.previous,
             )}
-            value={financial.summary.balance}
+            value={financial.summary.income - financial.summary.expense}
             variant="balance"
           />
-
-          {/* <div className={styles.topCategoriesCard}>
-            <TopCategories categories={financial.topCategories} />
-          </div> */}
         </div>
       )}
 
@@ -104,7 +108,7 @@ export function AdminDashboard() {
       </DashboardSection>
 
       {/* ================= METRICS GRID ================= */}
-      <DashboardSection title="Métricas da Plataforma">
+      {/* <DashboardSection title="Métricas da Plataforma">
         <div className={styles.metricsGrid}>
           <StatCard
             title="Usuários Ativos"
@@ -173,22 +177,21 @@ export function AdminDashboard() {
             variant="cancelled"
           />
         </div>
-      </DashboardSection>
+      </DashboardSection> */}
 
       {/* ================= SUBSCRIPTIONS ================= */}
-      <DashboardSection title="Assinantes">
+      {/* <DashboardSection title="Assinantes">
         <SubscriptionsDashboard />
-      </DashboardSection>
+      </DashboardSection> */}
 
       {/* ================= EXTRA DATA ================= */}
-      {financial && (
+      {/* {financial && (
         <FinancialSummary
           income={financial.summary.income}
           expense={financial.summary.expense}
           balance={financial.summary.balance}
-        />
-      )}
-
+        /> 
+      )}*/}
       {vehicles && (
         <FleetSummary
           fuel={vehicles.costs.fuel}

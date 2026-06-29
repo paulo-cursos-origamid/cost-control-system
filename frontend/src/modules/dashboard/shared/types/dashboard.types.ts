@@ -80,4 +80,5 @@ export type CashflowItem = {
   month: string;
   income: number;
   expense: number;
+  balance: number;
 };

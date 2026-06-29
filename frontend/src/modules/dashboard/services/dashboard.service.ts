@@ -8,15 +8,13 @@ import type {
 } from "../shared/types/dashboard.types";
 
 export const dashboardService = {
-  getCards: () =>
-    apiFetch<DashboardCards>("/api/dashboard/cards"),
+  getCards: () => apiFetch<DashboardCards>("/api/dashboard/cards"),
 
-  getFinancial: () =>
-    apiFetch<FinancialSummary>("/api/dashboard/financial"),
+  getFinancial: () => apiFetch<FinancialSummary>("/api/dashboard/financial"),
 
-  getVehicles: () =>
-    apiFetch<VehicleSummary>("/api/dashboard/vehicles"),
+  getVehicles: () => apiFetch<VehicleSummary>("/api/dashboard/vehicles"),
 
   getCashflow: () =>
-    apiFetch<CashflowItem[]>("/api/dashboard/cashflow"),
+  apiFetch<CashflowItem[]>("/api/dashboard/cashflow"),
+
 };

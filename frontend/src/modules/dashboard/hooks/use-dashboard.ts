@@ -32,6 +32,10 @@ export function useDashboard() {
       setFinancial(financialRes);
       setVehicles(vehiclesRes);
       setCashflow(cashflowRes);
+    } catch (error) {
+      console.error("Dashboard error:", error);
+
+      setCashflow([]);
     } finally {
       setLoading(false);
     }

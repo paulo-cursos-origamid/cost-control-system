@@ -1,118 +1,167 @@
 "use client";
 
-import { useState } from "react";
 import {
   ResponsiveContainer,
-  BarChart,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
   CartesianGrid,
   Tooltip,
   Legend,
-  XAxis,
-  YAxis,
-  Bar,
-  Line,
 } from "recharts";
 
 import type { CashflowItem } from "@/modules/dashboard/shared/types/dashboard.types";
 
 import styles from "./financial-chart.module.scss";
 
-interface FinancialChartProps {
+type Props = {
   data: CashflowItem[];
-}
+};
 
-function formatCurrency(value: number) {
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-    maximumFractionDigits: 0,
-  }).format(value);
+function formatMonth(value: string) {
+  const months = [
+    "Jan",
+    "Fev",
+    "Mar",
+    "Abr",
+    "Mai",
+    "Jun",
+    "Jul",
+    "Ago",
+    "Set",
+    "Out",
+    "Nov",
+    "Dez",
+  ];
+
+  if (!value) return "";
+
+  const parts = value.split("-");
+
+  // backend envia "2026-06"
+  if (parts.length === 2) {
+    const month = Number(parts[1]);
+    return months[month - 1] ?? value;
+  }
+
+  // fallback caso venha apenas "06"
+  const month = Number(value);
+  return months[month - 1] ?? value;
 }
 
 function CustomTooltip({ active, payload, label }: any) {
-  if (!active || !payload || payload.length === 0) return null;
+  if (!active || !payload?.length) return null;
 
   return (
     <div className={styles.tooltip}>
-      <div className={styles.tooltipLabel}>{label}</div>
+      <p className={styles.label}>{label}</p>
+
       {payload.map((entry: any) => (
-        <div key={entry.dataKey} className={styles.tooltipRow}>
-          <span className={styles.tooltipName}>{entry.name}</span>
-          <span className={styles.tooltipValue}>
-            {formatCurrency(entry.value)}
-          </span>
-        </div>
+        <p key={entry.dataKey} className={styles.item}>
+          <span style={{ color: entry.color }}>●</span>{" "}
+          {entry.name}: R$ {Number(entry.value).toLocaleString("pt-BR")}
+        </p>
       ))}
     </div>
   );
 }
 
-export function FinancialChart({ data }: FinancialChartProps) {
-  const [period, setPeriod] = useState("Mensal");
-
-  const enhancedData = data.map((item) => ({
+export function FinancialChart({ data }: Props) {
+    console.log("FinancialChart data:", data);
+  const chartData = (data ?? []).map((item) => ({
     ...item,
     saldo: item.income - item.expense,
   }));
 
-  const monthlyData = enhancedData;
-
   return (
-    <section className={styles.container}>
-      <div className={styles.chart}>
-        <div className={styles.chartHeader}>
-          <div className={styles.chartLabel}>Período</div>
-          <div className={styles.periodControls}>
-            <button
-              type="button"
-              className={period === "Mensal" ? styles.periodButtonActive : styles.periodButton}
-              onClick={() => setPeriod("Mensal")}
-            >
-              Mensal
-            </button>
-          </div>
-        </div>
+    <div className={styles.container}>
+      <ResponsiveContainer width="100%" height={320}>
+        <AreaChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
 
-        <ResponsiveContainer width="100%" height={392}>
-          <BarChart data={monthlyData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255, 255, 255, 0.08)" />
+          {/* GRID */}
+          <CartesianGrid
+            stroke="rgba(255,255,255,0.06)"
+            strokeDasharray="4 4"
+            vertical={false}
+          />
 
-            <XAxis
-              dataKey="month"
-              axisLine={false}
-              tickLine={false}
-              tick={{ fill: "rgba(255,255,255,0.75)", fontSize: 12 }}
-            />
+          {/* 📅 X AXIS (MESES FORMATADOS) */}
+          <XAxis
+            dataKey="month"
+            axisLine={false}
+            tickLine={false}
+            tick={{ fill: "#94a3b8", fontSize: 12 }}
+            tickFormatter={formatMonth}
+          />
 
-            <YAxis
-              axisLine={false}
-              tickLine={false}
-              tick={{ fill: "rgba(255,255,255,0.75)", fontSize: 12 }}
-              tickFormatter={(value) => `R$ ${value.toLocaleString("pt-BR")}`}
-            />
+          <YAxis
+            axisLine={false}
+            tickLine={false}
+            tick={{ fill: "#94a3b8", fontSize: 12 }}
+          />
 
-            <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(255,255,255,0.04)" }} />
+          <Tooltip content={<CustomTooltip />} />
 
-            <Legend
-              iconType="circle"
-              wrapperStyle={{ paddingTop: 8, color: "rgba(255,255,255,0.75)" }}
-              formatter={(value) => <span>{value}</span>}
-            />
+          {/* 🔥 LEGEND CORRIGIDA */}
+          <Legend
+            verticalAlign="top"
+            align="right"
+            iconType="circle"
+            wrapperStyle={{
+              paddingBottom: 10,
+              color: "#94a3b8",
+              fontSize: 12,
+            }}
+          />
 
-            <Bar dataKey="income" name="Receitas" fill="#22c55e" radius={[8, 8, 0, 0]} barSize={24} />
-            <Bar dataKey="expense" name="Despesas" fill="#ef4444" radius={[8, 8, 0, 0]} barSize={24} />
-            <Line
-              type="monotone"
-              dataKey="saldo"
-              name="Saldo"
-              stroke="#3b82f6"
-              strokeWidth={3}
-              dot={{ fill: "#3b82f6", r: 4 }}
-              activeDot={{ r: 6, strokeWidth: 2, stroke: "#ffffff" }}
-            />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-    </section>
+          {/* GRADIENTES */}
+          <defs>
+            <linearGradient id="incomeColor" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#22c55e" stopOpacity={0.4} />
+              <stop offset="95%" stopColor="#22c55e" stopOpacity={0} />
+            </linearGradient>
+
+            <linearGradient id="expenseColor" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#ef4444" stopOpacity={0.4} />
+              <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
+            </linearGradient>
+
+            <linearGradient id="saldoColor" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.4} />
+              <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+            </linearGradient>
+          </defs>
+
+          {/* LINHAS */}
+          <Area
+            type="monotone"
+            dataKey="income"
+            name="Receitas"
+            stroke="#22c55e"
+            fill="url(#incomeColor)"
+            strokeWidth={2}
+          />
+
+          <Area
+            type="monotone"
+            dataKey="expense"
+            name="Despesas"
+            stroke="#ef4444"
+            fill="url(#expenseColor)"
+            strokeWidth={2}
+          />
+
+          <Area
+            type="monotone"
+            dataKey="saldo"
+            name="Saldo"
+            stroke="#3b82f6"
+            fill="url(#saldoColor)"
+            strokeWidth={2}
+          />
+        </AreaChart>
+      </ResponsiveContainer>
+    </div>
   );
 }
