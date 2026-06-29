@@ -94,7 +94,7 @@ import Image from "next/image";
 import { LoginForm } from "@/modules/auth/components/login-form/login-form";
 import { LoginChart } from "@/modules/auth/components/login-chart/login-chart";
 
-import logo from "../../../../public/ccp-logo.png"; // 👈 coloque sua imagem aqui
+import logo from "../../../../public/images/ccp-logo.png"; // 👈 coloque sua imagem aqui
 
 export default function LoginPage() {
   return (

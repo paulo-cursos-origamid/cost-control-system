@@ -11,7 +11,7 @@ import { dashboardNavigation } from "@/configs/navigation";
 import { useAuthStore } from "@/modules/auth/store/auth.store";
 
 import styles from "./sidebar.module.scss";
-import logo from "../../../../public/ccp-logo.png"; // 👈 coloque sua imagem aqui
+import logo from "../../../../public/images/ccp-logo.png"; // 👈 coloque sua imagem aqui
 import { LoadingState } from "@/components/feedback/loading-state/loading-state";
 
 export function Sidebar() {

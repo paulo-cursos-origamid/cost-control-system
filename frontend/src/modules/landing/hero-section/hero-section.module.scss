@@ -1,0 +1,399 @@
+@use "@/styles/abstracts/breakpoints" as *;
+
+.hero {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 80px;
+
+  background:
+    radial-gradient(circle at 85% 18%, rgba(108, 92, 231, .35), transparent 35%),
+    radial-gradient(circle at left bottom, rgba(0, 119, 255, .18), transparent 45%),
+    #040816;
+
+  @include down-xxl {
+    padding: 0 64px;
+  }
+
+  @include down-xl {
+    padding: 0 48px;
+  }
+
+  @include down-lg {
+    padding: 120px 32px 80px;
+    min-height: auto;
+  }
+
+  @include down-md {
+    padding: 100px 24px 64px;
+  }
+
+  &::before {
+    content: "";
+
+    position: absolute;
+    right: -280px;
+    top: -220px;
+
+    width: 950px;
+    height: 950px;
+
+    border-radius: 50%;
+
+    background: radial-gradient(
+      circle,
+      rgba(103, 76, 255, .45),
+      transparent 70%
+    );
+
+    filter: blur(120px);
+
+    z-index: 0;
+  }
+}
+
+.content {
+  width: 100%;
+  max-width: 1600px;
+
+  margin: auto;
+
+  display: grid;
+  grid-template-columns: 560px 1fr;
+
+  gap: 80px;
+
+  align-items: center;
+
+  position: relative;
+  z-index: 2;
+
+  @include down-xl {
+    grid-template-columns: 500px 1fr;
+    gap: 60px;
+  }
+
+  @include down-lg {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+}
+
+.left {
+  max-width: 560px;
+
+  @include down-lg {
+    max-width: 100%;
+    margin: auto;
+  }
+
+  h1 {
+    margin: 36px 0 28px;
+
+    color: #fff;
+
+    font-size: 72px;
+    font-weight: 800;
+
+    line-height: 1.08;
+    letter-spacing: -2px;
+
+    span {
+      background: linear-gradient(90deg, #238cff, #7c4dff);
+
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    @include down-xl {
+      font-size: 62px;
+    }
+
+    @include down-lg {
+      font-size: 54px;
+    }
+
+    @include down-md {
+      font-size: 46px;
+    }
+
+    @include down-sm {
+      font-size: 38px;
+    }
+  }
+
+  p {
+    margin-bottom: 42px;
+
+    color: rgba(255,255,255,.75);
+
+    font-size: 22px;
+    line-height: 1.65;
+
+    @include down-lg {
+      margin-inline: auto;
+    }
+
+    @include down-md {
+      font-size: 18px;
+    }
+  }
+}
+
+.logo {
+  width: 150px;
+  margin-top: 60px;
+
+  img {
+    width: 100%;
+    height: auto;
+  }
+
+  @include down-lg {
+    margin: auto;
+  }
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+
+  margin-bottom: 48px;
+
+  @include down-lg {
+    justify-content: center;
+  }
+
+  @include down-md {
+    flex-direction: column;
+  }
+}
+
+.primaryButton,
+.secondaryButton {
+  height: 64px;
+
+  padding: 0 24px;
+
+  border-radius: 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  cursor: pointer;
+
+  transition: .3s;
+
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.primaryButton {
+  border: none;
+
+  color: white;
+
+  background: linear-gradient(135deg,#0078ff,#7c4dff);
+
+  box-shadow: 0 18px 45px rgba(0,119,255,.35);
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.secondaryButton {
+  color: white;
+
+  background: rgba(255,255,255,.03);
+
+  border: 1px solid rgba(255,255,255,.08);
+
+  backdrop-filter: blur(20px);
+
+  &:hover {
+    background: rgba(255,255,255,.06);
+  }
+}
+
+.features {
+  display: flex;
+  justify-content: space-between;
+  gap: 26px;
+
+  margin-bottom: 42px;
+
+  @include down-lg {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  @include down-md {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  > div {
+    display: flex;
+    gap: 12px;
+
+    svg {
+      color: #00d8ff;
+      flex-shrink: 0;
+    }
+
+    strong {
+      display: block;
+      color: white;
+      margin-bottom: 4px;
+    }
+
+    span {
+      color: rgba(255,255,255,.65);
+      font-size: 15px;
+    }
+  }
+}
+
+.socialProof {
+  display: flex;
+  align-items: center;
+
+  gap: 18px;
+
+  max-width: 600px;
+
+  padding: 24px;
+
+  border-radius: 24px;
+
+  background: rgba(255,255,255,.03);
+
+  border: 1px solid rgba(255,255,255,.08);
+
+  backdrop-filter: blur(24px);
+
+  @include down-lg {
+    margin: auto;
+  }
+
+  @include down-md {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+.avatars {
+  display: flex;
+
+  img {
+    width: 54px;
+    height: 54px;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    border: 3px solid #040816;
+
+    margin-left: -14px;
+
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+}
+
+.description {
+  flex: 1;
+}
+
+.stars {
+  margin-bottom: 8px;
+
+  color: #2de38a;
+  font-size: 18px;
+}
+
+.socialProof p {
+  margin: 0;
+  color: rgba(255,255,255,.82);
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.right {
+  position: relative;
+
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  margin: -50px -50px 160px;
+
+  @include down-xl {
+    margin-right: -80px;
+  }
+
+  @include down-lg {
+    margin: 0;
+    justify-content: center;
+  }
+
+  &::before {
+    content: "";
+
+    position: absolute;
+
+    width: 900px;
+    height: 900px;
+
+    right: -180px;
+    top: -120px;
+
+    border-radius: 50%;
+
+    background: radial-gradient(
+      circle,
+      rgba(96,65,255,.45),
+      transparent 70%
+    );
+
+    filter: blur(110px);
+
+    z-index: -1;
+  }
+
+  img {
+    width: 125%;
+    max-width: 1250px;
+    height: auto;
+
+    border-radius: 20px;
+
+    transform:
+      perspective(2400px)
+      rotateY(-18deg)
+      rotateX(2deg);
+
+    transform-origin: center;
+
+    filter:
+      drop-shadow(0 45px 70px rgba(0,0,0,.45))
+      drop-shadow(0 0 80px rgba(90,65,255,.45));
+
+    transition: .4s ease;
+
+    @include down-lg {
+      width: 100%;
+      transform: none;
+    }
+  }
+}
