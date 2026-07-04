@@ -10,7 +10,6 @@ import { UpcomingBills } from "../../components/upcoming-bills/upcoming-bills";
 import { FinancialKpiCard } from "@/modules/dashboard/shared/cards/financial-kpi-card/financial-kpi-card";
 import { FinancialChart } from "@/modules/dashboard/shared/charts/financial-chart";
 import { PageHeader } from "@/modules/dashboard/shared/page-header/page-header";
-import { calculateGrowth } from "@/utils/helpers/calculate-growth";
 
 export function FinancialDashboard() {
   const { financial, cashflow, loading } = useDashboard();
@@ -32,37 +31,27 @@ export function FinancialDashboard() {
         <FinancialKpiCard
           title="Saldo Total"
           value={financial.summary.balance}
-          growth={calculateGrowth(
-            financial.summary.balance,
-            financial.summary.balance * 0.92,
-          )}
+          growth={financial.growth.balance}
           variant="balance"
         />
-
         <FinancialKpiCard
           title="Receitas"
           value={financial.summary.income}
-          growth={calculateGrowth(
-            financial.summary.income,
-            financial.summary.income * 0.94,
-          )}
+          growth={financial.growth.income}
           variant="income"
         />
 
         <FinancialKpiCard
           title="Despesas"
           value={financial.summary.expense}
-          growth={calculateGrowth(
-            financial.summary.expense,
-            financial.summary.expense * 1.08,
-          )}
+          growth={financial.growth.expense}
           variant="expense"
         />
 
         <FinancialKpiCard
           title="Economia"
           value={financial.summary.income - financial.summary.expense}
-          growth={12.8}
+          growth={financial.growth.balance}
           variant="balance"
         />
       </div>
@@ -74,7 +63,6 @@ export function FinancialDashboard() {
 
         <TopCategories categories={financial.topCategories} />
       </div> */}
-
 
       {/* ================= BOTTOM ================= */}
 

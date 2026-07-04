@@ -64,12 +64,35 @@ model Category {
   deletedAt             DateTime?
   parent                Category?              @relation("CategoryChildren", fields: [parentId], references: [id])
   children              Category[]             @relation("CategoryChildren")
+
   user                  User?                  @relation(fields: [userId], references: [id])
   installments          Installment[]
   recurringTransactions RecurringTransaction[]
   transactions          Transaction[]
+  subCategories         SubCategory[]
 
   @@unique([slug, userId])
+}
+
+model SubCategory {
+  id          String  @id @default(uuid())
+  name        String
+  slug        String
+  description String?
+  color       String?
+  icon        String?
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  transactions Transaction[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@unique([categoryId, slug])
+  @@index([categoryId])
 }
 
 model Vehicle {
@@ -136,28 +159,30 @@ model Maintenance {
 }
 
 model Transaction {
-  id           String             @id @default(uuid())
-  title        String
-  amount       Float
-  type         TransactionType
-  date         DateTime
-  userId       String
-  createdAt    DateTime           @default(now())
-  accountId    String
-  categoryId   String
-  description  String?
-  deletedAt    DateTime?
-  updatedAt    DateTime           @default(now()) @updatedAt
-  creditCardId String?
-  invoiceId    String?
-  fuelSupply   FuelSupply?
-  installments Installment?
-  maintenance  Maintenance?
-  account      Account            @relation(fields: [accountId], references: [id])
-  category     Category           @relation(fields: [categoryId], references: [id])
-  creditCard   CreditCard?        @relation(fields: [creditCardId], references: [id])
-  invoice      CreditCardInvoice? @relation("InvoiceTransactions", fields: [invoiceId], references: [id])
-  user         User               @relation(fields: [userId], references: [id])
+  id            String             @id @default(uuid())
+  title         String
+  amount        Float
+  type          TransactionType
+  date          DateTime
+  userId        String
+  createdAt     DateTime           @default(now())
+  accountId     String
+  categoryId    String
+  subCategoryId String?
+  description   String?
+  deletedAt     DateTime?
+  updatedAt     DateTime           @default(now()) @updatedAt
+  creditCardId  String?
+  invoiceId     String?
+  fuelSupply    FuelSupply?
+  installments  Installment?
+  maintenance   Maintenance?
+  account       Account            @relation(fields: [accountId], references: [id])
+  category      Category           @relation(fields: [categoryId], references: [id])
+  creditCard    CreditCard?        @relation(fields: [creditCardId], references: [id])
+  invoice       CreditCardInvoice? @relation("InvoiceTransactions", fields: [invoiceId], references: [id])
+  user          User               @relation(fields: [userId], references: [id])
+  subCategory   SubCategory?       @relation(fields: [subCategoryId], references: [id])
 
   @@index([userId])
   @@index([accountId])

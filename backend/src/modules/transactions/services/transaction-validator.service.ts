@@ -7,6 +7,7 @@ import {
 import { PrismaService } from '@/database/prisma.service';
 
 import { CreateTransactionDto } from '../dto/create-transaction.dto';
+import { SubCategory } from '@prisma/client';
 
 @Injectable()
 export class TransactionValidatorService {
@@ -39,10 +40,28 @@ export class TransactionValidatorService {
     if (category.type !== dto.type) {
       throw new BadRequestException('Transaction type differs from category');
     }
+    let subCategory: SubCategory | null = null;
+    if (dto.subCategoryId) {
+      subCategory = await this.prisma.subCategory.findUnique({
+        where: {
+          id: dto.subCategoryId,
+        },
+      });
 
+      if (!subCategory) {
+        throw new NotFoundException('Subcategoria não encontrada');
+      }
+
+      if (subCategory.categoryId !== dto.categoryId) {
+        throw new BadRequestException(
+          'Subcategoria não pertence à categoria selecionada',
+        );
+      }
+    }
     return {
       account,
       category,
+      subCategory,
     };
   }
 }

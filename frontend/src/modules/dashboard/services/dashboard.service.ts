@@ -14,7 +14,5 @@ export const dashboardService = {
 
   getVehicles: () => apiFetch<VehicleSummary>("/api/dashboard/vehicles"),
 
-  getCashflow: () =>
-  apiFetch<CashflowItem[]>("/api/dashboard/cashflow"),
-
+  getCashflow: () => apiFetch<CashflowItem[]>("/api/dashboard/cashflow"),
 };

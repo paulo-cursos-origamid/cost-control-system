@@ -15,12 +15,11 @@ import { DashboardSection } from "@/modules/dashboard/shared/section/dashboard-s
 
 import { TopCategories } from "../../components/top-categories/top-categories";
 import { SubscriptionsDashboard } from "../subscriptions-dashboard";
-import { FinancialSummary } from "../../components/financial-summary/financial-summary";
+
 import { FleetCosts } from "../../components/fleet-costs/fleet-costs";
 import { FleetSummary } from "../../components/fleet-summary/fleet-summary";
 import { LatestFuelSupplies } from "../../components/latest-fuel-supplies/latest-fuel-supplies";
 import { LatestTransactions } from "../../components/latest-transactions/latest-transactions";
-import { calculateGrowth } from "@/utils/helpers/calculate-growth";
 
 export function AdminDashboard() {
   const { cashflow, financial, vehicles } = useDashboard();
@@ -47,42 +46,60 @@ export function AdminDashboard() {
 
       {/* ================= KPI FINANCEIRO ================= */}
       {financial && (
+        // <div className={styles.kpiGrid}>
+        //   <FinancialKpiCard
+        //     title="Saldo Total"
+        //     value={financial.summary.balance}
+        //     growth={financial.growth?.balance ?? 0}
+        //     variant="balance"
+        //   />
+        //   <FinancialKpiCard
+        //     title="Receitas"
+        //     value={financial.summary.income}
+        //     growth={financial.growth?.income ?? 0}
+        //     variant="income"
+        //   />
+
+        //   <FinancialKpiCard
+        //     title="Despesas"
+        //     value={financial.summary.expense}
+
+        //     growth={financial.growth.income - financial.growth.expense}
+        //     variant="expense"
+        //   />
+        //   <FinancialKpiCard
+        //     title="Economia"
+        //     value={financial.summary.income - financial.summary.expense}
+        //     growth={financial.growth.income - financial.growth.expense}
+        //     variant="balance"
+        //   />
+        // </div>
         <div className={styles.kpiGrid}>
           <FinancialKpiCard
             title="Saldo Total"
-            growth={calculateGrowth(
-              financial.comparison.income.current,
-              financial.comparison.income.previous,
-            )}
             value={financial.summary.balance}
+            growth={financial.growth.balance}
             variant="balance"
           />
+
           <FinancialKpiCard
             title="Receitas"
-            growth={calculateGrowth(
-              financial.comparison.income.current,
-              financial.comparison.income.previous,
-            )}
             value={financial.summary.income}
+            growth={financial.growth.income}
             variant="income"
           />
 
           <FinancialKpiCard
             title="Despesas"
-            growth={calculateGrowth(
-              financial.comparison.income.current,
-              financial.comparison.income.previous,
-            )}
             value={financial.summary.expense}
+            growth={financial.growth.expense}
             variant="expense"
           />
+
           <FinancialKpiCard
             title="Economia"
-            growth={calculateGrowth(
-              financial.comparison.income.current,
-              financial.comparison.income.previous,
-            )}
             value={financial.summary.income - financial.summary.expense}
+            growth={financial.growth.balance}
             variant="balance"
           />
         </div>

@@ -9,6 +9,7 @@ import {
 } from 'class-validator';
 
 import { TransactionType } from '@prisma/client';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateTransactionDto {
   @IsString()
@@ -37,4 +38,9 @@ export class CreateTransactionDto {
 
   @IsUUID()
   categoryId!: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsUUID()
+  subCategoryId?: string;
 }

@@ -35,6 +35,7 @@ export class TransactionProcessorService {
           userId,
           accountId: dto.accountId,
           categoryId: dto.categoryId,
+          subCategoryId: dto.subCategoryId ?? null,
           creditCardId: dto.creditCardId ?? null,
         },
       });

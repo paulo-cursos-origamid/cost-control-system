@@ -10,9 +10,17 @@ export class DashboardService {
 
   /*
     =====================================
-    DASHBOARD FINANCEIRO
+    DASHBOARD FINANCEIRO CALCULATE GROWTH
     =====================================
   */
+  private calculateGrowth(current: number, previous: number): number {
+    if (previous === 0) {
+      return current > 0 ? 100 : 0;
+    }
+
+    return Number((((current - previous) / previous) * 100).toFixed(1));
+  }
+
   /*
   =====================================
   DASHBOARD FINANCEIRO
@@ -259,6 +267,23 @@ export class DashboardService {
       },
 
       comparison,
+
+      growth: {
+        income: this.calculateGrowth(
+          comparison.income.current,
+          comparison.income.previous,
+        ),
+
+        expense: this.calculateGrowth(
+          comparison.expense.current,
+          comparison.expense.previous,
+        ),
+
+        balance: this.calculateGrowth(
+          comparison.balance.current,
+          comparison.balance.previous,
+        ),
+      },
 
       accounts,
 

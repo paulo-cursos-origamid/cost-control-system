@@ -44,7 +44,18 @@ export type FinancialSummary = {
     };
   };
 
-  accounts: unknown[];
+  growth: {
+    income: number;
+    expense: number;
+    balance: number;
+  };
+
+  accounts: {
+    id: string;
+    name: string;
+    balance: number;
+    type: string;
+  }[];
 
   latestTransactions: Transaction[];
 
