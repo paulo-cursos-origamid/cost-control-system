@@ -1,27 +1,19 @@
-import { AccountType, PrismaClient } from '@prisma/client';
+import { PrismaClient, Account, AccountType } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export async function seedAccounts(userId: string) {
-  console.log('🏦 Seeding accounts...');
+export async function seedAccounts(userId: string): Promise<Account[]> {
+  const createdAccounts: Account[] = [];
 
   const accounts = [
     {
       name: 'Conta Principal',
       type: AccountType.CHECKING,
-      balance: 5000,
-    },
-
-    {
-      name: 'Poupança',
-      type: AccountType.SAVINGS,
-      balance: 12000,
-    },
-
-    {
-      name: 'Carteira',
-      type: AccountType.CASH,
-      balance: 300,
+      color: '#000',
+      balance: 0,
+      initialBalance: 0,
+      isActive: true,
+      userId,
     },
   ];
 
@@ -33,21 +25,17 @@ export async function seedAccounts(userId: string) {
       },
     });
 
-    if (!exists) {
-      await prisma.account.create({
-        data: {
-          ...account,
-          userId,
-        },
-      });
-
-      console.log(`✔ Account created: ${account.name}`);
+    if (exists) {
+      createdAccounts.push(exists);
+      continue;
     }
+
+    const created = await prisma.account.create({
+      data: account,
+    });
+
+    createdAccounts.push(created);
   }
 
-  return prisma.account.findMany({
-    where: {
-      userId,
-    },
-  });
+  return createdAccounts;
 }

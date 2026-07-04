@@ -1,5 +1,7 @@
 "use client";
 
+import type { ElementType } from "react";
+
 import { ArrowDown, ArrowUp, Wallet } from "lucide-react";
 
 import { Area, AreaChart, ResponsiveContainer } from "recharts";
@@ -8,12 +10,12 @@ import styles from "./financial-kpi-card.module.scss";
 
 type Variant = "income" | "expense" | "balance";
 
-type Props = {
+interface FinancialKpiCardProps {
   title: string;
   value: number;
   variant: Variant;
   growth?: number;
-};
+}
 
 const chartData = [
   { value: 20 },
@@ -26,14 +28,20 @@ const chartData = [
   { value: 72 },
 ];
 
-const variants = {
+const variantConfig: Record<
+  Variant,
+  {
+    icon: ElementType;
+    color: string;
+  }
+> = {
   income: {
-    icon: ArrowDown,
+    icon: ArrowUp,
     color: "#00d084",
   },
 
   expense: {
-    icon: ArrowUp,
+    icon: ArrowDown,
     color: "#ff4d4f",
   },
 
@@ -47,11 +55,14 @@ export function FinancialKpiCard({
   title,
   value,
   variant,
-  growth,
-}: Props) {
-  const config = variants[variant];
-  const Icon = config.icon;
-  const growthValue = growth ?? 0;
+  growth = 0,
+}: FinancialKpiCardProps) {
+  const { icon: Icon, color } = variantConfig[variant];
+
+  const normalizedGrowth = Number(growth ?? 0);
+
+  const isPositive =
+    variant === "expense" ? normalizedGrowth <= 0 : normalizedGrowth >= 0;
 
   return (
     <article className={`${styles.card} ${styles[variant]}`}>
@@ -73,14 +84,14 @@ export function FinancialKpiCard({
       <div className={styles.footer}>
         <span
           className={`${styles.growth} ${
-            growthValue >= 0 ? styles.positive : styles.negative
+            isPositive ? styles.positive : styles.negative
           }`}
         >
-          {growthValue >= 0 ? "+" : ""}
-          {growthValue.toFixed(1)}%
+          {normalizedGrowth > 0 ? "+" : ""}
+          {normalizedGrowth.toFixed(1)}%
         </span>
 
-        <small>vs. período anterior</small>
+        <small>em relação ao mês anterior</small>
       </div>
 
       <div className={styles.chart}>
@@ -89,7 +100,7 @@ export function FinancialKpiCard({
             <Area
               type="monotone"
               dataKey="value"
-              stroke={config.color}
+              stroke={color}
               fill="transparent"
               strokeWidth={3}
             />

@@ -9,6 +9,7 @@ export type Expense = {
 
   accountId: string;
   categoryId: string;
+  subCategoryId: string;
   creditCardId?: string;
 
   category?: {
@@ -36,5 +37,6 @@ export type ExpenseFormData = {
 
   accountId: string;
   categoryId: string;
+  subCategoryId?: string;
   creditCardId?: string;
 };

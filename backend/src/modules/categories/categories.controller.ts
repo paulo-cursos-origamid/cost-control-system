@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
@@ -53,10 +62,7 @@ export class CategoriesController {
   }
 
   @Delete(':id')
-  remove(
-    @Param('id') id: string,
-    @CurrentUser() user: JwtUser,
-  ) {
+  remove(@Param('id') id: string, @CurrentUser() user: JwtUser) {
     return this.categoriesService.remove(id, user.sub);
   }
 }
