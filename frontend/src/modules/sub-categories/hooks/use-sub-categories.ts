@@ -9,12 +9,8 @@ export interface SubCategory {
   categoryId: string;
 }
 
-export function useSubCategories(
-  categoryId?: string,
-) {
-  const [data, setData] = useState<
-    SubCategory[]
-  >([]);
+export function useSubCategories(categoryId?: string) {
+  const [data, setData] = useState<SubCategory[]>([]);
 
   useEffect(() => {
     async function load() {
@@ -24,24 +20,41 @@ export function useSubCategories(
       }
 
       try {
-        const response =
-          await apiFetch<
-            SubCategory[]
-          >(
-            `/api/sub-categories?categoryId=${categoryId}`,
-          );
+        const response = await apiFetch<SubCategory[]>(
+          `/api/sub-categories?categoryId=${categoryId}`,
+        );
 
         setData(response);
       } catch (error) {
         console.error(error);
         setData([]);
-      }
+      }  
     }
 
     void load();
+    
   }, [categoryId]);
 
   return {
     data,
+    reload: () => {
+      void (async () => {
+        if (!categoryId) {
+          setData([]);
+          return;
+        }
+
+        try {
+          const response = await apiFetch<SubCategory[]>(
+            `/api/sub-categories?categoryId=${categoryId}`,
+          );
+
+          setData(response);
+        } catch (error) {
+          console.error(error);
+          setData([]);
+        }
+      })();
+    },
   };
 }

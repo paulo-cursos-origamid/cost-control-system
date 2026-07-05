@@ -1,3 +1,4 @@
+
 import { z } from "zod";
 
 export const expenseSchema = z.object({
@@ -12,6 +13,7 @@ export const expenseSchema = z.object({
   accountId: z.string().uuid(),
 
   categoryId: z.string().uuid(),
+  subCategoryId: z.string().uuid().optional(),
 
   creditCardId: z.string().uuid().optional(),
 });

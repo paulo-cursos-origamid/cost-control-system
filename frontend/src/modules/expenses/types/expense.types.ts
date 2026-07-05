@@ -16,7 +16,10 @@ export type Expense = {
     id: string;
     name: string;
   };
-
+ subCategory?: {
+    id: string;
+    name: string;
+  };
   account?: {
     id: string;
     name: string;

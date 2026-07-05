@@ -114,6 +114,7 @@ export function ExpenseTable({
           <tr>
             <th>Título</th>
             <th>Categoria</th>
+        
             <th>Conta</th>
             <th>Data</th>
             <th>Valor</th>
@@ -135,6 +136,7 @@ export function ExpenseTable({
               </td>
 
               <td>{expense.category?.name ?? "-"}</td>
+              
 
               <td>{expense.account?.name ?? "-"}</td>
 
